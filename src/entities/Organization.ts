@@ -8,13 +8,13 @@ export class Organization {
     @Column({ nullable: false })
     name: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     description: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     address: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     siteUrl: string;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', nullable: false })

@@ -17,6 +17,8 @@ import { OrganizationController } from './controllers/OrganizationController';
 import { OrganizationService } from './services/OrganizationService';
 import { StudentController } from './controllers/StudentController';
 import { StudentService } from './services/StudentService';
+import { TeacherController } from './controllers/TeacherController';
+import { TeacherService } from './services/TeacherService';
 
 
 @Module({
@@ -32,8 +34,8 @@ import { StudentService } from './services/StudentService';
             'logging': false,
             'entities': [Organization, Teacher, Student, Topic, Question, Answer, TestAttempt, AttemptDetail, User],
         })],
-    controllers: [AppController, AuthController, OrganizationController, StudentController],
-    providers: [AppService, AuthService, OrganizationService, StudentService],
+    controllers: [AppController, AuthController, OrganizationController, StudentController, TeacherController],
+    providers: [AppService, AuthService, OrganizationService, StudentService, TeacherService],
     exports: [TypeOrmModule],
 })
 export class AppModule {

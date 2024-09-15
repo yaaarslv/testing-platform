@@ -5,17 +5,22 @@ import { Repository } from 'typeorm';
 import { LoginDTO } from '../dto/LoginDTO';
 import { ReturnUserDTO } from '../dto/ReturnUserDTO';
 import { ERole } from '../models/ERole';
+import { RegisterDTO } from '../dto/RegisterDTO';
+import { StudentService } from './StudentService';
+import { TeacherService } from './TeacherService';
 
 let bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
 @Injectable()
 export class AuthService {
-    constructor(@InjectRepository(User) private userRepository: Repository<User>) {
+    constructor(@InjectRepository(User) private userRepository: Repository<User>,
+                private readonly studentService: StudentService,
+                private readonly teacherService: TeacherService) {
     }
 
     async login(data: LoginDTO): Promise<ReturnUserDTO> {
-        const hashedLogin =  crypto.createHash('sha256').update(data.login).digest('hex');
+        const hashedLogin = crypto.createHash('sha256').update(data.login).digest('hex');
         const user = await this.userRepository.findOneBy({ login: hashedLogin });
 
         if (user === null) {
@@ -29,8 +34,9 @@ export class AuthService {
         }
     }
 
-    async register(data: LoginDTO): Promise<any> {
-        const hashedLogin =  crypto.createHash('sha256').update(data.login).digest('hex');
+    // todo при создании ссылки передаем роль, id студента или препода, название организации и состояние активированности
+    async register(data: RegisterDTO): Promise<any> {
+        const hashedLogin = crypto.createHash('sha256').update(data.login).digest('hex');
 
         const user = await this.userRepository.findOneBy({ login: hashedLogin });
 
@@ -40,7 +46,30 @@ export class AuthService {
 
         const hashedPassword = await bcrypt.hash(data.password, 12);
 
-        const newUser = await this.userRepository.save({login: hashedLogin, password: hashedPassword, role: ERole.User});
-        return new ReturnUserDTO(newUser);
+        let role: ERole;
+        if (data.role === 0) {
+            role = ERole.Teacher;
+        } else if (data.role === 1) {
+            role = ERole.Student;
+        }
+
+        const newUser = await this.userRepository.save({
+            login: hashedLogin,
+            password: hashedPassword,
+            role: role
+        });
+
+        try {
+            if (role === ERole.Teacher) {
+                await this.teacherService.activate(data.actorId, newUser.id, data.login);
+            } else if (role === ERole.Student) {
+                await this.studentService.activate(data.actorId, newUser.id, data.login);
+            }
+
+            return new ReturnUserDTO(newUser);
+        } catch (e: any) {
+            await this.userRepository.delete(newUser.id);
+            throw e;
+        }
     }
 }

@@ -26,4 +26,18 @@ export class StudentService {
 
         return student;
     }
+
+    async activate(studentId: number, userId: number, email: string): Promise<void> {
+        const student = await this.studentRepository.findOneBy({ id: studentId });
+
+        if (student === null) {
+            throw new NotFoundException('Студента с таким id не существует.');
+        }
+
+        student.isActive = true;
+        student.userID = userId;
+        student.email = email;
+
+        await this.studentRepository.save(student);
+    }
 }

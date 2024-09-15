@@ -14,12 +14,14 @@ export class Teacher {
     @Column({ nullable: false })
     name: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     email: string;
+
+    @Column({ nullable: false, default: false })
+    isActive: boolean;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
-
 
     @Column('int', { nullable: true, array: true, default: [] })
     studentIds: number[];

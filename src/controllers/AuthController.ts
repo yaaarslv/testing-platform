@@ -2,6 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from '../services/AuthService';
 import { ReturnUserDTO } from '../dto/ReturnUserDTO';
 import { LoginDTO } from '../dto/LoginDTO';
+import { RegisterDTO } from '../dto/RegisterDTO';
 
 @Controller("auth")
 export class AuthController {
@@ -14,7 +15,7 @@ export class AuthController {
     }
 
     @Post("register")
-    async register(@Body() body: LoginDTO): Promise<ReturnUserDTO> {
+    async register(@Body() body: RegisterDTO): Promise<ReturnUserDTO> {
         return await this.authService.register(body);
     }
 }
