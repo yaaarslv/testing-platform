@@ -14,7 +14,7 @@ export class Question {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column('int', { nullable: true, array: true })
+  @Column('int', { nullable: true, array: true, default: []  })
   answerIds: number[];
 
 

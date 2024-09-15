@@ -13,6 +13,10 @@ import { AttemptDetail } from './entities/AttemptDetail';
 import { AuthService } from './services/AuthService';
 import { AuthController } from './controllers/AuthController';
 import { User } from './entities/User';
+import { OrganizationController } from './controllers/OrganizationController';
+import { OrganizationService } from './services/OrganizationService';
+import { StudentController } from './controllers/StudentController';
+import { StudentService } from './services/StudentService';
 
 
 @Module({
@@ -28,8 +32,8 @@ import { User } from './entities/User';
             'logging': false,
             'entities': [Organization, Teacher, Student, Topic, Question, Answer, TestAttempt, AttemptDetail, User],
         })],
-    controllers: [AppController, AuthController],
-    providers: [AppService, AuthService],
+    controllers: [AppController, AuthController, OrganizationController, StudentController],
+    providers: [AppService, AuthService, OrganizationService, StudentService],
     exports: [TypeOrmModule],
 })
 export class AppModule {
