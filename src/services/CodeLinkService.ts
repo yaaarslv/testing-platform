@@ -2,7 +2,7 @@ const crypto = require('crypto');
 
 // Здесь вы можете загрузить ключ из переменных окружения или файла
 const algorithm = 'aes-256-cbc';
-const key = process.env.ENCRYPTION_KEY ? Buffer.from(process.env.ENCRYPTION_KEY, 'hex') : crypto.randomBytes(32);
+const key = Buffer.from(process.env.ENCRYPTION_KEY, 'hex');
 
 export class CodeLinkService {
     static async encrypt(text: string): Promise<string> {
