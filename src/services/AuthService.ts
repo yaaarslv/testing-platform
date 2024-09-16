@@ -8,6 +8,9 @@ import { ERole } from '../models/ERole';
 import { RegisterDTO } from '../dto/RegisterDTO';
 import { StudentService } from './StudentService';
 import { TeacherService } from './TeacherService';
+import { GetInviteLinkDTO } from '../dto/GetInviteLinkDTO';
+import { CodeLinkService } from './CodeLinkService';
+import { OrganizationService } from './OrganizationService';
 
 let bcrypt = require('bcrypt');
 const crypto = require('crypto');
@@ -16,6 +19,7 @@ const crypto = require('crypto');
 export class AuthService {
     constructor(@InjectRepository(User) private userRepository: Repository<User>,
                 private readonly studentService: StudentService,
+                private readonly organizationRepository: OrganizationService,
                 private readonly teacherService: TeacherService) {
     }
 
@@ -46,23 +50,16 @@ export class AuthService {
 
         const hashedPassword = await bcrypt.hash(data.password, 12);
 
-        let role: ERole;
-        if (data.role === 0) {
-            role = ERole.Teacher;
-        } else if (data.role === 1) {
-            role = ERole.Student;
-        }
-
         const newUser = await this.userRepository.save({
             login: hashedLogin,
             password: hashedPassword,
-            role: role
+            role: data.role
         });
 
         try {
-            if (role === ERole.Teacher) {
+            if (data.role === ERole.Teacher) {
                 await this.teacherService.activate(data.actorId, newUser.id, data.login);
-            } else if (role === ERole.Student) {
+            } else if (data.role === ERole.Student) {
                 await this.studentService.activate(data.actorId, newUser.id, data.login);
             }
 
@@ -70,6 +67,29 @@ export class AuthService {
         } catch (e: any) {
             await this.userRepository.delete(newUser.id);
             throw e;
+        }
+    }
+
+    async getInviteLink(body: GetInviteLinkDTO): Promise<string> {
+        return await CodeLinkService.generateInviteLink(body.role, body.actorId, body.orgName, body.isActive);
+    }
+
+    async checkInviteLink(link: string) {
+        try {
+            const data: GetInviteLinkDTO = await CodeLinkService.decrypt(link) as GetInviteLinkDTO;
+            console.log(data);
+
+            if (data.role !== ERole.Teacher && data.role !== ERole.Student) {
+                return false;
+            }
+
+            data.role === ERole.Teacher ? await this.teacherService.receive(data.actorId) : await this.studentService.receive(data.actorId);
+
+
+            await this.organizationRepository.receive(data.orgName);
+            return true;
+        } catch (e) {
+            return false;
         }
     }
 }

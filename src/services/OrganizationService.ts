@@ -6,6 +6,7 @@ import { StudentService } from './StudentService';
 import { AddStudentDTO } from '../dto/AddStudentDTO';
 import { AddTeacherDTO } from '../dto/AddTeacherDTO';
 import { TeacherService } from './TeacherService';
+import { Student } from '../entities/Student';
 
 export class OrganizationService {
     constructor(@InjectRepository(Organization) private organizationRepository: Repository<Organization>,
@@ -22,6 +23,16 @@ export class OrganizationService {
 
         const newOrganization = await this.organizationRepository.save({ name: name });
         return newOrganization.id;
+    }
+
+    async receive(name: string): Promise<Organization> {
+        const organization = await this.organizationRepository.findOneBy({ name: name });
+
+        if (organization === null) {
+            throw new NotFoundException('Организации с таким названием не существует.');
+        }
+
+        return organization;
     }
 
     async addStudent(addStudentDto: AddStudentDTO): Promise<boolean> {
