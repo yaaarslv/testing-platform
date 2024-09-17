@@ -6,10 +6,10 @@ import { ValidationPipe } from '@nestjs/common';
 const dotenv = require('dotenv');
 
 async function bootstrap() {
-    dotenv.config({ path: 'env/.env' });
-    const app = await NestFactory.create(AppModule);
-    app.useGlobalPipes(new ValidationPipe());
-    await app.listen(3000);
+  dotenv.config({ path: 'env/.env' });
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe());
+  await app.listen(3000);
 }
 
 bootstrap();

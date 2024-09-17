@@ -1,11 +1,11 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class CreateTeacherDTO {
-  @IsNotEmpty()
-  @IsNumber()
-  organizationId: number;
-
+export class CreateTopicDTO {
   @IsNotEmpty()
   @IsString()
   name: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  organizationId: number;
 }

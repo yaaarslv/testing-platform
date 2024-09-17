@@ -1,19 +1,19 @@
 import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class RegisterDTO {
-    @IsEmail()
-    @IsNotEmpty()
-    login: string;
+  @IsEmail()
+  @IsNotEmpty()
+  login: string;
 
-    @IsString()
-    @IsNotEmpty()
-    password: string;
+  @IsString()
+  @IsNotEmpty()
+  password: string;
 
-    @IsNumber()
-    @IsNotEmpty()
-    role: number;
+  @IsNumber()
+  @IsNotEmpty()
+  role: number;
 
-    @IsNumber()
-    @IsNotEmpty()
-    actorId: number;
+  @IsNumber()
+  @IsNotEmpty()
+  actorId: number;
 }

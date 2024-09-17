@@ -19,24 +19,60 @@ import { StudentController } from './controllers/StudentController';
 import { StudentService } from './services/StudentService';
 import { TeacherController } from './controllers/TeacherController';
 import { TeacherService } from './services/TeacherService';
-
+import { TopicController } from './controllers/TopicController';
+import { TopicService } from './services/TopicService';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Organization, Teacher, Student, Topic, Question, Answer, TestAttempt, AttemptDetail, User]),
-        TypeOrmModule.forRoot({
-            'type': 'postgres',
-            'ssl': true,
-            'host': process.env.DB_HOST,
-            'username': process.env.DB_USERNAME,
-            'password': process.env.DB_PASSWORD,
-            'database': process.env.DB_NAME,
-            'synchronize': true,
-            'logging': false,
-            'entities': [Organization, Teacher, Student, Topic, Question, Answer, TestAttempt, AttemptDetail, User],
-        })],
-    controllers: [AppController, AuthController, OrganizationController, StudentController, TeacherController],
-    providers: [AppService, AuthService, OrganizationService, StudentService, TeacherService],
-    exports: [TypeOrmModule],
+  imports: [
+    TypeOrmModule.forFeature([
+      Organization,
+      Teacher,
+      Student,
+      Topic,
+      Question,
+      Answer,
+      TestAttempt,
+      AttemptDetail,
+      User,
+    ]),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      ssl: true,
+      host: process.env.DB_HOST,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      synchronize: true,
+      logging: false,
+      entities: [
+        Organization,
+        Teacher,
+        Student,
+        Topic,
+        Question,
+        Answer,
+        TestAttempt,
+        AttemptDetail,
+        User,
+      ],
+    }),
+  ],
+  controllers: [
+    AppController,
+    AuthController,
+    OrganizationController,
+    StudentController,
+    TeacherController,
+    TopicController,
+  ],
+  providers: [
+    AppService,
+    AuthService,
+    OrganizationService,
+    StudentService,
+    TeacherService,
+    TopicService,
+  ],
+  exports: [TypeOrmModule],
 })
-export class AppModule {
-}
+export class AppModule {}
