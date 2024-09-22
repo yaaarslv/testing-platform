@@ -11,6 +11,7 @@ export class TopicController {
     return await this.topicService.create(createTopicDTO);
   }
 
+  //todo продолжить отсюда
   @Post('add_questions')
   async addQuestions(@Body() createTopicDTO: CreateTopicDTO): Promise<boolean> {
     return await this.topicService.addQuestions(createTopicDTO);
