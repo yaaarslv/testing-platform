@@ -1,9 +1,10 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { Teacher } from '../entities/Teacher';
 import { CreateTeacherDTO } from '../dto/CreateTeacherDTO';
 
+@Injectable()
 export class TeacherService {
   constructor(
     @InjectRepository(Teacher) private teacherRepository: Repository<Teacher>,

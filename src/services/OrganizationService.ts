@@ -1,12 +1,13 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Organization } from '../entities/Organization';
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { StudentService } from './StudentService';
 import { AddStudentDTO } from '../dto/AddStudentDTO';
 import { AddTeacherDTO } from '../dto/AddTeacherDTO';
 import { TeacherService } from './TeacherService';
 
+@Injectable()
 export class OrganizationService {
   constructor(
     @InjectRepository(Organization)

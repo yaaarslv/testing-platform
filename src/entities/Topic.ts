@@ -15,7 +15,7 @@ export class Topic {
   createdAt: Date;
 
   @Column('int', { nullable: true, array: true, default: [] })
-  questions: number[];
+  questionIds: number[];
 
   constructor(
     organizationId: number,
@@ -26,6 +26,6 @@ export class Topic {
     this.organizationId = organizationId;
     this.name = name;
     this.createdAt = createdAt;
-    this.questions = questions;
+    this.questionIds = questions;
   }
 }

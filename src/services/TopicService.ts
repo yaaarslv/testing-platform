@@ -1,16 +1,20 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { ConflictException, NotFoundException } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { CreateTopicDTO } from "../dto/CreateTopicDTO";
 import { Topic } from "../entities/Topic";
+import { QuestionsDTO } from "../dto/QuestionsDTO";
+import { QuestionService } from "./QuestionService";
 
+@Injectable()
 export class TopicService {
     constructor(
-        @InjectRepository(Topic) private topicRepository: Repository<Topic>
+        @InjectRepository(Topic) private topicRepository: Repository<Topic>,
+        private readonly questionService: QuestionService
     ) {
     }
 
-    async create(createTopicDTO: CreateTopicDTO): Promise<number> {
+    async create(createTopicDTO: CreateTopicDTO): Promise<Topic> {
         const topic = await this.topicRepository.findOneBy({
             name: createTopicDTO.name
         });
@@ -19,12 +23,11 @@ export class TopicService {
             throw new ConflictException("Тема с таким названием уже существует.");
         }
 
-        const newTopic = await this.topicRepository.save({
+        return await this.topicRepository.save({
             organizationId: createTopicDTO.organizationId,
             name: createTopicDTO.name,
-            questions: []
+            questionIds: []
         });
-        return newTopic.id;
     }
 
     async receive(topicId: number): Promise<Topic> {
@@ -37,8 +40,25 @@ export class TopicService {
         return topic;
     }
 
-    async addQuestions(createTopicDTO: CreateTopicDTO) {
-        // todo передавать поля вопроса, каждый сохранить в бд и потом уже добавить в топик и обновить его
-        return true;
+    async addQuestions(addQuestionsDTO: QuestionsDTO): Promise<Topic> {
+        const topic = await this.receive(addQuestionsDTO.topicId);
+
+        let questionIds = [];
+
+        for (const q of addQuestionsDTO.questions) {
+            const question = await this.questionService.create(q, addQuestionsDTO.topicId);
+            questionIds.push(question.id);
+        }
+
+        topic.questionIds = topic.questionIds.concat(questionIds);
+        await this.topicRepository.save(topic);
+
+        return topic;
+    }
+
+    async addQuestionId(questionId: number, topicId: number): Promise<void> {
+        const topic = await this.receive(topicId);
+        topic.questionIds.push(questionId);
+        await this.topicRepository.save(topic);
     }
 }
