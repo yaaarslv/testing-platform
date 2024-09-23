@@ -26,6 +26,8 @@ import { QuestionService } from "./services/QuestionService";
 import { AnswerController } from "./controllers/AnswerController";
 import { QuestionController } from "./controllers/QuestionController";
 import { Test } from "./entities/Test";
+import { TestService } from "./services/TestService";
+import { TestController } from "./controllers/TestController";
 
 @Module({
     imports: [
@@ -72,7 +74,8 @@ import { Test } from "./entities/Test";
         TeacherController,
         TopicController,
         QuestionController,
-        AnswerController
+        AnswerController,
+        TestController
     ],
     providers: [
         AppService,
@@ -82,7 +85,8 @@ import { Test } from "./entities/Test";
         TeacherService,
         TopicService,
         QuestionService,
-        AnswerService
+        AnswerService,
+        TestService
     ],
     exports: [TypeOrmModule]
 })
