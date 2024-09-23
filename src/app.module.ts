@@ -25,6 +25,7 @@ import { AnswerService } from "./services/AnswerService";
 import { QuestionService } from "./services/QuestionService";
 import { AnswerController } from "./controllers/AnswerController";
 import { QuestionController } from "./controllers/QuestionController";
+import { Test } from "./entities/Test";
 
 @Module({
     imports: [
@@ -37,7 +38,8 @@ import { QuestionController } from "./controllers/QuestionController";
             Answer,
             TestAttempt,
             AttemptDetail,
-            User
+            User,
+            Test
         ]),
         TypeOrmModule.forRoot({
             type: "postgres",
@@ -57,7 +59,8 @@ import { QuestionController } from "./controllers/QuestionController";
                 Answer,
                 TestAttempt,
                 AttemptDetail,
-                User
+                User,
+                Test
             ]
         })
     ],
