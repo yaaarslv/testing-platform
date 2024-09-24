@@ -1,6 +1,6 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { Test } from "../entities/Test";
 import { CreateTestDTO } from "../dto/CreateTestDTO";
 import { ReceiveTestDTO } from "../dto/ReceiveTestDTO";
@@ -13,6 +13,8 @@ import { QuestionService } from "./QuestionService";
 import { CheckTestDTO, ReturnGeneratedTest } from "../dto/CheckTestDTO";
 import { AnswerService } from "./AnswerService";
 import { Answer } from "../entities/Answer";
+import { TestAttemptService } from "./TestAttemptService";
+import { AttemptDetailService } from "./AttemptDetailService";
 
 @Injectable()
 export class TestService {
@@ -23,6 +25,8 @@ export class TestService {
         private readonly studentService: StudentService,
         private readonly questionService: QuestionService,
         private readonly answerService: AnswerService,
+        private readonly testAttemptService: TestAttemptService,
+        private readonly attemptDetailService: AttemptDetailService,
     ) {
     }
 
@@ -45,6 +49,7 @@ export class TestService {
             return await this.receiveByTeacherId(teacher.id);
         } else if (user.role === ERole.Student) {
             const student = await this.studentService.receiveByUserId(user.id);
+            //todo переделать
             const teachersOfStudent = await this.teacherService.receiveByStudentId(student.id);
             let tests: Test[] = [];
 
@@ -74,6 +79,17 @@ export class TestService {
     async generateTest(generateTestDTO: GenerateTestDTO): Promise<ReturnGeneratedTest> {
         const testId = generateTestDTO.testId;
         const test = await this.receiveByTestId(testId);
+
+        const login = generateTestDTO.login;
+        const user = await this.authService.receiveUser(login);
+        const student = await this.studentService.receiveByUserId(user.id);
+
+        //todo протестировать
+        const usedAttempts = await this.testAttemptService.receiveUsedAttemptsByStudentIdAndTestId(student.id, testId);
+        if (usedAttempts >= test.attempts) {
+            throw new ForbiddenException("Использованы все попытки для данного теста");
+        }
+
         const topicQuestionsCount = await this.questionService.getTopicQuestionsCount(test.topic);
 
         if (topicQuestionsCount < test.questionCount) {
@@ -81,11 +97,14 @@ export class TestService {
         }
 
         const randomQuestions = await this.questionService.getRandomQuestions(test.questionCount);
-        //todo создать сущность попытки?
         return new ReturnGeneratedTest(testId, randomQuestions);
     }
 
     async checkTest(checkTestDTO: CheckTestDTO) {
+        const login = checkTestDTO.login;
+        const user = await this.authService.receiveUser(login);
+        const student = await this.studentService.receiveByUserId(user.id);
+
         const test = await this.receiveByTestId(checkTestDTO.testId);
         let correctAnswers = 0;
         const qCount = test.questionCount;
@@ -112,7 +131,10 @@ export class TestService {
             }
         }
 
-        const score = correctAnswers / qCount;
         //todo сохранить аттемптдетейл и тестаттемпт, вернуть результат
+        await this.testAttemptService.create(student.id, test.topic, correctAnswers, test.id);
+        // await this.attemptDetailService.create(testAttempt.id, ) // под обсуждением
+
+        return correctAnswers;
     }
 }

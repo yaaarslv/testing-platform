@@ -28,6 +28,8 @@ import { QuestionController } from "./controllers/QuestionController";
 import { Test } from "./entities/Test";
 import { TestService } from "./services/TestService";
 import { TestController } from "./controllers/TestController";
+import { TestAttemptService } from "./services/TestAttemptService";
+import { AttemptDetailService } from "./services/AttemptDetailService";
 
 @Module({
     imports: [
@@ -86,7 +88,9 @@ import { TestController } from "./controllers/TestController";
         TopicService,
         QuestionService,
         AnswerService,
-        TestService
+        TestService,
+        TestAttemptService,
+        AttemptDetailService
     ],
     exports: [TypeOrmModule]
 })

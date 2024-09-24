@@ -63,4 +63,6 @@ export class TeacherService {
 
         await this.teacherRepository.save(teacher);
     }
+
+    //todo добавить метод добавления студента (и занести студенту учителя)
 }

@@ -1,7 +1,11 @@
 import { CheckQuestionDTO, ReturnQuestionDTO } from "./QuestionsDTO";
-import { IsArray, IsNotEmpty, IsNumber } from "class-validator";
+import { IsArray, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CheckTestDTO {
+    @IsString()
+    @IsNotEmpty()
+    login: string;
+
     @IsNumber()
     @IsNotEmpty()
     testId: number;

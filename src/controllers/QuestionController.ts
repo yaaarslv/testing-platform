@@ -15,7 +15,7 @@ export class QuestionController {
 
     @Post("add_answers/:question_id")
     async addAnswers(@Body() answerDTOS: AnswerDTO[], @Param("question_id") questionId: number): Promise<Question> {
-        return await this.questionService.addAnswers(answerDTOS,questionId);
+        return await this.questionService.addAnswers(answerDTOS, questionId);
     }
 
     // todo подумать, нахуя я вообще это написал (в какой ситуации понадобится получать вопрос по id)
