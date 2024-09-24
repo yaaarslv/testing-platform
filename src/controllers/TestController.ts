@@ -4,6 +4,7 @@ import { TestService } from "../services/TestService";
 import { ReceiveTestDTO } from "../dto/ReceiveTestDTO";
 import { Test } from "../entities/Test";
 import { GenerateTestDTO } from "../dto/GenerateTestDTO";
+import { CheckTestDTO, ReturnGeneratedTest } from "../dto/CheckTestDTO";
 
 @Controller("test")
 export class TestController {
@@ -21,7 +22,12 @@ export class TestController {
     }
 
     @Post("generate")
-    async generate(@Body() generateTest: GenerateTestDTO): Promise<any> {
+    async generate(@Body() generateTest: GenerateTestDTO): Promise<ReturnGeneratedTest> {
         return await this.testService.generateTest(generateTest);
+    }
+
+    @Post("check")
+    async check(@Body() checkTestDTO: CheckTestDTO): Promise<any> {
+        return await this.testService.checkTest(checkTestDTO);
     }
 }

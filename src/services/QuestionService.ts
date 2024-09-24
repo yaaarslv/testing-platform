@@ -11,7 +11,7 @@ export class QuestionService {
     constructor(
         @InjectRepository(Question) private questionRepository: Repository<Question>,
         private readonly answerService: AnswerService,
-        @Inject(forwardRef(() => TopicService))  private readonly topicService: TopicService
+        @Inject(forwardRef(() => TopicService)) private readonly topicService: TopicService
     ) {
     }
 
@@ -80,5 +80,20 @@ export class QuestionService {
 
     async getTopicQuestionsCount(topicId: number): Promise<number> {
         return await this.questionRepository.countBy({ topicId: topicId });
+    }
+
+    async getRandomQuestions(n: number): Promise<ReturnQuestionDTO[]> {
+        const randomQuestions = await this.questionRepository
+            .createQueryBuilder("question")
+            .orderBy("RANDOM()")
+            .limit(n)
+            .getMany();
+
+        let returnQuestionDTOs: ReturnQuestionDTO[] = [];
+        for (const q of randomQuestions) {
+            returnQuestionDTOs.push(await this.receiveWithAnswerText(q.id));
+        }
+
+        return returnQuestionDTOs;
     }
 }

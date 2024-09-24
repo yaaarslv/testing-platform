@@ -14,13 +14,13 @@ export class QuestionController {
     }
 
     @Post("add_answers/:question_id")
-    async addQuestions(@Body() answerDTOS: AnswerDTO[], @Param("question_id") questionId: number): Promise<Question> {
+    async addAnswers(@Body() answerDTOS: AnswerDTO[], @Param("question_id") questionId: number): Promise<Question> {
         return await this.questionService.addAnswers(answerDTOS,questionId);
     }
 
     // todo подумать, нахуя я вообще это написал (в какой ситуации понадобится получать вопрос по id)
     @Get("receive/:question_id")
-    async receiveTopic(@Param("question_id") questionId: number): Promise<ReturnQuestionDTO> {
+    async receiveQuestion(@Param("question_id") questionId: number): Promise<ReturnQuestionDTO> {
         return await this.questionService.receiveWithAnswerText(questionId);
     }
 }

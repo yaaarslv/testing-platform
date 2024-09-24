@@ -15,6 +15,11 @@ export class QuestionsDTO {
     questions: QuestionDTO[]
 }
 
+export class CheckQuestionDTO {
+    id: number;
+    answerTexts: string[];
+}
+
 export class ReturnQuestionDTO {
     id: number;
     questionText: string;
