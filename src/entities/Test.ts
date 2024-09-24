@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Teacher } from "./Teacher";
+import { Topic } from "./Topic";
 
 @Entity()
 export class Test {
@@ -8,11 +10,11 @@ export class Test {
     @Column({ nullable: false })
     testName: string;
 
-    @Column({ nullable: false })
-    topicId: number;
+    @ManyToOne(() => Topic, { nullable: false })
+    topic: number;
 
-    @Column({ nullable: false })
-    teacherId: number;
+    @ManyToOne(() => Teacher, { nullable: false })
+    teacher: number;
 
     @Column({ nullable: false })
     questionCount: number;
@@ -30,8 +32,8 @@ export class Test {
         createdAt: Date
     ) {
         this.testName = testName;
-        this.topicId = topicId;
-        this.teacherId = teacherId;
+        this.topic = topicId;
+        this.teacher = teacherId;
         this.createdAt = createdAt;
     }
 }

@@ -1,10 +1,9 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
-import { AnswerDTO, QuestionDTO } from "../dto/QuestionsDTO";
-import { QuestionService } from "../services/QuestionService";
-import { Question } from "../entities/Question";
+import { Body, Controller, Post } from "@nestjs/common";
 import { CreateTestDTO } from "../dto/CreateTestDTO";
 import { TestService } from "../services/TestService";
-import { Test } from "@nestjs/testing";
+import { ReceiveTestDTO } from "../dto/ReceiveTestDTO";
+import { Test } from "../entities/Test";
+import { GenerateTestDTO } from "../dto/GenerateTestDTO";
 
 @Controller("test")
 export class TestController {
@@ -16,13 +15,13 @@ export class TestController {
         return await this.testService.create(createTestDTO);
     }
 
-    // @Post("add_answers/:question_id")
-    // async addQuestions(@Body() answerDTOS: AnswerDTO[], @Param("question_id") questionId: number): Promise<Question> {
-    //     return await this.questionService.addAnswers(answerDTOS,questionId);
-    // }
-    //
-    // @Get("receive/:question_id")
-    // async receiveTopic(@Param("question_id") questionId: number): Promise<Question> {
-    //     return await this.questionService.receive(questionId);
-    // }
+    @Post("receive")
+    async receive(@Body() receiveTestDTO: ReceiveTestDTO): Promise<Test[]> {
+        return await this.testService.receiveAll(receiveTestDTO);
+    }
+
+    @Post("generate")
+    async generate(@Body() generateTest: GenerateTestDTO): Promise<any> {
+        return await this.testService.generateTest(generateTest);
+    }
 }

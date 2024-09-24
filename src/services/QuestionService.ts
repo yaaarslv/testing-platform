@@ -1,6 +1,6 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { AnswerDTO, QuestionDTO } from "../dto/QuestionsDTO";
+import { AnswerDTO, QuestionDTO, ReturnQuestionDTO } from "../dto/QuestionsDTO";
 import { Question } from "../entities/Question";
 import { AnswerService } from "./AnswerService";
 import { forwardRef, Inject, Injectable, NotFoundException } from "@nestjs/common";
@@ -45,6 +45,17 @@ export class QuestionService {
         return question;
     }
 
+    async receiveWithAnswerText(questionId: number): Promise<ReturnQuestionDTO> {
+        const question = await this.receive(questionId);
+        let answerTexts = [];
+        for (const q of question.answerIds) {
+            const answerText = await this.answerService.receive(q);
+            answerTexts.push(answerText.answerText);
+        }
+
+        return new ReturnQuestionDTO(question, answerTexts);
+    }
+
     async addAnswers(answerDTOS: AnswerDTO[], questionId: number): Promise<Question> {
         const question = await this.receive(questionId);
 
@@ -65,5 +76,9 @@ export class QuestionService {
         const question = await this.receive(questionId);
         question.answerIds.push(answerId);
         await this.questionRepository.save(question);
+    }
+
+    async getTopicQuestionsCount(topicId: number): Promise<number> {
+        return await this.questionRepository.countBy({ topicId: topicId });
     }
 }
