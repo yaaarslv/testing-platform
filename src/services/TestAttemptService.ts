@@ -12,12 +12,12 @@ export class TestAttemptService {
             studentId: studentId,
             topicId: topicId,
             score: score,
-            testId: testId
+            test: testId
         });
     }
 
     async receive(testAttemptId: number): Promise<TestAttempt> {
-        const testAttempt = await this.testAttemptRepository.findOneBy({ id: testAttemptId });
+        const testAttempt = await this.testAttemptRepository.findOne({where: { id: testAttemptId }, relations: ["test"]});
 
         if (testAttempt === null) {
             throw new NotFoundException("Попытки решения теста с таким id не существует.");
@@ -27,6 +27,6 @@ export class TestAttemptService {
     }
 
     async receiveUsedAttemptsByStudentIdAndTestId(studentId: number, testId: number): Promise<number> {
-        return await this.testAttemptRepository.countBy({studentId: studentId, testId: testId});
+        return await this.testAttemptRepository.countBy({studentId: studentId, test: testId});
     }
 }

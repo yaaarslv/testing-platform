@@ -26,7 +26,6 @@ export class TestService {
         private readonly questionService: QuestionService,
         private readonly answerService: AnswerService,
         private readonly testAttemptService: TestAttemptService,
-        private readonly attemptDetailService: AttemptDetailService,
     ) {
     }
 
@@ -49,16 +48,7 @@ export class TestService {
             return await this.receiveByTeacherId(teacher.id);
         } else if (user.role === ERole.Student) {
             const student = await this.studentService.receiveByUserId(user.id);
-            //todo переделать
-            const teachersOfStudent = await this.teacherService.receiveByStudentId(student.id);
-            let tests: Test[] = [];
-
-            for (const t of teachersOfStudent) {
-                const tTests = await this.receiveByTeacherId(t.id);
-                tests = tests.concat(tTests);
-            }
-
-            return tests;
+            return await this.testRepository.findBy({ group: student.group });
         }
     }
 
@@ -100,7 +90,7 @@ export class TestService {
         return new ReturnGeneratedTest(testId, randomQuestions);
     }
 
-    async checkTest(checkTestDTO: CheckTestDTO) {
+    async checkTest(checkTestDTO: CheckTestDTO): Promise<boolean> {
         const login = checkTestDTO.login;
         const user = await this.authService.receiveUser(login);
         const student = await this.studentService.receiveByUserId(user.id);
@@ -131,10 +121,9 @@ export class TestService {
             }
         }
 
-        //todo сохранить аттемптдетейл и тестаттемпт, вернуть результат
         await this.testAttemptService.create(student.id, test.topic, correctAnswers, test.id);
         // await this.attemptDetailService.create(testAttempt.id, ) // под обсуждением
 
-        return correctAnswers;
+        return true;
     }
 }

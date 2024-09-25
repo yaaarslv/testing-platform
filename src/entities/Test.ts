@@ -22,6 +22,9 @@ export class Test {
     @Column({ nullable: false })
     attempts: number;
 
+    @Column({ nullable: false })
+    group: string;
+
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date;
 

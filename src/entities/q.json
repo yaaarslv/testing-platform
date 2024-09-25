@@ -1,0 +1,13 @@
+{
+  "questionText": "Тапком в глаз или в жопу раз?",
+  "answers": [
+    {
+      "answerText": "Тапком в глаз",
+      "isCorrect": true
+    },
+    {
+      "answerText": "В жопу раз",
+      "isCorrect": false
+    }
+  ]
+}
