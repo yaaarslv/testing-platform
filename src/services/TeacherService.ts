@@ -3,6 +3,7 @@ import { Repository } from "typeorm";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { Teacher } from "../entities/Teacher";
 import { CreateTeacherDTO } from "../dto/CreateTeacherDTO";
+import { AddGroupDTO, ReceiveTeacherGroups } from "../dto/AddStudentDTO";
 
 @Injectable()
 export class TeacherService {
@@ -64,5 +65,21 @@ export class TeacherService {
         await this.teacherRepository.save(teacher);
     }
 
-    //todo добавить метод добавления студента (и занести студенту учителя)
+    async addGroup(addGroupDTO: AddGroupDTO): Promise<boolean> {
+        const teacher = await this.receive(addGroupDTO.teacherId);
+
+        addGroupDTO.groups.forEach((group) => {
+            if (!teacher.groups.includes(group.toUpperCase())) {
+                teacher.groups.push(group.toUpperCase());
+            }
+        })
+
+        await this.teacherRepository.save(teacher);
+        return true;
+    }
+
+    async receiveGroups(receiveTeacherGroups: ReceiveTeacherGroups): Promise<string[]> {
+        const teacher = await this.receive(receiveTeacherGroups.teacherId);
+        return teacher.groups;
+    }
 }

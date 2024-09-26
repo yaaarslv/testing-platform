@@ -23,8 +23,8 @@ export class Teacher {
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date;
 
-    @Column("int", { nullable: true, array: true, default: [] })
-    studentIds: number[];
+    @Column("varchar", { nullable: true, array: true, default: [] })
+    groups: string[];
 
     constructor(
         userID: number,
@@ -32,13 +32,13 @@ export class Teacher {
         name: string,
         email: string,
         createdAt: Date,
-        studentIds: number[]
+        groups: string[]
     ) {
         this.userID = userID;
         this.organizationId = organizationId;
         this.name = name;
         this.email = email;
         this.createdAt = createdAt;
-        this.studentIds = studentIds;
+        this.groups = groups;
     }
 }

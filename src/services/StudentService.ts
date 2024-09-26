@@ -15,7 +15,7 @@ export class StudentService {
         const newStudent = await this.studentRepository.save({
             organizationId: createStudentDTO.organizationId,
             name: createStudentDTO.name,
-            group: createStudentDTO.group
+            group: createStudentDTO.group.toUpperCase()
         });
         return newStudent.id;
     }
@@ -56,5 +56,19 @@ export class StudentService {
         student.email = email;
 
         await this.studentRepository.save(student);
+    }
+
+    async receiveAllGroups(): Promise<string[]> {
+        const groups = [];
+        const result = await this.studentRepository
+            .createQueryBuilder("student")
+            .select("DISTINCT student.group")
+            .getRawMany();
+
+        result.forEach((r) => {
+            groups.push(r.group);
+        })
+
+        return groups;
     }
 }
