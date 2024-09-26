@@ -40,6 +40,8 @@ export class StudentService {
         return student;
     }
 
+    async
+
     async activate(
         studentId: number,
         userId: number,

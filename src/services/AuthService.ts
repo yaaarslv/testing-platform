@@ -15,6 +15,7 @@ import { TeacherService } from "./TeacherService";
 import { GetInviteLinkDTO } from "../dto/GetInviteLinkDTO";
 import { CodeLinkService } from "./CodeLinkService";
 import { OrganizationService } from "./OrganizationService";
+import { ReturnCheckInviteLinkDTO } from "../dto/ReturnCheckInviteLinkDTO";
 
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
@@ -104,15 +105,14 @@ export class AuthService {
         );
     }
 
-    async checkInviteLink(link: string) {
+    async checkInviteLink(link: string): Promise<ReturnCheckInviteLinkDTO> {
         try {
             const data: GetInviteLinkDTO = (await CodeLinkService.decrypt(
                 link
             )) as GetInviteLinkDTO;
-            console.log(data);
 
             if (data.role !== ERole.Teacher && data.role !== ERole.Student) {
-                return false;
+                return new ReturnCheckInviteLinkDTO(false, null);
             }
 
             data.role === ERole.Teacher
@@ -120,9 +120,9 @@ export class AuthService {
                 : await this.studentService.receive(data.actorId);
 
             await this.organizationRepository.receive(data.orgName);
-            return true;
+            return new ReturnCheckInviteLinkDTO(true, data);
         } catch (e) {
-            return false;
+            return new ReturnCheckInviteLinkDTO(false, null);
         }
     }
 

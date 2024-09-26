@@ -1,15 +1,15 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreateStudentDTO {
-  @IsNotEmpty()
-  @IsNumber()
-  organizationId: number;
+    @IsNotEmpty()
+    @IsNumber()
+    organizationId: number;
 
-  @IsNotEmpty()
-  @IsString()
-  name: string;
+    @IsNotEmpty()
+    @IsString()
+    name: string;
 
-  @IsNotEmpty()
-  @IsString()
-  group: string;
+    @IsNotEmpty()
+    @IsString()
+    group: string;
 }
