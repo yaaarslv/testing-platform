@@ -131,7 +131,7 @@ export class AuthService {
 
         if (user === null) {
             throw new NotFoundException(
-                "Пользователя с таким логином или паролем не существует."
+                "Пользователя с таким логином не существует."
             );
         }
 
