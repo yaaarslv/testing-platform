@@ -14,7 +14,9 @@ import { CheckTestDTO, ReturnGeneratedTest } from "../dto/CheckTestDTO";
 import { AnswerService } from "./AnswerService";
 import { Answer } from "../entities/Answer";
 import { TestAttemptService } from "./TestAttemptService";
-import { AttemptDetailService } from "./AttemptDetailService";
+import { GetStudentsResultsDTO } from "../dto/GetStudentsResultsDTO";
+import { BestStudentsAttempts, StudentAttempts } from "../dto/BestStudentAttemptDTO";
+import { ReceiveByStudentIdAndTestIdWithStudentDTO } from "../dto/ReceiveByStudentIdAndTestIdWithStudentDTO";
 
 @Injectable()
 export class TestService {
@@ -25,7 +27,7 @@ export class TestService {
         private readonly studentService: StudentService,
         private readonly questionService: QuestionService,
         private readonly answerService: AnswerService,
-        private readonly testAttemptService: TestAttemptService,
+        private readonly testAttemptService: TestAttemptService
     ) {
     }
 
@@ -53,7 +55,7 @@ export class TestService {
     }
 
     async receiveByTestId(testId: number): Promise<Test> {
-        const test = await this.testRepository.findOneBy({id: testId});
+        const test = await this.testRepository.findOneBy({ id: testId });
 
         if (test === null) {
             throw new NotFoundException("Теста с таким id не существует.");
@@ -97,7 +99,6 @@ export class TestService {
 
         const test = await this.receiveByTestId(checkTestDTO.testId);
         let correctAnswers = 0;
-        const qCount = test.questionCount;
         const allAnswers = checkTestDTO.answers;
 
         for (const a of allAnswers) {
@@ -122,8 +123,16 @@ export class TestService {
         }
 
         await this.testAttemptService.create(student.id, test.topic, correctAnswers, test.id);
-        // await this.attemptDetailService.create(testAttempt.id, ) // под обсуждением
-
         return true;
+    }
+
+    async getStudentsResults(getStudentsResultsDTO: GetStudentsResultsDTO): Promise<BestStudentsAttempts> {
+        const test = await this.receiveByTestId(getStudentsResultsDTO.testId);
+        return await this.testAttemptService.receiveBestStudentsAttempts(test);
+    }
+
+    async receiveByStudentIdAndTestIdWithStudent(receiveByStudentIdAndTestIdWithStudentDTO: ReceiveByStudentIdAndTestIdWithStudentDTO): Promise<StudentAttempts> {
+        const test = await this.receiveByTestId(receiveByStudentIdAndTestIdWithStudentDTO.testId);
+        return await this.testAttemptService.receiveByStudentIdAndTestIdWithStudent(receiveByStudentIdAndTestIdWithStudentDTO.studentId, test);
     }
 }

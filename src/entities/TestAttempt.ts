@@ -18,23 +18,25 @@ export class TestAttempt {
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     attemptDate: Date;
 
-    @Column({ nullable: false})
+    @Column({ nullable: false })
     score: number;
 
-    // @Column("int", { nullable: true, array: true, default: [] })
-    // attemptDetailIds: number[];
+    @Column({ nullable: false })
+    timeSpent: number;
 
     constructor(
         studentId: number,
         topicId: number,
         attemptDate: Date,
         score: number,
-        testId: number
+        testId: number,
+        timeSpent: number
     ) {
         this.studentId = studentId;
         this.topicId = topicId;
         this.attemptDate = attemptDate;
         this.score = score;
         this.test = testId;
+        this.timeSpent = timeSpent;
     }
 }
