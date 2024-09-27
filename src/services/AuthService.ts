@@ -119,7 +119,7 @@ export class AuthService {
                 ? await this.teacherService.receive(data.actorId)
                 : await this.studentService.receive(data.actorId);
 
-            await this.organizationRepository.receive(data.orgName);
+            await this.organizationRepository.receiveByName(data.orgName);
             return new ReturnCheckInviteLinkDTO(true, data);
         } catch (e) {
             return new ReturnCheckInviteLinkDTO(false, null);

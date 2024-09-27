@@ -5,18 +5,23 @@ import { CreateTopicDTO } from "../dto/CreateTopicDTO";
 import { Topic } from "../entities/Topic";
 import { QuestionsDTO } from "../dto/QuestionsDTO";
 import { QuestionService } from "./QuestionService";
+import { OrganizationService } from "./OrganizationService";
 
 @Injectable()
 export class TopicService {
     constructor(
         @InjectRepository(Topic) private topicRepository: Repository<Topic>,
-        private readonly questionService: QuestionService
+        private readonly questionService: QuestionService,
+        private readonly organizationService: OrganizationService
     ) {
     }
 
     async create(createTopicDTO: CreateTopicDTO): Promise<Topic> {
+        await this.organizationService.receiveById(createTopicDTO.organizationId);
+
         const topic = await this.topicRepository.findOneBy({
-            name: createTopicDTO.name
+            name: createTopicDTO.name,
+            organizationId: createTopicDTO.organizationId
         });
 
         if (topic !== null) {
