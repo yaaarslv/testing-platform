@@ -7,9 +7,9 @@ export class RecoverPasswordDTO {
 }
 
 export class UpdatePasswordDTO {
-    @IsEmail()
+    @IsString()
     @IsNotEmpty()
-    email: string;
+    link: string;
 
     @IsString()
     @IsNotEmpty()

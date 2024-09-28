@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import { AuthService } from "../services/AuthService";
 import { ReturnUserDTO } from "../dto/ReturnUserDTO";
 import { LoginDTO } from "../dto/LoginDTO";
@@ -39,7 +39,7 @@ export class AuthController {
     }
 
     @Post("check_recover_link")
-    async checkRecoverLink(@Body() body: CheckRecoverLinkDTOs): Promise<string | null> {
+    async checkRecoverLink(@Body() body: CheckRecoverLinkDTOs): Promise<boolean> {
         return await this.authService.checkRecoverLink(body);
     }
 

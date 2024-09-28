@@ -169,19 +169,28 @@ export class AuthService {
     }
 
     async updatePassword(body: UpdatePasswordDTO): Promise<boolean> {
+        const email = await this.getEmailFromRecoverLink(body.link);
+        if (email === null) {
+            return false;
+        }
+
         const hashedLogin = crypto
             .createHash("sha256")
-            .update(body.email)
+            .update(email)
             .digest("hex");
 
         const user = await this.receiveUser(hashedLogin);
         user.password = await bcrypt.hash(body.password, 12);
         await this.userRepository.save(user);
-        await this.recoverService.delete(body.email);
+        await this.recoverService.delete(email);
         return true;
     }
 
-    async checkRecoverLink(body: CheckRecoverLinkDTOs): Promise<string | null> {
+    async checkRecoverLink(body: CheckRecoverLinkDTOs): Promise<boolean> {
         return await this.recoverService.checkRecoverLink(body.link);
+    }
+
+    async getEmailFromRecoverLink(link: string): Promise<string | null> {
+        return await this.recoverService.getEmailFromRecoverLink(link);
     }
 }

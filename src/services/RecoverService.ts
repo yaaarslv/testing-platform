@@ -27,8 +27,13 @@ export class RecoverService {
         return true;
     }
 
-    async checkRecoverLink(link: string): Promise<string | null> {
+    async checkRecoverLink(link: string): Promise<boolean> {
         const recover = await this.recoverRepository.findOneBy({ uuid: link });
-        return recover === null ? "false" : recover.email;
+        return recover !== null;
+    }
+
+    async getEmailFromRecoverLink(link: string): Promise<string | null> {
+        const recover = await this.recoverRepository.findOneBy({ uuid: link });
+        return recover === null ? null : recover.email;
     }
 }
