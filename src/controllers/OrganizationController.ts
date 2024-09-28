@@ -2,6 +2,8 @@ import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { OrganizationService } from "../services/OrganizationService";
 import { Organization } from "../entities/Organization";
 import { CreateOrganizationDTO } from "../dto/CreateOrganizationDTO";
+import { AddTeacherDTO } from "../dto/AddTeacherDTO";
+import { AddTopicDTO } from "../dto/AddTopicDTO";
 
 @Controller("organization")
 export class OrganizationController {
@@ -22,9 +24,14 @@ export class OrganizationController {
     // async addStudent(@Body() addStudentDto: AddStudentDTO): Promise<boolean> {
     //     return await this.organizationService.addStudent(addStudentDto);
     // }
-    //
+
     // @Post("add_teacher")
     // async addTeacher(@Body() addTeacherDTO: AddTeacherDTO): Promise<boolean> {
     //     return await this.organizationService.addTeacher(addTeacherDTO);
+    // }
+
+    // @Post("add_topic")
+    // async addTopic(@Body() addTopicDTO: AddTopicDTO): Promise<boolean> {
+    //     return await this.organizationService.addTopic(addTopicDTO);
     // }
 }

@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { StudentService } from "../services/StudentService";
 import { CreateStudentDTO } from "../dto/CreateStudentDTO";
+import { Student } from "../entities/Student";
 
 @Controller("student")
 export class StudentController {
@@ -8,7 +9,7 @@ export class StudentController {
     }
 
     @Post("create")
-    async create(@Body() createStudentDTO: CreateStudentDTO): Promise<number> {
+    async create(@Body() createStudentDTO: CreateStudentDTO): Promise<Student> {
         return await this.studentService.create(createStudentDTO);
     }
 

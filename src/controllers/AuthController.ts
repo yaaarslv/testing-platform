@@ -5,6 +5,8 @@ import { LoginDTO } from "../dto/LoginDTO";
 import { RegisterDTO } from "../dto/RegisterDTO";
 import { GetInviteLinkDTO } from "../dto/GetInviteLinkDTO";
 import { ReturnCheckInviteLinkDTO } from "../dto/ReturnCheckInviteLinkDTO";
+import { RecoverPasswordDTO } from "../dto/RecoverPasswordDTO";
+import { CheckInviteLinkDTO } from "../dto/CheckInviteLinkDTO";
 
 @Controller("auth")
 export class AuthController {
@@ -26,8 +28,13 @@ export class AuthController {
         return await this.authService.getInviteLink(body);
     }
 
-    @Get("check_invite_link/:link")
-    async checkInviteLink(@Param("link") link: string): Promise<ReturnCheckInviteLinkDTO> {
-        return await this.authService.checkInviteLink(link);
+    @Post("check_invite_link")
+    async checkInviteLink(@Body() body: CheckInviteLinkDTO): Promise<ReturnCheckInviteLinkDTO> {
+        return await this.authService.checkInviteLink(body);
+    }
+
+    @Post("recover_password")
+    async recoverPassword(@Body() body: RecoverPasswordDTO): Promise<void> {
+        await this.authService.recoverPassword(body);
     }
 }

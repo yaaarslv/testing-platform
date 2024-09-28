@@ -3,12 +3,15 @@ import { Repository } from "typeorm";
 import { Organization } from "../entities/Organization";
 import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { CreateOrganizationDTO } from "../dto/CreateOrganizationDTO";
+import { Student } from "../entities/Student";
+import { Teacher } from "../entities/Teacher";
+import { Topic } from "../entities/Topic";
 
 @Injectable()
 export class OrganizationService {
     constructor(
         @InjectRepository(Organization)
-        private organizationRepository: Repository<Organization>,
+        private organizationRepository: Repository<Organization>
     ) {
     }
 
@@ -54,46 +57,37 @@ export class OrganizationService {
 
         if (organization === null) {
             throw new NotFoundException(
-                "Организации с таким названием не существует."
+                "Организации с таким id не существует."
             );
         }
 
         return organization;
     }
 
-    // async addStudent(addStudentDto: AddStudentDTO): Promise<boolean> {
-    //     const organization = await this.organizationRepository.findOneBy({
-    //         id: addStudentDto.organizationId
-    //     });
-    //     if (organization === null) {
-    //         throw new NotFoundException("Организации с таким id не существует.");
-    //     }
-    //
-    //     const student = await this.studentService.receive(addStudentDto.studentId);
-    //
-    //     if (!organization.studentIds.includes(student.id)) {
-    //         organization.studentIds.push(student.id);
-    //         await this.organizationRepository.save(organization);
-    //     }
-    //
-    //     return true;
-    // }
-    //
-    // async addTeacher(addTeacherDTO: AddTeacherDTO): Promise<boolean> {
-    //     const organization = await this.organizationRepository.findOneBy({
-    //         id: addTeacherDTO.organizationId
-    //     });
-    //     if (organization === null) {
-    //         throw new NotFoundException("Организации с таким id не существует.");
-    //     }
-    //
-    //     const teacher = await this.teacherService.receive(addTeacherDTO.teacherId);
-    //
-    //     if (!organization.teacherIds.includes(teacher.id)) {
-    //         organization.teacherIds.push(teacher.id);
-    //         await this.organizationRepository.save(organization);
-    //     }
-    //
-    //     return true;
-    // }
+    async addStudent(organization: Organization, student: Student): Promise<boolean> {
+        if (!organization.studentIds.includes(student.id)) {
+            organization.studentIds.push(student.id);
+            await this.organizationRepository.save(organization);
+        }
+
+        return true;
+    }
+
+    async addTeacher(organization: Organization, teacher: Teacher): Promise<boolean> {
+        if (!organization.teacherIds.includes(teacher.id)) {
+            organization.teacherIds.push(teacher.id);
+            await this.organizationRepository.save(organization);
+        }
+
+        return true;
+    }
+
+    async addTopic(organization: Organization, topic: Topic): Promise<boolean> {
+        if (!organization.topicIds.includes(topic.id)) {
+            organization.topicIds.push(topic.id);
+            await this.organizationRepository.save(organization);
+        }
+
+        return true;
+    }
 }

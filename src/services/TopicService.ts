@@ -17,7 +17,7 @@ export class TopicService {
     }
 
     async create(createTopicDTO: CreateTopicDTO): Promise<Topic> {
-        await this.organizationService.receiveById(createTopicDTO.organizationId);
+        const organization = await this.organizationService.receiveById(createTopicDTO.organizationId);
 
         const topic = await this.topicRepository.findOneBy({
             name: createTopicDTO.name,
@@ -28,11 +28,14 @@ export class TopicService {
             throw new ConflictException("Тема с таким названием уже существует.");
         }
 
-        return await this.topicRepository.save({
+        const newTopic = await this.topicRepository.save({
             organizationId: createTopicDTO.organizationId,
-            name: createTopicDTO.name,
-            questionIds: []
+            name: createTopicDTO.name
         });
+
+        await this.organizationService.addTopic(organization, newTopic);
+
+        return newTopic;
     }
 
     async receive(topicId: number): Promise<Topic> {

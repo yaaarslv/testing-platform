@@ -16,6 +16,8 @@ import { GetInviteLinkDTO } from "../dto/GetInviteLinkDTO";
 import { CodeLinkService } from "./CodeLinkService";
 import { OrganizationService } from "./OrganizationService";
 import { ReturnCheckInviteLinkDTO } from "../dto/ReturnCheckInviteLinkDTO";
+import { RecoverPasswordDTO } from "../dto/RecoverPasswordDTO";
+import { CheckInviteLinkDTO } from "../dto/CheckInviteLinkDTO";
 
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
@@ -90,7 +92,7 @@ export class AuthService {
             }
 
             return new ReturnUserDTO(newUser);
-        } catch (e: any) {
+        } catch (e) {
             await this.userRepository.delete(newUser.id);
             throw e;
         }
@@ -105,7 +107,8 @@ export class AuthService {
         );
     }
 
-    async checkInviteLink(link: string): Promise<ReturnCheckInviteLinkDTO> {
+    async checkInviteLink(body: CheckInviteLinkDTO): Promise<ReturnCheckInviteLinkDTO> {
+        const link = body.link;
         try {
             const data: GetInviteLinkDTO = (await CodeLinkService.decrypt(
                 link
@@ -136,5 +139,9 @@ export class AuthService {
         }
 
         return user;
+    }
+
+    async recoverPassword(body: RecoverPasswordDTO): Promise<void> {
+
     }
 }

@@ -4,20 +4,27 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { Teacher } from "../entities/Teacher";
 import { CreateTeacherDTO } from "../dto/CreateTeacherDTO";
 import { AddGroupDTO, ReceiveTeacherGroups } from "../dto/AddStudentDTO";
+import { OrganizationService } from "./OrganizationService";
 
 @Injectable()
 export class TeacherService {
     constructor(
-        @InjectRepository(Teacher) private teacherRepository: Repository<Teacher>
+        @InjectRepository(Teacher) private teacherRepository: Repository<Teacher>,
+        private readonly organizationService: OrganizationService
     ) {
     }
 
-    async create(createTeacherDTO: CreateTeacherDTO): Promise<number> {
+    async create(createTeacherDTO: CreateTeacherDTO): Promise<Teacher> {
+        const organization = await this.organizationService.receiveById(createTeacherDTO.organizationId);
+
         const newTeacher = await this.teacherRepository.save({
             organizationId: createTeacherDTO.organizationId,
             name: createTeacherDTO.name
         });
-        return newTeacher.id;
+
+        await this.organizationService.addTeacher(organization, newTeacher);
+
+        return newTeacher;
     }
 
     async receive(teacherId: number): Promise<Teacher> {

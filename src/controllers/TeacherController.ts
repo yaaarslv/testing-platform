@@ -2,6 +2,7 @@ import { Body, Controller, Post } from "@nestjs/common";
 import { TeacherService } from "../services/TeacherService";
 import { CreateTeacherDTO } from "../dto/CreateTeacherDTO";
 import { AddGroupDTO, ReceiveTeacherGroups } from "../dto/AddStudentDTO";
+import { Teacher } from "../entities/Teacher";
 
 @Controller("teacher")
 export class TeacherController {
@@ -9,7 +10,7 @@ export class TeacherController {
     }
 
     @Post("create")
-    async create(@Body() createTeacherDTO: CreateTeacherDTO): Promise<number> {
+    async create(@Body() createTeacherDTO: CreateTeacherDTO): Promise<Teacher> {
         return await this.teacherService.create(createTeacherDTO);
     }
 

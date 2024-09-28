@@ -23,14 +23,14 @@ export class Organization {
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date;
 
-    // @Column("int", { nullable: true, array: true, default: [] })
-    // teacherIds: number[];
-    //
-    // @Column("int", { nullable: true, array: true, default: [] })
-    // studentIds: number[];
-    //
-    // @Column("int", { nullable: true, array: true, default: [] })
-    // topicIds: number[];
+    @Column("int", { nullable: true, array: true, default: [] })
+    teacherIds: number[];
+
+    @Column("int", { nullable: true, array: true, default: [] })
+    studentIds: number[];
+
+    @Column("int", { nullable: true, array: true, default: [] })
+    topicIds: number[];
 
     constructor(
         name: string,
@@ -38,17 +38,17 @@ export class Organization {
         phone: string,
         email: string,
         responsiblePerson: string,
-        createdAt: Date
-        // teacherIds: number[],
-        // studentIds: number[],
-        // topicIds: number[]
+        createdAt: Date,
+        teacherIds: number[],
+        studentIds: number[],
+        topicIds: number[]
     ) {
         this.name = name;
         this.address = address;
         this.createdAt = createdAt;
-        // this.teacherIds = teacherIds;
-        // this.studentIds = studentIds;
-        // this.topicIds = topicIds;
+        this.teacherIds = teacherIds;
+        this.studentIds = studentIds;
+        this.topicIds = topicIds;
         this.phone = phone;
         this.email = email;
         this.responsiblePerson = responsiblePerson;

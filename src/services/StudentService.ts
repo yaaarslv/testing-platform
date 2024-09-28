@@ -3,21 +3,28 @@ import { Repository } from "typeorm";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { Student } from "../entities/Student";
 import { CreateStudentDTO } from "../dto/CreateStudentDTO";
+import { OrganizationService } from "./OrganizationService";
 
 @Injectable()
 export class StudentService {
     constructor(
-        @InjectRepository(Student) private studentRepository: Repository<Student>
+        @InjectRepository(Student) private studentRepository: Repository<Student>,
+        private readonly organizationService: OrganizationService
     ) {
     }
 
-    async create(createStudentDTO: CreateStudentDTO): Promise<number> {
+    async create(createStudentDTO: CreateStudentDTO): Promise<Student> {
+        const organization = await this.organizationService.receiveById(createStudentDTO.organizationId);
+
         const newStudent = await this.studentRepository.save({
             organizationId: createStudentDTO.organizationId,
             name: createStudentDTO.name,
             group: createStudentDTO.group.toUpperCase()
         });
-        return newStudent.id;
+
+        await this.organizationService.addStudent(organization, newStudent);
+
+        return newStudent;
     }
 
     async receive(studentId: number): Promise<Student> {
@@ -39,8 +46,6 @@ export class StudentService {
 
         return student;
     }
-
-    async
 
     async activate(
         studentId: number,
@@ -69,7 +74,7 @@ export class StudentService {
 
         result.forEach((r) => {
             groups.push(r.group);
-        })
+        });
 
         return groups;
     }
