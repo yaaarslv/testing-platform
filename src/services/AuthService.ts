@@ -12,7 +12,12 @@ import { GetInviteLinkDTO } from "../dto/GetInviteLinkDTO";
 import { CodeLinkService } from "./CodeLinkService";
 import { OrganizationService } from "./OrganizationService";
 import { ReturnCheckInviteLinkDTO } from "../dto/ReturnCheckInviteLinkDTO";
-import { CheckRecoverLinkDTOs, RecoverPasswordDTO, UpdatePasswordDTO } from "../dto/RecoverPasswordDTO";
+import {
+    CheckRecoverLinkDTOs,
+    RecoverPasswordDTO,
+    UpdatePasswordAfterRecoverDTO,
+    UpdatePasswordDTO
+} from "../dto/RecoverPasswordDTO";
 import { CheckInviteLinkDTO } from "../dto/CheckInviteLinkDTO";
 import { Email } from "../models/Email";
 import { v4 as uuidv4 } from "uuid";
@@ -168,7 +173,7 @@ export class AuthService {
         }
     }
 
-    async updatePassword(body: UpdatePasswordDTO): Promise<boolean> {
+    async updatePasswordAfterRecover(body: UpdatePasswordAfterRecoverDTO): Promise<boolean> {
         const email = await this.getEmailFromRecoverLink(body.link);
         if (email === null) {
             return false;
@@ -192,5 +197,12 @@ export class AuthService {
 
     async getEmailFromRecoverLink(link: string): Promise<string | null> {
         return await this.recoverService.getEmailFromRecoverLink(link);
+    }
+
+    async updatePassword(body: UpdatePasswordDTO): Promise<boolean> {
+        const user = await this.receiveUser(body.login);
+        user.password = await bcrypt.hash(body.password, 12);
+        await this.userRepository.save(user);
+        return true;
     }
 }

@@ -6,10 +6,20 @@ export class RecoverPasswordDTO {
     email: string;
 }
 
-export class UpdatePasswordDTO {
+export class UpdatePasswordAfterRecoverDTO {
     @IsString()
     @IsNotEmpty()
     link: string;
+
+    @IsString()
+    @IsNotEmpty()
+    password: string;
+}
+
+export class UpdatePasswordDTO {
+    @IsEmail()
+    @IsNotEmpty()
+    login: string;
 
     @IsString()
     @IsNotEmpty()

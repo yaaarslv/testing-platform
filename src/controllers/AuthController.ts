@@ -5,7 +5,12 @@ import { LoginDTO } from "../dto/LoginDTO";
 import { RegisterDTO } from "../dto/RegisterDTO";
 import { GetInviteLinkDTO } from "../dto/GetInviteLinkDTO";
 import { ReturnCheckInviteLinkDTO } from "../dto/ReturnCheckInviteLinkDTO";
-import { CheckRecoverLinkDTOs, RecoverPasswordDTO, UpdatePasswordDTO } from "../dto/RecoverPasswordDTO";
+import {
+    CheckRecoverLinkDTOs,
+    RecoverPasswordDTO,
+    UpdatePasswordAfterRecoverDTO,
+    UpdatePasswordDTO
+} from "../dto/RecoverPasswordDTO";
 import { CheckInviteLinkDTO } from "../dto/CheckInviteLinkDTO";
 
 @Controller("auth")
@@ -41,6 +46,11 @@ export class AuthController {
     @Post("check_recover_link")
     async checkRecoverLink(@Body() body: CheckRecoverLinkDTOs): Promise<boolean> {
         return await this.authService.checkRecoverLink(body);
+    }
+
+    @Post("update_password_after_recover")
+    async updatePasswordAfterRecover(@Body() body: UpdatePasswordAfterRecoverDTO): Promise<boolean> {
+        return await this.authService.updatePasswordAfterRecover(body);
     }
 
     @Post("update_password")
