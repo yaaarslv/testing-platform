@@ -5,7 +5,7 @@ import { LoginDTO } from "../dto/LoginDTO";
 import { RegisterDTO } from "../dto/RegisterDTO";
 import { GetInviteLinkDTO } from "../dto/GetInviteLinkDTO";
 import { ReturnCheckInviteLinkDTO } from "../dto/ReturnCheckInviteLinkDTO";
-import { RecoverPasswordDTO } from "../dto/RecoverPasswordDTO";
+import { CheckRecoverLinkDTOs, RecoverPasswordDTO, UpdatePasswordDTO } from "../dto/RecoverPasswordDTO";
 import { CheckInviteLinkDTO } from "../dto/CheckInviteLinkDTO";
 
 @Controller("auth")
@@ -34,7 +34,17 @@ export class AuthController {
     }
 
     @Post("recover_password")
-    async recoverPassword(@Body() body: RecoverPasswordDTO): Promise<void> {
-        await this.authService.recoverPassword(body);
+    async recoverPassword(@Body() body: RecoverPasswordDTO): Promise<boolean> {
+        return await this.authService.recoverPassword(body);
+    }
+
+    @Post("check_recover_link")
+    async checkRecoverLink(@Body() body: CheckRecoverLinkDTOs): Promise<string | null> {
+        return await this.authService.checkRecoverLink(body);
+    }
+
+    @Post("update_password")
+    async updatePassword(@Body() body: UpdatePasswordDTO): Promise<boolean> {
+        return await this.authService.updatePassword(body);
     }
 }

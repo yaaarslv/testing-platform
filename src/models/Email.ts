@@ -15,8 +15,8 @@ export class Email {
         try {
             let transporter = nodemailer.createTransport({
                 host: 'smtp.yandex.ru',
-                port: 465,
-                secure: true,
+                port: 587,
+                secure: false,
                 auth: {
                     user: this.testingPlatformEmail,
                     pass: this.testingPlatformPassword

@@ -30,6 +30,8 @@ import { TestService } from "./services/TestService";
 import { TestController } from "./controllers/TestController";
 import { TestAttemptService } from "./services/TestAttemptService";
 import { AttemptDetailService } from "./services/AttemptDetailService";
+import { Recover } from "./entities/Recover";
+import { RecoverService } from "./services/RecoverService";
 
 @Module({
     imports: [
@@ -43,7 +45,8 @@ import { AttemptDetailService } from "./services/AttemptDetailService";
             TestAttempt,
             AttemptDetail,
             User,
-            Test
+            Test,
+            Recover
         ]),
         TypeOrmModule.forRoot({
             type: "postgres",
@@ -64,7 +67,8 @@ import { AttemptDetailService } from "./services/AttemptDetailService";
                 TestAttempt,
                 AttemptDetail,
                 User,
-                Test
+                Test,
+                Recover
             ]
         })
     ],
@@ -90,7 +94,8 @@ import { AttemptDetailService } from "./services/AttemptDetailService";
         AnswerService,
         TestService,
         TestAttemptService,
-        AttemptDetailService
+        AttemptDetailService,
+        RecoverService
     ],
     exports: [TypeOrmModule]
 })

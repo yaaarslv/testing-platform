@@ -1,8 +1,4 @@
-import {
-    ConflictException,
-    Injectable,
-    NotFoundException
-} from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "../entities/User";
 import { Repository } from "typeorm";
@@ -16,20 +12,27 @@ import { GetInviteLinkDTO } from "../dto/GetInviteLinkDTO";
 import { CodeLinkService } from "./CodeLinkService";
 import { OrganizationService } from "./OrganizationService";
 import { ReturnCheckInviteLinkDTO } from "../dto/ReturnCheckInviteLinkDTO";
-import { RecoverPasswordDTO } from "../dto/RecoverPasswordDTO";
+import { CheckRecoverLinkDTOs, RecoverPasswordDTO, UpdatePasswordDTO } from "../dto/RecoverPasswordDTO";
 import { CheckInviteLinkDTO } from "../dto/CheckInviteLinkDTO";
+import { Email } from "../models/Email";
+import { v4 as uuidv4 } from "uuid";
+import { RecoverService } from "./RecoverService";
 
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 
 @Injectable()
 export class AuthService {
+    private readonly emailSender: Email;
+
     constructor(
         @InjectRepository(User) private userRepository: Repository<User>,
         private readonly studentService: StudentService,
         private readonly organizationRepository: OrganizationService,
-        private readonly teacherService: TeacherService
+        private readonly teacherService: TeacherService,
+        private readonly recoverService: RecoverService
     ) {
+        this.emailSender = new Email();
     }
 
     async login(data: LoginDTO): Promise<ReturnUserDTO> {
@@ -37,7 +40,8 @@ export class AuthService {
             .createHash("sha256")
             .update(data.login)
             .digest("hex");
-        const user = await this.userRepository.findOneBy({ login: hashedLogin });
+
+        const user = await this.receiveUser(hashedLogin);
 
         if (user === null) {
             throw new NotFoundException(
@@ -60,7 +64,7 @@ export class AuthService {
             .update(data.login)
             .digest("hex");
 
-        const user = await this.userRepository.findOneBy({ login: hashedLogin });
+        const user = await this.receiveUser(hashedLogin);
 
         if (user !== null) {
             throw new ConflictException(
@@ -141,7 +145,43 @@ export class AuthService {
         return user;
     }
 
-    async recoverPassword(body: RecoverPasswordDTO): Promise<void> {
+    async recoverPassword(body: RecoverPasswordDTO): Promise<boolean> {
+        const uuid = uuidv4();
+        const url = `${process.env.URL}/recover/${uuid}`;
+        const text = "Уважаемый пользователь Testing Platform!\n" +
+            "\n" +
+            `Мы получили запрос на восстановление пароля к Вашему аккаунту Testing Platform: ${body.email}. Ваша ссылка подтверждения:\n` +
+            "\n" +
+            `${url}\n` +
+            "\n" +
+            `Если Вы не запрашивали эту ссылку, возможно, кто-то пытается получить доступ к Вашему аккаунту ${body.email}. Никому не сообщайте этот код.\n` +
+            "\n" +
+            "С уважением,\n" +
+            "\n" +
+            "Команда Аккаунтов Testing Platform";
+        try {
+            await this.emailSender.sendMail("Восстановление пароля на сайте Testing Platform", body.email, text);
+            await this.recoverService.create(body.email, uuid);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
 
+    async updatePassword(body: UpdatePasswordDTO): Promise<boolean> {
+        const hashedLogin = crypto
+            .createHash("sha256")
+            .update(body.email)
+            .digest("hex");
+
+        const user = await this.receiveUser(hashedLogin);
+        user.password = await bcrypt.hash(body.password, 12);
+        await this.userRepository.save(user);
+        await this.recoverService.delete(body.email);
+        return true;
+    }
+
+    async checkRecoverLink(body: CheckRecoverLinkDTOs): Promise<string | null> {
+        return await this.recoverService.checkRecoverLink(body.link);
     }
 }
