@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { CreateTestDTO } from "../dto/CreateTestDTO";
 import { TestService } from "../services/TestService";
 import { ReceiveTestDTO } from "../dto/ReceiveTestDTO";
@@ -9,6 +9,8 @@ import { TestAttemptService } from "../services/TestAttemptService";
 import { GetStudentsResultsDTO } from "../dto/GetStudentsResultsDTO";
 import { BestStudentsAttempts, StudentAttempts } from "../dto/BestStudentAttemptDTO";
 import { ReceiveByStudentIdAndTestIdWithStudentDTO } from "../dto/ReceiveByStudentIdAndTestIdWithStudentDTO";
+import { DeleteTestDTO } from "../dto/DeleteTestDTO";
+import { UpdateTestDTO } from "../dto/UpdateTestDTO";
 
 @Controller("test")
 export class TestController {
@@ -21,9 +23,24 @@ export class TestController {
         return await this.testService.create(createTestDTO);
     }
 
+    @Get("receive/:id")
+    async receiveById(@Param("id") id: number): Promise<Test> {
+        return await this.testService.receiveByTestId(id);
+    }
+
     @Post("receive")
     async receive(@Body() receiveTestDTO: ReceiveTestDTO): Promise<Test[]> {
         return await this.testService.receiveAll(receiveTestDTO);
+    }
+
+    @Put("update/:id")
+    async update(@Param("id") id: number, @Body() updateTestDTO: UpdateTestDTO): Promise<Test> {
+        return await this.testService.update(id, updateTestDTO);
+    }
+
+    @Delete("delete")
+    async delete(@Body() deleteTestDTO: DeleteTestDTO): Promise<boolean> {
+        return await this.testService.delete(deleteTestDTO);
     }
 
     @Post("generate")

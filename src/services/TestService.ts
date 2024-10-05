@@ -17,6 +17,9 @@ import { TestAttemptService } from "./TestAttemptService";
 import { GetStudentsResultsDTO } from "../dto/GetStudentsResultsDTO";
 import { BestStudentsAttempts, StudentAttempts } from "../dto/BestStudentAttemptDTO";
 import { ReceiveByStudentIdAndTestIdWithStudentDTO } from "../dto/ReceiveByStudentIdAndTestIdWithStudentDTO";
+import { DeleteTestDTO } from "../dto/DeleteTestDTO";
+import { UpdateTestDTO } from "../dto/UpdateTestDTO";
+import { ValidationService } from "./ValidationService";
 
 @Injectable()
 export class TestService {
@@ -55,7 +58,7 @@ export class TestService {
     }
 
     async receiveByTestId(testId: number): Promise<Test> {
-        const test = await this.testRepository.findOneBy({ id: testId });
+        const test = await this.testRepository.findOne({ where: { id: testId }, relations: ["teacher", "topic"] });
 
         if (test === null) {
             throw new NotFoundException("Теста с таким id не существует.");
@@ -134,5 +137,51 @@ export class TestService {
     async receiveByStudentIdAndTestIdWithStudent(receiveByStudentIdAndTestIdWithStudentDTO: ReceiveByStudentIdAndTestIdWithStudentDTO): Promise<StudentAttempts> {
         const test = await this.receiveByTestId(receiveByStudentIdAndTestIdWithStudentDTO.testId);
         return await this.testAttemptService.receiveByStudentIdAndTestIdWithStudent(receiveByStudentIdAndTestIdWithStudentDTO.studentId, test);
+    }
+
+    async update(testId: number, updateTestDTO: UpdateTestDTO) {
+        const test = await this.receiveByTestId(testId);
+
+        if (!ValidationService.isNothing(updateTestDTO.testName)) {
+            test.testName = updateTestDTO.testName;
+        }
+
+        if (!ValidationService.isNothing(updateTestDTO.topic)) {
+            test.topic = updateTestDTO.topic;
+        }
+
+        if (!ValidationService.isNothing(updateTestDTO.attempts)) {
+            test.attempts = updateTestDTO.attempts;
+        }
+
+        if (!ValidationService.isNothing(updateTestDTO.questionCount)) {
+            test.questionCount = updateTestDTO.questionCount;
+        }
+
+        if (!ValidationService.isNothing(updateTestDTO.group)) {
+            test.group = updateTestDTO.group;
+        }
+
+        await this.testRepository.save(test);
+
+        return test;
+    }
+
+    async delete(deleteTestDTO: DeleteTestDTO) {
+        const testId = deleteTestDTO.testId;
+        const login = deleteTestDTO.login;
+
+        const user = await this.authService.receiveUser(login);
+        const teacher = await this.teacherService.receiveByUserId(user.id);
+
+        const test = await this.receiveByTestId(testId);
+
+        if (test.teacherId != teacher.id) {
+            throw new ForbiddenException("Вы не имеете права на удаление данного теста");
+        }
+
+        await this.testRepository.delete(testId);
+
+        return true;
     }
 }
