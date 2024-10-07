@@ -5,6 +5,7 @@ import { QuestionsDTO } from "../dto/QuestionsDTO";
 import { Topic } from "../entities/Topic";
 import { UpdateTopicDTO } from "../dto/UpdateTopicDTO";
 import { DeleteTopicDTO } from "../dto/DeleteTopicDTO";
+import { RemoveQuestionIdDTO } from "../dto/RemoveQuestionIdDTO";
 
 @Controller("topic")
 export class TopicController {
@@ -16,6 +17,11 @@ export class TopicController {
         return await this.topicService.create(createTopicDTO);
     }
 
+    @Post("remove_question")
+    async removeQuestionId(@Body() removeQuestionIdDTO: RemoveQuestionIdDTO): Promise<boolean> {
+        return await this.topicService.removeQuestionId(removeQuestionIdDTO);
+    }
+
     @Put("update/:id")
     async update(@Param("id") id: number, @Body() updateTopicDTO: UpdateTopicDTO): Promise<Topic> {
         return await this.topicService.update(id, updateTopicDTO);
@@ -25,7 +31,6 @@ export class TopicController {
     async delete(@Body() deleteTopicDTO: DeleteTopicDTO): Promise<boolean> {
         return await this.topicService.delete(deleteTopicDTO);
     }
-
 
     @Post("add_questions")
     async addQuestions(@Body() addQuestionsDTO: QuestionsDTO): Promise<Topic> {

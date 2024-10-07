@@ -9,6 +9,7 @@ import { OrganizationService } from "./OrganizationService";
 import { ValidationService } from "./ValidationService";
 import { UpdateTopicDTO } from "../dto/UpdateTopicDTO";
 import { DeleteTopicDTO } from "../dto/DeleteTopicDTO";
+import { RemoveQuestionIdDTO } from "../dto/RemoveQuestionIdDTO";
 
 @Injectable()
 export class TopicService {
@@ -73,10 +74,11 @@ export class TopicService {
         await this.topicRepository.save(topic);
     }
 
-    async removeQuestionId(questionId: number, topicId: number): Promise<void> {
-        const topic = await this.receive(topicId);
-        topic.questionIds = topic.questionIds.filter(id => id !== questionId);
+    async removeQuestionId(removeQuestionIdDTO: RemoveQuestionIdDTO): Promise<boolean> {
+        const topic = await this.receive(removeQuestionIdDTO.topicId);
+        topic.questionIds = topic.questionIds.filter(id => id !== removeQuestionIdDTO.questionId);
         await this.topicRepository.save(topic);
+        return true;
     }
 
     async update(topicId: number, updateTopicDTO: UpdateTopicDTO): Promise<Topic> {
@@ -95,7 +97,7 @@ export class TopicService {
         return topic;
     }
 
-    async delete(deleteTopicDTO:DeleteTopicDTO) {
+    async delete(deleteTopicDTO: DeleteTopicDTO) {
         const topic = await this.receive(deleteTopicDTO.topicId);
         if (topic != null) {
             await this.topicRepository.delete(topic.id);

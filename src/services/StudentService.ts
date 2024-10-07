@@ -4,6 +4,9 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { Student } from "../entities/Student";
 import { CreateStudentDTO } from "../dto/CreateStudentDTO";
 import { OrganizationService } from "./OrganizationService";
+import { ValidationService } from "./ValidationService";
+import { UpdateStudentDTO } from "../dto/UpdateStudentDTO";
+import { DeleteStudentDTO } from "../dto/DeleteStudentDTO";
 
 @Injectable()
 export class StudentService {
@@ -77,5 +80,42 @@ export class StudentService {
         });
 
         return groups;
+    }
+
+    async update(studentId: number, updateStudentDTO: UpdateStudentDTO): Promise<Student> {
+        const student = await this.receive(studentId);
+
+        if (!ValidationService.isNothing(updateStudentDTO.name)) {
+            student.name = updateStudentDTO.name;
+        }
+
+        if (!ValidationService.isNothing(updateStudentDTO.userID)) {
+            student.userID = updateStudentDTO.userID;
+        }
+
+        if (!ValidationService.isNothing(updateStudentDTO.isActive)) {
+            student.isActive = updateStudentDTO.isActive;
+        }
+
+        if (!ValidationService.isNothing(updateStudentDTO.email)) {
+            student.email = updateStudentDTO.email;
+        }
+
+        if (!ValidationService.isNothing(updateStudentDTO.group)) {
+            student.group = updateStudentDTO.group;
+        }
+
+        await this.studentRepository.save(student);
+
+        return student;
+    }
+
+    async delete(deleteStudentDTO: DeleteStudentDTO): Promise<boolean> {
+        const student = await this.receive(deleteStudentDTO.studentId);
+        if (student != null) {
+            await this.studentRepository.delete(student.id);
+        }
+
+        return true;
     }
 }
