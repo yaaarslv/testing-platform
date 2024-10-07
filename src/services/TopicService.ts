@@ -6,6 +6,9 @@ import { Topic } from "../entities/Topic";
 import { QuestionsDTO } from "../dto/QuestionsDTO";
 import { QuestionService } from "./QuestionService";
 import { OrganizationService } from "./OrganizationService";
+import { ValidationService } from "./ValidationService";
+import { UpdateTopicDTO } from "../dto/UpdateTopicDTO";
+import { DeleteTopicDTO } from "../dto/DeleteTopicDTO";
 
 @Injectable()
 export class TopicService {
@@ -68,5 +71,36 @@ export class TopicService {
         const topic = await this.receive(topicId);
         topic.questionIds.push(questionId);
         await this.topicRepository.save(topic);
+    }
+
+    async removeQuestionId(questionId: number, topicId: number): Promise<void> {
+        const topic = await this.receive(topicId);
+        topic.questionIds = topic.questionIds.filter(id => id !== questionId);
+        await this.topicRepository.save(topic);
+    }
+
+    async update(topicId: number, updateTopicDTO: UpdateTopicDTO): Promise<Topic> {
+        const topic = await this.receive(topicId);
+
+        if (!ValidationService.isNothing(updateTopicDTO.name)) {
+            topic.name = updateTopicDTO.name;
+        }
+
+        if (!ValidationService.isNothing(updateTopicDTO.organizationId)) {
+            topic.organizationId = updateTopicDTO.organizationId;
+        }
+
+        await this.topicRepository.save(topic);
+
+        return topic;
+    }
+
+    async delete(deleteTopicDTO:DeleteTopicDTO) {
+        const topic = await this.receive(deleteTopicDTO.topicId);
+        if (topic != null) {
+            await this.topicRepository.delete(topic.id);
+        }
+
+        return true;
     }
 }
