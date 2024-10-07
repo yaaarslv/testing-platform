@@ -3,6 +3,7 @@ import { AnswerDTO, QuestionDTO, ReturnQuestionDTO } from "../dto/QuestionsDTO";
 import { QuestionService } from "../services/QuestionService";
 import { Question } from "../entities/Question";
 import { UpdateQuestionDTO } from "../dto/UpdateQuestionDTO";
+import { RemoveAnswerIdDTO } from "../dto/RemoveAnswerIdDTO";
 
 @Controller("question")
 export class QuestionController {
@@ -17,6 +18,11 @@ export class QuestionController {
     @Put("update/:id")
     async update(@Param("id") id: number, @Body() updateTeacherDTO: UpdateQuestionDTO): Promise<Question> {
         return await this.questionService.update(id, updateTeacherDTO);
+    }
+
+    @Post("remove_answer")
+    async removeAnswerId(@Body() removeAnswerIdDTO: RemoveAnswerIdDTO): Promise<boolean> {
+        return await this.questionService.removeAnswerId(removeAnswerIdDTO);
     }
 
     @Post("add_answers/:question_id")

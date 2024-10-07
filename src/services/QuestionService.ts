@@ -7,6 +7,7 @@ import { forwardRef, Inject, Injectable, NotFoundException } from "@nestjs/commo
 import { TopicService } from "./TopicService";
 import { ValidationService } from "./ValidationService";
 import { UpdateQuestionDTO } from "../dto/UpdateQuestionDTO";
+import { RemoveAnswerIdDTO } from "../dto/RemoveAnswerIdDTO";
 
 @Injectable()
 export class QuestionService {
@@ -78,6 +79,14 @@ export class QuestionService {
         const question = await this.receive(questionId);
         question.answerIds.push(answerId);
         await this.questionRepository.save(question);
+    }
+
+    async removeAnswerId(removeAnswerIdDTO: RemoveAnswerIdDTO): Promise<boolean> {
+        const question = await this.receive(removeAnswerIdDTO.questionId);
+        question.answerIds = question.answerIds.filter(id => id !== removeAnswerIdDTO.answerId);
+        await this.questionRepository.save(question);
+        await this.answerService.delete(removeAnswerIdDTO.answerId);
+        return true
     }
 
     async getTopicQuestionsCount(topicId: number): Promise<number> {

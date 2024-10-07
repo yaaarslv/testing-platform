@@ -4,6 +4,8 @@ import { AnswerDTO } from "../dto/QuestionsDTO";
 import { Answer } from "../entities/Answer";
 import { QuestionService } from "./QuestionService";
 import { forwardRef, Inject, NotFoundException } from "@nestjs/common";
+import { ValidationService } from "./ValidationService";
+import { UpdateAnswerDTO } from "../dto/UpdateAnswerDTO";
 
 export class AnswerService {
     constructor(
@@ -31,6 +33,31 @@ export class AnswerService {
         if (answer === null) {
             throw new NotFoundException("Ответа с таким id не существует.");
         }
+
+        return answer;
+    }
+
+    async delete(answerId: number) {
+        const answer = await this.receive(answerId);
+        if (answer != null) {
+            await this.answerRepository.delete(answer.id);
+        }
+
+        return true;
+    }
+
+    async update(answerId: number, updateAnswerDTO: UpdateAnswerDTO): Promise<Answer> {
+        const answer = await this.receive(answerId);
+
+        if (!ValidationService.isNothing(updateAnswerDTO.answerText)) {
+            answer.answerText = updateAnswerDTO.answerText;
+        }
+
+        if (!ValidationService.isNothing(updateAnswerDTO.isCorrect)) {
+            answer.isCorrect = updateAnswerDTO.isCorrect;
+        }
+
+        await this.answerRepository.save(answer);
 
         return answer;
     }
