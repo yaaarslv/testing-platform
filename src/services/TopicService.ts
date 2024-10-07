@@ -8,8 +8,8 @@ import { QuestionService } from "./QuestionService";
 import { OrganizationService } from "./OrganizationService";
 import { ValidationService } from "./ValidationService";
 import { UpdateTopicDTO } from "../dto/UpdateTopicDTO";
-import { DeleteTopicDTO } from "../dto/DeleteTopicDTO";
 import { RemoveQuestionIdDTO } from "../dto/RemoveQuestionIdDTO";
+import { RemoveTopicIdDTO } from "../dto/RemoveTopicIdDTO";
 
 @Injectable()
 export class TopicService {
@@ -98,11 +98,13 @@ export class TopicService {
         return topic;
     }
 
-    async delete(deleteTopicDTO: DeleteTopicDTO) {
-        const topic = await this.receive(deleteTopicDTO.topicId);
+    async delete(removeTopicIdDTO: RemoveTopicIdDTO) {
+        const topic = await this.receive(removeTopicIdDTO.topicId);
         if (topic != null) {
             await this.topicRepository.delete(topic.id);
         }
+
+        await this.organizationService.removeTopicId(removeTopicIdDTO);
 
         return true;
     }

@@ -4,8 +4,8 @@ import { CreateTeacherDTO } from "../dto/CreateTeacherDTO";
 import { AddGroupsDTO, ReceiveTeacherGroups } from "../dto/AddStudentDTO";
 import { Teacher } from "../entities/Teacher";
 import { UpdateTeacherDTO } from "../dto/UpdateTeacherDTO";
-import { DeleteTeacherDTO } from "../dto/DeleteTeacherDTO";
 import { RemoveGroupDTO } from "../dto/RemoveGroupDTO";
+import { RemoveTeacherIdDTO } from "../dto/RemoveTeacherIdDTO";
 
 @Controller("teacher")
 export class TeacherController {
@@ -23,8 +23,8 @@ export class TeacherController {
     }
 
     @Delete("delete")
-    async delete(@Body() deleteTeacherDTO: DeleteTeacherDTO): Promise<boolean> {
-        return await this.teacherService.delete(deleteTeacherDTO);
+    async delete(@Body() removeTeacherIdDTO: RemoveTeacherIdDTO): Promise<boolean> {
+        return await this.teacherService.delete(removeTeacherIdDTO);
     }
 
     @Post("add_groups")

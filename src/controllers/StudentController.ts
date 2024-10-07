@@ -3,7 +3,7 @@ import { StudentService } from "../services/StudentService";
 import { CreateStudentDTO } from "../dto/CreateStudentDTO";
 import { Student } from "../entities/Student";
 import { UpdateStudentDTO } from "../dto/UpdateStudentDTO";
-import { DeleteStudentDTO } from "../dto/DeleteStudentDTO";
+import { RemoveStudentIdDTO } from "../dto/RemoveStudentIdDTO";
 
 @Controller("student")
 export class StudentController {
@@ -21,8 +21,8 @@ export class StudentController {
     }
 
     @Delete("delete")
-    async delete(@Body() deleteStudentDTO: DeleteStudentDTO): Promise<boolean> {
-        return await this.studentService.delete(deleteStudentDTO);
+    async delete(@Body() removeStudentIdDTO: RemoveStudentIdDTO): Promise<boolean> {
+        return await this.studentService.delete(removeStudentIdDTO);
     }
 
     @Get("receive/groups")

@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put } from "@nestjs/common";
 import { OrganizationService } from "../services/OrganizationService";
 import { Organization } from "../entities/Organization";
 import { CreateOrganizationDTO } from "../dto/CreateOrganizationDTO";
-import { AddTeacherDTO } from "../dto/AddTeacherDTO";
-import { AddTopicDTO } from "../dto/AddTopicDTO";
+import { UpdateOrganizationDTO } from "../dto/UpdateOrganizationDTO";
 
 @Controller("organization")
 export class OrganizationController {
@@ -18,6 +17,11 @@ export class OrganizationController {
     @Post("create")
     async create(@Body() createOrganizationDTO: CreateOrganizationDTO): Promise<number> {
         return await this.organizationService.create(createOrganizationDTO);
+    }
+
+    @Put("update/:id")
+    async update(@Param("id") id: number, @Body() updateOrganizationDTO: UpdateOrganizationDTO): Promise<Organization> {
+        return await this.organizationService.update(id, updateOrganizationDTO);
     }
 
     // @Post("add_student")

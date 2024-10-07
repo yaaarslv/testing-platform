@@ -7,8 +7,8 @@ import { AddGroupsDTO, ReceiveTeacherGroups } from "../dto/AddStudentDTO";
 import { OrganizationService } from "./OrganizationService";
 import { ValidationService } from "./ValidationService";
 import { UpdateTeacherDTO } from "../dto/UpdateTeacherDTO";
-import { DeleteTeacherDTO } from "../dto/DeleteTeacherDTO";
 import { RemoveGroupDTO } from "../dto/RemoveGroupDTO";
+import { RemoveTeacherIdDTO } from "../dto/RemoveTeacherIdDTO";
 
 @Injectable()
 export class TeacherService {
@@ -128,11 +128,13 @@ export class TeacherService {
         return teacher;
     }
 
-    async delete(deleteStudentDTO: DeleteTeacherDTO): Promise<boolean> {
-        const teacher = await this.receive(deleteStudentDTO.teacherId);
+    async delete(removeTeacherIdDTO: RemoveTeacherIdDTO): Promise<boolean> {
+        const teacher = await this.receive(removeTeacherIdDTO.teacherId);
         if (teacher != null) {
             await this.teacherRepository.delete(teacher.id);
         }
+
+        await this.organizationService.removeTeacherId(removeTeacherIdDTO);
 
         return true;
     }

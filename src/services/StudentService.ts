@@ -6,7 +6,7 @@ import { CreateStudentDTO } from "../dto/CreateStudentDTO";
 import { OrganizationService } from "./OrganizationService";
 import { ValidationService } from "./ValidationService";
 import { UpdateStudentDTO } from "../dto/UpdateStudentDTO";
-import { DeleteStudentDTO } from "../dto/DeleteStudentDTO";
+import { RemoveStudentIdDTO } from "../dto/RemoveStudentIdDTO";
 
 @Injectable()
 export class StudentService {
@@ -110,11 +110,13 @@ export class StudentService {
         return student;
     }
 
-    async delete(deleteStudentDTO: DeleteStudentDTO): Promise<boolean> {
-        const student = await this.receive(deleteStudentDTO.studentId);
+    async delete(removeStudentIdDTO: RemoveStudentIdDTO): Promise<boolean> {
+        const student = await this.receive(removeStudentIdDTO.studentId);
         if (student != null) {
             await this.studentRepository.delete(student.id);
         }
+
+        await this.organizationService.removeStudentId(removeStudentIdDTO);
 
         return true;
     }

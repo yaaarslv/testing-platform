@@ -6,6 +6,11 @@ import { CreateOrganizationDTO } from "../dto/CreateOrganizationDTO";
 import { Student } from "../entities/Student";
 import { Teacher } from "../entities/Teacher";
 import { Topic } from "../entities/Topic";
+import { RemoveStudentIdDTO } from "../dto/RemoveStudentIdDTO";
+import { RemoveTeacherIdDTO } from "../dto/RemoveTeacherIdDTO";
+import { RemoveTopicIdDTO } from "../dto/RemoveTopicIdDTO";
+import { UpdateOrganizationDTO } from "../dto/UpdateOrganizationDTO";
+import { ValidationService } from "./ValidationService";
 
 @Injectable()
 export class OrganizationService {
@@ -73,12 +78,26 @@ export class OrganizationService {
         return true;
     }
 
+    async removeStudentId(removeStudentIdDTO: RemoveStudentIdDTO): Promise<boolean> {
+        const organization = await this.receiveById(removeStudentIdDTO.organizationId);
+        organization.studentIds = organization.studentIds.filter(id => id !== removeStudentIdDTO.studentId);
+        await this.organizationRepository.save(organization);
+        return true;
+    }
+
     async addTeacher(organization: Organization, teacher: Teacher): Promise<boolean> {
         if (!organization.teacherIds.includes(teacher.id)) {
             organization.teacherIds.push(teacher.id);
             await this.organizationRepository.save(organization);
         }
 
+        return true;
+    }
+
+    async removeTeacherId(removeTeacherIdDTO: RemoveTeacherIdDTO): Promise<boolean> {
+        const organization = await this.receiveById(removeTeacherIdDTO.organizationId);
+        organization.teacherIds = organization.teacherIds.filter(id => id !== removeTeacherIdDTO.teacherId);
+        await this.organizationRepository.save(organization);
         return true;
     }
 
@@ -89,5 +108,40 @@ export class OrganizationService {
         }
 
         return true;
+    }
+
+    async removeTopicId(removeTopicIdDTO: RemoveTopicIdDTO): Promise<boolean> {
+        const organization = await this.receiveById(removeTopicIdDTO.organizationId);
+        organization.topicIds = organization.topicIds.filter(id => id !== removeTopicIdDTO.topicId);
+        await this.organizationRepository.save(organization);
+        return true;
+    }
+
+    async update(orgId: number, updateOrganizationDTO: UpdateOrganizationDTO): Promise<Organization> {
+        const organization = await this.receiveById(orgId);
+
+        if (!ValidationService.isNothing(updateOrganizationDTO.name)) {
+            organization.name = updateOrganizationDTO.name;
+        }
+
+        if (!ValidationService.isNothing(updateOrganizationDTO.address)) {
+            organization.address = updateOrganizationDTO.address;
+        }
+
+        if (!ValidationService.isNothing(updateOrganizationDTO.phone)) {
+            organization.phone = updateOrganizationDTO.phone;
+        }
+
+        if (!ValidationService.isNothing(updateOrganizationDTO.responsiblePerson)) {
+            organization.responsiblePerson = updateOrganizationDTO.responsiblePerson;
+        }
+
+        if (!ValidationService.isNothing(updateOrganizationDTO.email)) {
+            organization.email = updateOrganizationDTO.email;
+        }
+
+        await this.organizationRepository.save(organization);
+
+        return organization;
     }
 }
