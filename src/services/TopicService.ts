@@ -78,6 +78,7 @@ export class TopicService {
         const topic = await this.receive(removeQuestionIdDTO.topicId);
         topic.questionIds = topic.questionIds.filter(id => id !== removeQuestionIdDTO.questionId);
         await this.topicRepository.save(topic);
+        await this.questionService.delete(removeQuestionIdDTO.questionId);
         return true;
     }
 

@@ -5,6 +5,8 @@ import { Question } from "../entities/Question";
 import { AnswerService } from "./AnswerService";
 import { forwardRef, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { TopicService } from "./TopicService";
+import { ValidationService } from "./ValidationService";
+import { UpdateQuestionDTO } from "../dto/UpdateQuestionDTO";
 
 @Injectable()
 export class QuestionService {
@@ -95,5 +97,26 @@ export class QuestionService {
         }
 
         return returnQuestionDTOs;
+    }
+
+    async update(questionId: number, updateQuestionDTO: UpdateQuestionDTO): Promise<Question> {
+        const question = await this.receive(questionId);
+
+        if (!ValidationService.isNothing(updateQuestionDTO.questionText)) {
+            question.questionText = updateQuestionDTO.questionText;
+        }
+
+        await this.questionRepository.save(question);
+
+        return question;
+    }
+
+    async delete(questionId: number) {
+        const question = await this.receive(questionId);
+        if (question != null) {
+            await this.questionRepository.delete(question.id);
+        }
+
+        return true;
     }
 }
