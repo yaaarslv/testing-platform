@@ -3,8 +3,12 @@ import { Repository } from "typeorm";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { Teacher } from "../entities/Teacher";
 import { CreateTeacherDTO } from "../dto/CreateTeacherDTO";
-import { AddGroupDTO, ReceiveTeacherGroups } from "../dto/AddStudentDTO";
+import { AddGroupsDTO, ReceiveTeacherGroups } from "../dto/AddStudentDTO";
 import { OrganizationService } from "./OrganizationService";
+import { ValidationService } from "./ValidationService";
+import { UpdateTeacherDTO } from "../dto/UpdateTeacherDTO";
+import { DeleteTeacherDTO } from "../dto/DeleteTeacherDTO";
+import { RemoveGroupDTO } from "../dto/RemoveGroupDTO";
 
 @Injectable()
 export class TeacherService {
@@ -72,14 +76,24 @@ export class TeacherService {
         await this.teacherRepository.save(teacher);
     }
 
-    async addGroup(addGroupDTO: AddGroupDTO): Promise<boolean> {
+    async addGroups(addGroupDTO: AddGroupsDTO): Promise<boolean> {
         const teacher = await this.receive(addGroupDTO.teacherId);
 
         addGroupDTO.groups.forEach((group) => {
             if (!teacher.groups.includes(group.toUpperCase())) {
                 teacher.groups.push(group.toUpperCase());
             }
-        })
+        });
+
+        await this.teacherRepository.save(teacher);
+        return true;
+    }
+
+    async removeGroup(removeGroupDTO: RemoveGroupDTO): Promise<boolean> {
+        const teacher = await this.receive(removeGroupDTO.teacherId);
+
+        const upperCaseGroup = removeGroupDTO.group.toUpperCase();
+        teacher.groups = teacher.groups.filter(existingGroup => existingGroup !== upperCaseGroup);
 
         await this.teacherRepository.save(teacher);
         return true;
@@ -88,5 +102,38 @@ export class TeacherService {
     async receiveGroups(receiveTeacherGroups: ReceiveTeacherGroups): Promise<string[]> {
         const teacher = await this.receive(receiveTeacherGroups.teacherId);
         return teacher.groups;
+    }
+
+    async update(teacherId: number, updateTeacherDTO: UpdateTeacherDTO): Promise<Teacher> {
+        const teacher = await this.receive(teacherId);
+
+        if (!ValidationService.isNothing(updateTeacherDTO.name)) {
+            teacher.name = updateTeacherDTO.name;
+        }
+
+        if (!ValidationService.isNothing(updateTeacherDTO.userID)) {
+            teacher.userID = updateTeacherDTO.userID;
+        }
+
+        if (!ValidationService.isNothing(updateTeacherDTO.isActive)) {
+            teacher.isActive = updateTeacherDTO.isActive;
+        }
+
+        if (!ValidationService.isNothing(updateTeacherDTO.email)) {
+            teacher.email = updateTeacherDTO.email;
+        }
+
+        await this.teacherRepository.save(teacher);
+
+        return teacher;
+    }
+
+    async delete(deleteStudentDTO: DeleteTeacherDTO): Promise<boolean> {
+        const teacher = await this.receive(deleteStudentDTO.teacherId);
+        if (teacher != null) {
+            await this.teacherRepository.delete(teacher.id);
+        }
+
+        return true;
     }
 }

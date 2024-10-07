@@ -10,7 +10,7 @@ export class AddStudentDTO {
     studentId: number;
 }
 
-export class AddGroupDTO {
+export class AddGroupsDTO {
     @IsArray()
     @IsNotEmpty()
     groups: string[];
