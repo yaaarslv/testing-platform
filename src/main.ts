@@ -12,4 +12,5 @@ async function bootstrap() {
   await app.listen(3000);
 }
 //todo придумать логику ограничения доступа (middleware)
+
 bootstrap();
