@@ -11,5 +11,5 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(3000);
 }
-
+//todo придумать логику ограничения доступа (middleware)
 bootstrap();
