@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Test } from "./Test";
 
 @Entity()
 export class TestAttempt {
@@ -11,21 +12,31 @@ export class TestAttempt {
     @Column({ nullable: false })
     topicId: number;
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @ManyToOne(() => Test, { nullable: false })
+    test: number;
+
+    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     attemptDate: Date;
 
-    @Column({ nullable: false, type: 'float' })
+    @Column({ nullable: false })
     score: number;
 
-    @Column('int', { nullable: true, array: true, default: [] })
-    attemptDetailIds: number[];
+    @Column({ nullable: false })
+    timeSpent: number;
 
-
-    constructor(studentId: number, topicId: number, attemptDate: Date, score: number, attemptDetailIds: number[]) {
+    constructor(
+        studentId: number,
+        topicId: number,
+        attemptDate: Date,
+        score: number,
+        testId: number,
+        timeSpent: number
+    ) {
         this.studentId = studentId;
         this.topicId = topicId;
         this.attemptDate = attemptDate;
         this.score = score;
-        this.attemptDetailIds = attemptDetailIds;
+        this.test = testId;
+        this.timeSpent = timeSpent;
     }
 }

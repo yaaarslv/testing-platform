@@ -1,9 +1,17 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { AuthService } from '../services/AuthService';
-import { ReturnUserDTO } from '../dto/ReturnUserDTO';
-import { LoginDTO } from '../dto/LoginDTO';
-import { RegisterDTO } from '../dto/RegisterDTO';
-import { GetInviteLinkDTO } from '../dto/GetInviteLinkDTO';
+import { Body, Controller, Post } from "@nestjs/common";
+import { AuthService } from "../services/AuthService";
+import { ReturnUserDTO } from "../dto/ReturnUserDTO";
+import { LoginDTO } from "../dto/LoginDTO";
+import { RegisterDTO } from "../dto/RegisterDTO";
+import { GetInviteLinkDTO } from "../dto/GetInviteLinkDTO";
+import { ReturnCheckInviteLinkDTO } from "../dto/ReturnCheckInviteLinkDTO";
+import {
+    CheckRecoverLinkDTOs,
+    RecoverPasswordDTO,
+    UpdatePasswordAfterRecoverDTO,
+    UpdatePasswordDTO
+} from "../dto/RecoverPasswordDTO";
+import { CheckInviteLinkDTO } from "../dto/CheckInviteLinkDTO";
 
 @Controller("auth")
 export class AuthController {
@@ -25,8 +33,28 @@ export class AuthController {
         return await this.authService.getInviteLink(body);
     }
 
-    @Get("check_invite_link/:link")
-    async checkInviteLink(@Param("link") link: string): Promise<any> {
-        return await this.authService.checkInviteLink(link);
+    @Post("check_invite_link")
+    async checkInviteLink(@Body() body: CheckInviteLinkDTO): Promise<ReturnCheckInviteLinkDTO> {
+        return await this.authService.checkInviteLink(body);
+    }
+
+    @Post("recover_password")
+    async recoverPassword(@Body() body: RecoverPasswordDTO): Promise<boolean> {
+        return await this.authService.recoverPassword(body);
+    }
+
+    @Post("check_recover_link")
+    async checkRecoverLink(@Body() body: CheckRecoverLinkDTOs): Promise<boolean> {
+        return await this.authService.checkRecoverLink(body);
+    }
+
+    @Post("update_password_after_recover")
+    async updatePasswordAfterRecover(@Body() body: UpdatePasswordAfterRecoverDTO): Promise<boolean> {
+        return await this.authService.updatePasswordAfterRecover(body);
+    }
+
+    @Post("update_password")
+    async updatePassword(@Body() body: UpdatePasswordDTO): Promise<boolean> {
+        return await this.authService.updatePassword(body);
     }
 }

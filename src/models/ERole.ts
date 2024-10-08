@@ -1,6 +1,6 @@
 export enum ERole {
-    Teacher,
-    Student,
-    Administrator,
-    User
+  Teacher,
+  Student,
+  Administrator,
+  User,
 }

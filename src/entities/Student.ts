@@ -29,8 +29,16 @@ export class Student {
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
 
-
-    constructor(userID: number, organizationId: number, teacherIds: number[], name: string, group: string, email: string, isActive: boolean, createdAt: Date) {
+    constructor(
+        userID: number,
+        organizationId: number,
+        teacherIds: number[],
+        name: string,
+        group: string,
+        email: string,
+        isActive: boolean,
+        createdAt: Date,
+    ) {
         this.userID = userID;
         this.organizationId = organizationId;
         this.teacherIds = teacherIds;

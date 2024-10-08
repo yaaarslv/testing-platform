@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity()
 export class Topic {
@@ -11,17 +11,21 @@ export class Topic {
     @Column({ nullable: false })
     name: string;
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date;
 
-    @Column('int', { nullable: true, array: true, default: [] })
-    questions: number[];
+    @Column("int", { nullable: true, array: true, default: [] })
+    questionIds: number[];
 
-
-    constructor(organizationId: number, name: string, createdAt: Date, questions: number[]) {
+    constructor(
+        organizationId: number,
+        name: string,
+        createdAt: Date,
+        questions: number[]
+    ) {
         this.organizationId = organizationId;
         this.name = name;
         this.createdAt = createdAt;
-        this.questions = questions;
+        this.questionIds = questions;
     }
 }

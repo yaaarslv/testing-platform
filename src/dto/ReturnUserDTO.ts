@@ -1,5 +1,5 @@
-import { ERole } from '../models/ERole';
-import { User } from '../entities/User';
+import { ERole } from "../models/ERole";
+import { User } from "../entities/User";
 
 export class ReturnUserDTO {
     id: number;

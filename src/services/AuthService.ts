@@ -1,51 +1,80 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../entities/User';
-import { Repository } from 'typeorm';
-import { LoginDTO } from '../dto/LoginDTO';
-import { ReturnUserDTO } from '../dto/ReturnUserDTO';
-import { ERole } from '../models/ERole';
-import { RegisterDTO } from '../dto/RegisterDTO';
-import { StudentService } from './StudentService';
-import { TeacherService } from './TeacherService';
-import { GetInviteLinkDTO } from '../dto/GetInviteLinkDTO';
-import { CodeLinkService } from './CodeLinkService';
-import { OrganizationService } from './OrganizationService';
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "../entities/User";
+import { Repository } from "typeorm";
+import { LoginDTO } from "../dto/LoginDTO";
+import { ReturnUserDTO } from "../dto/ReturnUserDTO";
+import { ERole } from "../models/ERole";
+import { RegisterDTO } from "../dto/RegisterDTO";
+import { StudentService } from "./StudentService";
+import { TeacherService } from "./TeacherService";
+import { GetInviteLinkDTO } from "../dto/GetInviteLinkDTO";
+import { CodeLinkService } from "./CodeLinkService";
+import { OrganizationService } from "./OrganizationService";
+import { ReturnCheckInviteLinkDTO } from "../dto/ReturnCheckInviteLinkDTO";
+import {
+    CheckRecoverLinkDTOs,
+    RecoverPasswordDTO,
+    UpdatePasswordAfterRecoverDTO,
+    UpdatePasswordDTO
+} from "../dto/RecoverPasswordDTO";
+import { CheckInviteLinkDTO } from "../dto/CheckInviteLinkDTO";
+import { Email } from "../models/Email";
+import { v4 as uuidv4 } from "uuid";
+import { RecoverService } from "./RecoverService";
 
-let bcrypt = require('bcrypt');
-const crypto = require('crypto');
+const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 
 @Injectable()
 export class AuthService {
-    constructor(@InjectRepository(User) private userRepository: Repository<User>,
-                private readonly studentService: StudentService,
-                private readonly organizationRepository: OrganizationService,
-                private readonly teacherService: TeacherService) {
+    private readonly emailSender: Email;
+
+    constructor(
+        @InjectRepository(User) private userRepository: Repository<User>,
+        private readonly studentService: StudentService,
+        private readonly organizationRepository: OrganizationService,
+        private readonly teacherService: TeacherService,
+        private readonly recoverService: RecoverService
+    ) {
+        this.emailSender = new Email();
     }
 
     async login(data: LoginDTO): Promise<ReturnUserDTO> {
-        const hashedLogin = crypto.createHash('sha256').update(data.login).digest('hex');
-        const user = await this.userRepository.findOneBy({ login: hashedLogin });
+        const hashedLogin = crypto
+            .createHash("sha256")
+            .update(data.login)
+            .digest("hex");
+
+        const user = await this.receiveUser(hashedLogin);
 
         if (user === null) {
-            throw new NotFoundException('Пользователя с таким логином или паролем не существует.');
+            throw new NotFoundException(
+                "Пользователя с таким логином или паролем не существует."
+            );
         }
 
         if (bcrypt.compareSync(data.password, user.password)) {
             return new ReturnUserDTO(user);
         } else {
-            throw new NotFoundException('Пользователя с таким логином или паролем не существует.');
+            throw new NotFoundException(
+                "Пользователя с таким логином или паролем не существует."
+            );
         }
     }
 
-    // todo при создании ссылки передаем роль, id студента или препода, название организации и состояние активированности
     async register(data: RegisterDTO): Promise<any> {
-        const hashedLogin = crypto.createHash('sha256').update(data.login).digest('hex');
+        const hashedLogin = crypto
+            .createHash("sha256")
+            .update(data.login)
+            .digest("hex");
 
-        const user = await this.userRepository.findOneBy({ login: hashedLogin });
+        const user = await this.receiveUser(hashedLogin);
 
         if (user !== null) {
-            throw new ConflictException('Пользователь с таким логином уже существует.');
+            throw new ConflictException(
+                "Пользователь с таким логином уже существует."
+            );
         }
 
         const hashedPassword = await bcrypt.hash(data.password, 12);
@@ -58,38 +87,122 @@ export class AuthService {
 
         try {
             if (data.role === ERole.Teacher) {
-                await this.teacherService.activate(data.actorId, newUser.id, data.login);
+                await this.teacherService.activate(
+                    data.actorId,
+                    newUser.id,
+                    data.login
+                );
             } else if (data.role === ERole.Student) {
-                await this.studentService.activate(data.actorId, newUser.id, data.login);
+                await this.studentService.activate(
+                    data.actorId,
+                    newUser.id,
+                    data.login
+                );
             }
 
             return new ReturnUserDTO(newUser);
-        } catch (e: any) {
+        } catch (e) {
             await this.userRepository.delete(newUser.id);
             throw e;
         }
     }
 
     async getInviteLink(body: GetInviteLinkDTO): Promise<string> {
-        return await CodeLinkService.generateInviteLink(body.role, body.actorId, body.orgName, body.isActive);
+        return await CodeLinkService.generateInviteLink(
+            body.role,
+            body.actorId,
+            body.orgName,
+            body.isActive
+        );
     }
 
-    async checkInviteLink(link: string) {
+    async checkInviteLink(body: CheckInviteLinkDTO): Promise<ReturnCheckInviteLinkDTO> {
+        const link = body.link;
         try {
-            const data: GetInviteLinkDTO = await CodeLinkService.decrypt(link) as GetInviteLinkDTO;
-            console.log(data);
+            const data: GetInviteLinkDTO = (await CodeLinkService.decrypt(
+                link
+            )) as GetInviteLinkDTO;
 
             if (data.role !== ERole.Teacher && data.role !== ERole.Student) {
-                return false;
+                return new ReturnCheckInviteLinkDTO(false, null);
             }
 
-            data.role === ERole.Teacher ? await this.teacherService.receive(data.actorId) : await this.studentService.receive(data.actorId);
+            data.role === ERole.Teacher
+                ? await this.teacherService.receive(data.actorId)
+                : await this.studentService.receive(data.actorId);
 
+            await this.organizationRepository.receiveByName(data.orgName);
+            return new ReturnCheckInviteLinkDTO(true, data);
+        } catch (e) {
+            return new ReturnCheckInviteLinkDTO(false, null);
+        }
+    }
 
-            await this.organizationRepository.receive(data.orgName);
+    async receiveUser(login: string): Promise<User> {
+        const user = await this.userRepository.findOneBy({ login: login });
+
+        if (user === null) {
+            throw new NotFoundException(
+                "Пользователя с таким логином не существует."
+            );
+        }
+
+        return user;
+    }
+
+    async recoverPassword(body: RecoverPasswordDTO): Promise<boolean> {
+        const uuid = uuidv4();
+        const url = `${process.env.URL}/recover/${uuid}`;
+        const text = "Уважаемый пользователь Testing Platform!\n" +
+            "\n" +
+            `Мы получили запрос на восстановление пароля к Вашему аккаунту Testing Platform: ${body.email}. Ваша ссылка подтверждения:\n` +
+            "\n" +
+            `${url}\n` +
+            "\n" +
+            `Если Вы не запрашивали эту ссылку, возможно, кто-то пытается получить доступ к Вашему аккаунту ${body.email}. Никому не сообщайте этот код.\n` +
+            "\n" +
+            "С уважением,\n" +
+            "\n" +
+            "Команда Аккаунтов Testing Platform";
+        try {
+            await this.emailSender.sendMail("Восстановление пароля на сайте Testing Platform", body.email, text);
+            await this.recoverService.create(body.email, uuid);
             return true;
         } catch (e) {
             return false;
         }
+    }
+
+    async updatePasswordAfterRecover(body: UpdatePasswordAfterRecoverDTO): Promise<boolean> {
+        const email = await this.getEmailFromRecoverLink(body.link);
+        if (email === null) {
+            return false;
+        }
+
+        const hashedLogin = crypto
+            .createHash("sha256")
+            .update(email)
+            .digest("hex");
+
+        const user = await this.receiveUser(hashedLogin);
+        user.password = await bcrypt.hash(body.password, 12);
+        await this.userRepository.save(user);
+        await this.recoverService.delete(email);
+        return true;
+    }
+
+    async checkRecoverLink(body: CheckRecoverLinkDTOs): Promise<boolean> {
+        return await this.recoverService.checkRecoverLink(body.link);
+    }
+
+    async getEmailFromRecoverLink(link: string): Promise<string | null> {
+        return await this.recoverService.getEmailFromRecoverLink(link);
+    }
+
+    async updatePassword(body: UpdatePasswordDTO): Promise<boolean> {
+        const user = await this.receiveUser(body.login);
+        user.password = await bcrypt.hash(body.password, 12);
+        await this.userRepository.save(user);
+        return true;
     }
 }

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity()
 export class AttemptDetail {
@@ -11,11 +11,14 @@ export class AttemptDetail {
     @Column({ nullable: false })
     questionId: number;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     selectedAnswerId: number;
 
-
-    constructor(testAttemptId: number, questionId: number, selectedAnswerId: number) {
+    constructor(
+        testAttemptId: number,
+        questionId: number,
+        selectedAnswerId: number
+    ) {
         this.testAttemptId = testAttemptId;
         this.questionId = questionId;
         this.selectedAnswerId = selectedAnswerId;
