@@ -22,6 +22,7 @@ import { CheckInviteLinkDTO } from "../dto/CheckInviteLinkDTO";
 import { Email } from "../models/Email";
 import { v4 as uuidv4 } from "uuid";
 import { RecoverService } from "./RecoverService";
+import * as jwt from "jsonwebtoken";
 
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
@@ -40,7 +41,7 @@ export class AuthService {
         this.emailSender = new Email();
     }
 
-    async login(data: LoginDTO): Promise<ReturnUserDTO> {
+    async login(data: LoginDTO): Promise<{ user: ReturnUserDTO, token: string }> {
         const hashedLogin = crypto
             .createHash("sha256")
             .update(data.login)
@@ -48,19 +49,20 @@ export class AuthService {
 
         const user = await this.receiveUser(hashedLogin);
 
-        if (user === null) {
-            throw new NotFoundException(
-                "Пользователя с таким логином или паролем не существует."
-            );
+        if (user === null || !bcrypt.compareSync(data.password, user.password)) {
+            throw new NotFoundException("Пользователя с таким логином или паролем не существует.");
         }
 
-        if (bcrypt.compareSync(data.password, user.password)) {
-            return new ReturnUserDTO(user);
-        } else {
-            throw new NotFoundException(
-                "Пользователя с таким логином или паролем не существует."
-            );
-        }
+        const token = jwt.sign(
+            { id: user.id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
+        return {
+            user: new ReturnUserDTO(user),
+            token
+        };
     }
 
     async register(data: RegisterDTO): Promise<any> {

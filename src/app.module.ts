@@ -1,5 +1,5 @@
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module, RequestMethod } from "@nestjs/common";
 import { AppController } from "./controllers/app.controller";
 import { AppService } from "./services/app.service";
 import { Organization } from "./entities/Organization";
@@ -32,6 +32,7 @@ import { TestAttemptService } from "./services/TestAttemptService";
 import { AttemptDetailService } from "./services/AttemptDetailService";
 import { Recover } from "./entities/Recover";
 import { RecoverService } from "./services/RecoverService";
+import { AuthMiddleware } from "./middlewares/AuthMiddleware";
 
 @Module({
     imports: [
@@ -100,4 +101,10 @@ import { RecoverService } from "./services/RecoverService";
     exports: [TypeOrmModule]
 })
 export class AppModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer
+            .apply(AuthMiddleware)
+            .forRoutes({path: '/test/receive', method: RequestMethod.POST});
+        //todo ограничить доступы, mw написаны
+    }
 }
