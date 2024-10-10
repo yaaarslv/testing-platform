@@ -33,6 +33,8 @@ import { AttemptDetailService } from "./services/AttemptDetailService";
 import { Recover } from "./entities/Recover";
 import { RecoverService } from "./services/RecoverService";
 import { AuthMiddleware } from "./middlewares/AuthMiddleware";
+import { APP_GUARD } from "@nestjs/core";
+import { RolesGuard } from "./models/RolesGuard";
 
 @Module({
     imports: [
@@ -96,7 +98,11 @@ import { AuthMiddleware } from "./middlewares/AuthMiddleware";
         TestService,
         TestAttemptService,
         AttemptDetailService,
-        RecoverService
+        RecoverService,
+        {
+            provide: APP_GUARD,
+            useClass: RolesGuard
+        }
     ],
     exports: [TypeOrmModule]
 })
@@ -104,7 +110,15 @@ export class AppModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(AuthMiddleware)
-            .forRoutes({path: '/test/receive', method: RequestMethod.POST});
-        //todo ограничить доступы, mw написаны
+            .exclude({ path: "/", method: RequestMethod.ALL },
+                { path: "/auth/login", method: RequestMethod.ALL },
+                { path: "/auth/register", method: RequestMethod.ALL },
+                { path: "/auth/check_invite_link", method: RequestMethod.ALL },
+                { path: "/auth/recover_password", method: RequestMethod.ALL },
+                { path: "/auth/check_recover_link", method: RequestMethod.ALL },
+                { path: "/auth/update_password_after_recover", method: RequestMethod.ALL },
+                { path: "/auth/update_password", method: RequestMethod.ALL }
+            )
+            .forRoutes({ path: '/api/*', method: RequestMethod.ALL });
     }
 }

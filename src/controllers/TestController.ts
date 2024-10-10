@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
 import { CreateTestDTO } from "../dto/CreateTestDTO";
 import { TestService } from "../services/TestService";
 import { ReceiveTestDTO } from "../dto/ReceiveTestDTO";
@@ -11,14 +11,18 @@ import { BestStudentsAttempts, StudentAttempts } from "../dto/BestStudentAttempt
 import { ReceiveByStudentIdAndTestIdWithStudentDTO } from "../dto/ReceiveByStudentIdAndTestIdWithStudentDTO";
 import { DeleteTestDTO } from "../dto/DeleteTestDTO";
 import { UpdateTestDTO } from "../dto/UpdateTestDTO";
+import { Roles, RolesGuard } from "../models/RolesGuard";
+import { ERole } from "../models/ERole";
 
-@Controller("test")
+@Controller("api/test")
+@UseGuards(RolesGuard)
 export class TestController {
     constructor(private readonly testService: TestService,
                 private readonly testAttemptService: TestAttemptService) {
     }
 
     @Post("create")
+    @Roles(ERole.Teacher)
     async create(@Body() createTestDTO: CreateTestDTO): Promise<Test> {
         return await this.testService.create(createTestDTO);
     }
@@ -29,26 +33,31 @@ export class TestController {
     }
 
     @Post("receive")
+    @Roles(ERole.Teacher, ERole.Student)
     async receive(@Body() receiveTestDTO: ReceiveTestDTO): Promise<Test[]> {
         return await this.testService.receiveAll(receiveTestDTO);
     }
 
     @Put("update/:id")
+    @Roles(ERole.Teacher)
     async update(@Param("id") id: number, @Body() updateTestDTO: UpdateTestDTO): Promise<Test> {
         return await this.testService.update(id, updateTestDTO);
     }
 
     @Delete("delete")
+    @Roles(ERole.Teacher)
     async delete(@Body() deleteTestDTO: DeleteTestDTO): Promise<boolean> {
         return await this.testService.delete(deleteTestDTO);
     }
 
     @Post("generate")
+    @Roles(ERole.Student)
     async generate(@Body() generateTest: GenerateTestDTO): Promise<ReturnGeneratedTest> {
         return await this.testService.generateTest(generateTest);
     }
 
     @Post("check")
+    @Roles(ERole.Student)
     async check(@Body() checkTestDTO: CheckTestDTO): Promise<boolean> {
         return await this.testService.checkTest(checkTestDTO);
     }
@@ -59,11 +68,13 @@ export class TestController {
     }
 
     @Post("get_students_best_results")
+    @Roles(ERole.Teacher)
     async getStudentsResults(@Body() getStudentsResultsDTO: GetStudentsResultsDTO): Promise<BestStudentsAttempts> {
         return await this.testService.getStudentsResults(getStudentsResultsDTO);
     }
 
     @Post("get_student_results")
+    @Roles(ERole.Teacher)
     async receiveByStudentIdAndTestIdWithStudent(@Body() receiveByStudentIdAndTestIdWithStudentDTO: ReceiveByStudentIdAndTestIdWithStudentDTO): Promise<StudentAttempts> {
         return await this.testService.receiveByStudentIdAndTestIdWithStudent(receiveByStudentIdAndTestIdWithStudentDTO);
     }

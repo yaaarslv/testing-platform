@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Post, UseGuards } from "@nestjs/common";
 import { AuthService } from "../services/AuthService";
 import { ReturnUserDTO } from "../dto/ReturnUserDTO";
 import { LoginDTO } from "../dto/LoginDTO";
@@ -12,8 +12,11 @@ import {
     UpdatePasswordDTO
 } from "../dto/RecoverPasswordDTO";
 import { CheckInviteLinkDTO } from "../dto/CheckInviteLinkDTO";
+import { Roles, RolesGuard } from "../models/RolesGuard";
+import { ERole } from "../models/ERole";
 
-@Controller("auth")
+@Controller("api/auth")
+@UseGuards(RolesGuard)
 export class AuthController {
     constructor(private readonly authService: AuthService) {
     }
@@ -29,6 +32,7 @@ export class AuthController {
     }
 
     @Post("get_invite_link")
+    @Roles(ERole.Teacher, ERole.Administrator)
     async getInviteLink(@Body() body: GetInviteLinkDTO): Promise<string> {
         return await this.authService.getInviteLink(body);
     }
