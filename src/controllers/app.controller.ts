@@ -1,4 +1,4 @@
-import { Controller, Get, Redirect, Res } from "@nestjs/common";
+import { Controller, Get, NotFoundException, Param, Redirect, Res, UseFilters } from "@nestjs/common";
 import { Response } from "express";
 
 @Controller()
@@ -7,13 +7,12 @@ export class AppController {
     }
 
     @Get()
-    @Redirect("index", 302)
+    @Redirect("active_tests", 302)
     root() {
     }
 
     @Get(":pageName")
-    dynamicPage(@Res() res: Response) {
-        const pageName = res.req.params.pageName;
-        return res.render(pageName);
+    async dynamicPage(@Param("pageName") pageName: string, @Res() res: Response) {
+        res.render(pageName);
     }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { CreateTestDTO } from "../dto/CreateTestDTO";
 import { TestService } from "../services/TestService";
 import { ReceiveTestDTO } from "../dto/ReceiveTestDTO";
@@ -13,6 +13,7 @@ import { DeleteTestDTO } from "../dto/DeleteTestDTO";
 import { UpdateTestDTO } from "../dto/UpdateTestDTO";
 import { Roles, RolesGuard } from "../models/RolesGuard";
 import { ERole } from "../models/ERole";
+import { Request } from "express";
 
 @Controller("api/test")
 @UseGuards(RolesGuard)
@@ -32,10 +33,10 @@ export class TestController {
         return await this.testService.receiveByTestId(id);
     }
 
-    @Post("receive")
+    @Get("receive")
     @Roles(ERole.Teacher, ERole.Student)
-    async receive(@Body() receiveTestDTO: ReceiveTestDTO): Promise<Test[]> {
-        return await this.testService.receiveAll(receiveTestDTO);
+    async receive(@Req() req: any): Promise<Test[]> {
+        return await this.testService.receiveAll(req.user.login);
     }
 
     @Put("update/:id")

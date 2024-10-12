@@ -60,7 +60,7 @@ async function changeName(productId) {
             "action": "change_name"
         }
 
-        await fetch(`http://localhost/product/products`, {
+        await fetch(`http://localhost:3000/product/products`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -136,7 +136,7 @@ async function changePrice(productId) {
         // formData.append("productId", productId);
         // formData.append("action", "change_price");
 
-        await fetch(`http://localhost/product/products`, {
+        await fetch(`http://localhost:3000/product/products`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -216,7 +216,7 @@ async function changeCategory(productId) {
             "action": "change_category"
         }
 
-        await fetch(`http://localhost/product/products`, {
+        await fetch(`http://localhost:3000/product/products`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -292,7 +292,7 @@ async function changeBrand(productId) {
             "action": "change_brand"
         }
 
-        await fetch(`http://localhost/product/products`, {
+        await fetch(`http://localhost:3000/product/products`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -373,7 +373,7 @@ async function changeCount(productId) {
             "action": "change_count"
         }
 
-        await fetch(`http://localhost/product/products`, {
+        await fetch(`http://localhost:3000/product/products`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -513,7 +513,7 @@ async function deleteProduct(productId) {
                 action: "delete_product",
             };
 
-            await fetch(`http://localhost/product/products`, {
+            await fetch(`http://localhost:3000/product/products`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -573,7 +573,7 @@ async function loadProductsData() {
 
     try {
         loader.style.display = 'block';
-        const response = await fetch('http://localhost/product/products');
+        const response = await fetch('http://localhost:3000/product/products');
         if (!response.ok) {
             throw new Error('Ошибка при загрузке данных');
         }

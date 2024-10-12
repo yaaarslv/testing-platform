@@ -13,7 +13,7 @@ document.getElementById('unsubscriptionForm').addEventListener('submit', functio
         const unsubscriptionForm = document.getElementById('unsubscriptionForm');
         unsubscriptionForm.classList.add('disabled');
 
-        fetch('http://localhost/subscribe/unsubscript', {
+        fetch('http://localhost:3000/subscribe/unsubscript', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

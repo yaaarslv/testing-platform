@@ -1,50 +1,43 @@
-// document.getElementById('loginForm').addEventListener('submit', function (e) {
-//     e.preventDefault();
-//     const queryString = window.location.search;
-//     const urlParams = new URLSearchParams(queryString);
-//     const redirect = urlParams.get('redirect');
-//
-//     const email = document.getElementById('email').value;
-//     const password = document.getElementById('password').value;
-//     const data = {
-//         email: email,
-//         password: password
-//     };
-//
-//     const loginForm = document.getElementById('loginForm');
-//     loginForm.classList.add('disabled');
-//
-//     fetch('http://localhost/user/login', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify(data)
-//     })
-//         .then(response => response.json())
-//         .then(data => {
-//             if (data.success) {
-//                 localStorage.setItem('token', data.token);
-//                 localStorage.setItem('role', data.role)
-//                 localStorage.setItem('isBanned', data.is_banned)
-//                 localStorage.setItem('email', email)
-//                 localStorage.setItem('emailConfirmed', data.emailconfirmed)
-//                 localStorage.setItem('cart_id', data.cart_id)
-//                 if (redirect){
-//                     window.location.href = `${redirect}`;
-//                 } else{
-//                     window.location.href = "index";
-//                 }
-//             } else {
-//                 alert('Ошибка входа: ' + data.error);
-//                 loginForm.classList.remove('disabled');
-//             }
-//         })
-//         .catch(error => {
-//             console.error('Ошибка: ' + error);
-//         });
-// });
+document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const redirect = urlParams.get('redirect');
 
-document.addEventListener("DOMContentLoaded", function () {
-    window.location.href = 'http://localhost/auth/google/login';
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const data = {
+        login: email,
+        password: password
+    };
+
+    const loginForm = document.getElementById('loginForm');
+    loginForm.classList.add('disabled');
+
+    fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.error) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('role', data.user.role);
+
+                if (redirect){
+                    window.location.href = `${redirect}`;
+                } else{
+                    window.location.href = "active_tests";
+                }
+            } else {
+                alert('Ошибка входа: ' + data.message);
+                loginForm.classList.remove('disabled');
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка: ' + error);
+        });
 });

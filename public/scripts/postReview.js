@@ -35,7 +35,7 @@ document.getElementById('reviewForm').addEventListener('submit', function (e) {
     const reviewForm = document.getElementById('reviewForm');
     reviewForm.classList.add('disabled');
 
-    fetch('http://localhost/review/postReviews', {
+    fetch('http://localhost:3000/review/postReviews', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

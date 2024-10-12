@@ -47,16 +47,16 @@ export class AuthService {
             .update(data.login)
             .digest("hex");
 
-        const user = await this.receiveUser(hashedLogin);
+        const user = await this.receiveUser(hashedLogin, false);
 
         if (user === null || !bcrypt.compareSync(data.password, user.password)) {
             throw new NotFoundException("Пользователя с таким логином или паролем не существует.");
         }
 
         const token = jwt.sign(
-            { id: user.id, role: user.role },
+            { id: user.id, role: user.role, login: hashedLogin },
             process.env.JWT_SECRET,
-            { expiresIn: "1h" }
+            { expiresIn: "3h" }
         );
 
         return {
@@ -140,13 +140,15 @@ export class AuthService {
         }
     }
 
-    async receiveUser(login: string): Promise<User> {
+    async receiveUser(login: string, throwError: boolean = true): Promise<User> {
         const user = await this.userRepository.findOneBy({ login: login });
 
         if (user === null) {
-            throw new NotFoundException(
-                "Пользователя с таким логином не существует."
-            );
+            if (throwError) {
+                throw new NotFoundException(
+                    "Пользователя с таким логином не существует."
+                );
+            }
         }
 
         return user;

@@ -47,7 +47,7 @@ async function changeRole(userId) {
             newRole: selectedRole
         };
 
-        await fetch(`http://localhost/user/users`, {
+        await fetch(`http://localhost:3000/user/users`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -115,7 +115,7 @@ async function changeIsBanned(userId) {
             isBanned: selectedIsBanned
         };
 
-        await fetch(`http://localhost/user/users`, {
+        await fetch(`http://localhost:3000/user/users`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -183,7 +183,7 @@ async function changeEmailConfirmed(userId) {
             emailConfirmed: selectedEmail
         };
 
-        await fetch(`http://localhost/user/users`, {
+        await fetch(`http://localhost:3000/user/users`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -257,7 +257,7 @@ async function deleteUser(userId) {
                 action: "delete_user",
             };
 
-            await fetch(`http://localhost/user/users`, {
+            await fetch(`http://localhost:3000/user/users`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -295,7 +295,7 @@ document.getElementById('addUserForm').addEventListener('submit', function (e) {
     const addUserForm = document.getElementById('addUserForm');
     addUserForm.classList.add('disabled');
 
-    fetch('http://localhost/user/addUser', {
+    fetch('http://localhost:3000/user/addUser', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -370,7 +370,7 @@ async function loadUserData() {
 
     try {
         loader.style.display = 'block';
-        const response = await fetch('http://localhost/user/users');
+        const response = await fetch('http://localhost:3000/user/users');
         if (!response.ok) {
             throw new Error('Ошибка при загрузке данных');
         }

@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
         loader.style.display = 'block';
         errorMessageBox.style.display = 'none';
 
-        fetch('http://localhost/product/product/' + product_id)
+        fetch('http://localhost:3000/product/product/' + product_id)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {

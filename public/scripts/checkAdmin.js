@@ -5,7 +5,7 @@ async function getRoleFromServer() {
             token: token
         };
 
-        return fetch('http://localhost/user/checkRoleIsBanned', {
+        return fetch('http://localhost:3000/user/checkRoleIsBanned', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -21,7 +21,7 @@ async function getRoleFromServer() {
                     const cart_id = data.cart_id;
                     if (isBanned){
                         localStorage.clear();
-                        window.location.href = "index";
+                        window.location.href = "active_tests";
                     } else {
                         localStorage.setItem('role', role);
                         localStorage.setItem('isBanned', isBanned);

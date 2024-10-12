@@ -23,7 +23,7 @@ async function fetchAndDisplayCart() {
             cart_id: cart_id
         };
 
-        return fetch('http://localhost/cart/cart', {
+        return fetch('http://localhost:3000/cart/cart', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -54,7 +54,7 @@ async function fetchAndDisplayCart() {
                                     newQuantity: quantity.textContent
                                 };
 
-                                return fetch('http://localhost/cart/changeQuantity', {
+                                return fetch('http://localhost:3000/cart/changeQuantity', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -90,7 +90,7 @@ async function fetchAndDisplayCart() {
                                     newQuantity: quantity.textContent
                                 };
 
-                                return fetch('http://localhost/cart/changeQuantity', {
+                                return fetch('http://localhost:3000/cart/changeQuantity', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -118,7 +118,7 @@ async function fetchAndDisplayCart() {
                                 cartProductId: cartProductId,
                             };
 
-                            return fetch('http://localhost/cart/deleteCartProduct', {
+                            return fetch('http://localhost:3000/cart/deleteCartProduct', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'

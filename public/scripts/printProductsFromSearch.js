@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         errorMessageBox.style.display = 'none';
 
-        fetch('http://localhost/product/search/' + search_term)
+        fetch('http://localhost:3000/product/search/' + search_term)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         newQuantity: quantity.textContent
                                     };
 
-                                    return fetch('http://localhost/cart/changeQuantity', {
+                                    return fetch('http://localhost:3000/cart/changeQuantity', {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json'
@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         newQuantity: quantity.textContent
                                     };
 
-                                    return fetch('http://localhost/cart/changeQuantity', {
+                                    return fetch('http://localhost:3000/cart/changeQuantity', {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json'
@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     cartProductId: cartItemIdDiv.textContent,
                                 };
 
-                                return fetch('http://localhost/cart/deleteCartProduct', {
+                                return fetch('http://localhost:3000/cart/deleteCartProduct', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     cart_id: cart_id
                                 };
 
-                                return fetch('http://localhost/cart/addProductToCart', {
+                                return fetch('http://localhost:3000/cart/addProductToCart', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'

@@ -9,7 +9,7 @@ document.getElementById('sendCodeButton').addEventListener('click', function () 
         const code_button = document.getElementById("sendCodeButton")
         code_button.disabled = true;
 
-        fetch('http://localhost/app/send_code', {
+        fetch('http://localhost:3000/app/send_code', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -49,7 +49,7 @@ document.getElementById('registerForm').addEventListener('submit', function (e) 
     const registerForm = document.getElementById('registerForm');
     registerForm.classList.add('disabled');
 
-    fetch('http://localhost/user/registration', {
+    fetch('http://localhost:3000/user/registration', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

@@ -8,7 +8,7 @@ async function fetchAndDisplayReviews() {
 
         await new Promise(resolve => setTimeout(resolve, 2000));
 
-        const response = await fetch('http://localhost/review/getReviews');
+        const response = await fetch('http://localhost:3000/review/getReviews');
         if (!response.ok) {
             throw new Error(`Ошибка при загрузке данных: ${response.status} - ${response.statusText}`);
         }

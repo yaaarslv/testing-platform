@@ -56,7 +56,7 @@ async function changeSubject(newsId) {
             newSubject: selectedSubject
         };
 
-        await fetch(`http://localhost/news/postNews`, {
+        await fetch(`http://localhost:3000/news/postNews`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -128,7 +128,7 @@ async function changeText(newsId) {
             newText: selectedText
         };
 
-        await fetch(`http://localhost/news/postNews`, {
+        await fetch(`http://localhost:3000/news/postNews`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -202,7 +202,7 @@ async function deleteNews(newsId) {
                 action: "delete_news",
             };
 
-            await fetch(`http://localhost/news/postNews`, {
+            await fetch(`http://localhost:3000/news/postNews`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -242,7 +242,7 @@ async function loadNewsData() {
 
     try {
         loader.style.display = 'block';
-        const response = await fetch('http://localhost/news/getNews');
+        const response = await fetch('http://localhost:3000/news/getNews');
         if (!response.ok) {
             throw new Error('Ошибка при загрузке данных');
         }

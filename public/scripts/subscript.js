@@ -13,7 +13,7 @@ document.getElementById('subscriptionForm').addEventListener('submit', function 
         const subscriptionForm = document.getElementById('subscriptionForm');
         subscriptionForm.classList.add('disabled');
 
-        fetch('http://localhost/subscribe/subscript', {
+        fetch('http://localhost:3000/subscribe/subscript', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

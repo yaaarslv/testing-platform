@@ -15,7 +15,7 @@ document.getElementById('sendCodeButton').addEventListener('click', function () 
         const code_button = document.getElementById("sendCodeButton")
         code_button.disabled = true;
 
-        fetch('http://localhost/app/send_code', {
+        fetch('http://localhost:3000/app/send_code', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ document.getElementById('confirmEmailForm').addEventListener('submit', function 
     const confirmEmailForm = document.getElementById('confirmEmailForm');
     confirmEmailForm.classList.add('disabled');
 
-    fetch('http://localhost/user/confirmEmail', {
+    fetch('http://localhost:3000/user/confirmEmail', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -71,7 +71,7 @@ document.getElementById('confirmEmailForm').addEventListener('submit', function 
                 if (redirect){
                     window.location.href = `${redirect}`;
                 } else{
-                    window.location.href = "index";
+                    window.location.href = "active_tests";
                 }
             } else {
                 alert('Ошибка регистрации: ' + data.error);

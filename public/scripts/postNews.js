@@ -36,7 +36,7 @@ document.getElementById('newsForm').addEventListener('submit', function (e) {
     const newsForm = document.getElementById('newsForm');
     newsForm.classList.add('disabled');
 
-    fetch('http://localhost/news/postNews', {
+    fetch('http://localhost:3000/news/postNews', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

@@ -111,13 +111,12 @@ export class AppModule {
         consumer
             .apply(AuthMiddleware)
             .exclude({ path: "/", method: RequestMethod.ALL },
-                { path: "/auth/login", method: RequestMethod.ALL },
-                { path: "/auth/register", method: RequestMethod.ALL },
-                { path: "/auth/check_invite_link", method: RequestMethod.ALL },
-                { path: "/auth/recover_password", method: RequestMethod.ALL },
-                { path: "/auth/check_recover_link", method: RequestMethod.ALL },
-                { path: "/auth/update_password_after_recover", method: RequestMethod.ALL },
-                { path: "/auth/update_password", method: RequestMethod.ALL }
+                { path: "/api/auth/login", method: RequestMethod.ALL },
+                { path: "/api/auth/register", method: RequestMethod.ALL },
+                { path: "/api/auth/check_invite_link", method: RequestMethod.ALL },
+                { path: "/api/auth/recover_password", method: RequestMethod.ALL },
+                { path: "/api/auth/check_recover_link", method: RequestMethod.ALL },
+                { path: "/api/auth/update_password_after_recover", method: RequestMethod.ALL }
             )
             .forRoutes({ path: '/api/*', method: RequestMethod.ALL });
     }

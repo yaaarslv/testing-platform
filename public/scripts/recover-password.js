@@ -9,7 +9,7 @@ document.getElementById('sendRecoverCodeButton').addEventListener('click', funct
         const code_button = document.getElementById("sendRecoverCodeButton")
         code_button.disabled = true;
 
-        fetch('http://localhost/app/send_recover_code', {
+        fetch('http://localhost:3000/app/send_recover_code', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -50,7 +50,7 @@ document.getElementById('recoverForm').addEventListener('submit', function (e) {
     const recoverForm = document.getElementById('recoverForm');
     recoverForm.classList.add('disabled');
 
-    fetch('http://localhost/app/check_recover_code', {
+    fetch('http://localhost:3000/app/check_recover_code', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -79,7 +79,7 @@ document.getElementById('recoverForm').addEventListener('submit', function (e) {
                         const changePasswordForm = document.getElementById('changePasswordForm');
                         changePasswordForm.classList.add('disabled');
 
-                        fetch('http://localhost/user/change_password', {
+                        fetch('http://localhost:3000/user/change_password', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
