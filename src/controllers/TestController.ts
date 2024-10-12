@@ -36,7 +36,6 @@ export class TestController {
     async receive(@Req() req: any): Promise<Test[]> {
         return await this.testService.receiveAll(req.user.login);
     }
-    //todo переделать логику DTO с передачей req.user.login
 
     @Put("update/:id")
     @Roles(ERole.Teacher)
