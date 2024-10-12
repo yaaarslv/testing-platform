@@ -34,18 +34,20 @@ export class TestService {
     ) {
     }
 
-    async create(createTestDTO: CreateTestDTO): Promise<Test> {
+    async create(createTestDTO: CreateTestDTO, login: string): Promise<Test> {
+        const user = await this.authService.receiveUser(login);
+        const teacher = await this.teacherService.receiveByUserId(user.id);
+
         return await this.testRepository.save({
             testName: createTestDTO.testName,
             topic: createTestDTO.topicId,
-            teacher: createTestDTO.teacherId,
+            teacher: teacher.id,
             questionCount: createTestDTO.questionCount,
             attempts: createTestDTO.attempts
         });
     }
 
-    async receiveAll(receiveTestDTO: ReceiveTestDTO): Promise<Test[]> {
-        const login = receiveTestDTO.login;
+    async receiveAll(login: string): Promise<Test[]> {
         const user = await this.authService.receiveUser(login);
 
         if (user.role === ERole.Teacher) {
@@ -71,11 +73,10 @@ export class TestService {
         return await this.testRepository.find({ where: { teacher: teacherId }, relations: ["teacher", "topic"] });
     }
 
-    async generateTest(generateTestDTO: GenerateTestDTO): Promise<ReturnGeneratedTest> {
+    async generateTest(generateTestDTO: GenerateTestDTO, login: string): Promise<ReturnGeneratedTest> {
         const testId = generateTestDTO.testId;
         const test = await this.receiveByTestId(testId);
 
-        const login = generateTestDTO.login;
         const user = await this.authService.receiveUser(login);
         const student = await this.studentService.receiveByUserId(user.id);
 
@@ -95,8 +96,7 @@ export class TestService {
         return new ReturnGeneratedTest(testId, randomQuestions);
     }
 
-    async checkTest(checkTestDTO: CheckTestDTO): Promise<boolean> {
-        const login = checkTestDTO.login;
+    async checkTest(checkTestDTO: CheckTestDTO, login: string): Promise<boolean> {
         const user = await this.authService.receiveUser(login);
         const student = await this.studentService.receiveByUserId(user.id);
 
@@ -167,9 +167,8 @@ export class TestService {
         return test;
     }
 
-    async delete(deleteTestDTO: DeleteTestDTO) {
+    async delete(deleteTestDTO: DeleteTestDTO, login: string) {
         const testId = deleteTestDTO.testId;
-        const login = deleteTestDTO.login;
 
         const user = await this.authService.receiveUser(login);
         const teacher = await this.teacherService.receiveByUserId(user.id);

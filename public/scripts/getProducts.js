@@ -10,7 +10,7 @@ async function fetchAndDisplayProducts() {
 
         errorMessageBox.style.display = "none";
 
-        const response = await fetch("http://localhost:3000/api/test/receive", {
+        const response = await fetch("http://localhost:3000/api/test/receive_all", {
             method: "GET",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -96,7 +96,7 @@ async function fetchAndDisplayProducts() {
             // });
 
             // productDiv.appendChild(imageDiv);
-            // productDiv.appendChild(nameDiv);
+            productDiv.appendChild(nameDiv);
             // productDiv.appendChild(priceDiv);
             // productDiv.appendChild(categoryDiv);
             // productDiv.appendChild(brandDiv);

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthService } from "../services/AuthService";
 import { ReturnUserDTO } from "../dto/ReturnUserDTO";
 import { LoginDTO } from "../dto/LoginDTO";
@@ -22,7 +22,7 @@ export class AuthController {
     }
 
     @Post("login")
-    async login(@Body() body: LoginDTO): Promise<{ user: ReturnUserDTO, token: string }> {
+    async login(@Body() body: LoginDTO): Promise<{ user: ReturnUserDTO, token: string, actorId: number }> {
         return await this.authService.login(body);
     }
 
@@ -58,7 +58,7 @@ export class AuthController {
     }
 
     @Post("update_password")
-    async updatePassword(@Body() body: UpdatePasswordDTO): Promise<boolean> {
-        return await this.authService.updatePassword(body);
+    async updatePassword(@Req() req: any, @Body() body: UpdatePasswordDTO): Promise<boolean> {
+        return await this.authService.updatePassword(body, req.user.login);
     }
 }

@@ -41,7 +41,7 @@ export class AuthService {
         this.emailSender = new Email();
     }
 
-    async login(data: LoginDTO): Promise<{ user: ReturnUserDTO, token: string }> {
+    async login(data: LoginDTO): Promise<{ user: ReturnUserDTO, token: string, actorId: number }> {
         const hashedLogin = crypto
             .createHash("sha256")
             .update(data.login)
@@ -59,9 +59,17 @@ export class AuthService {
             { expiresIn: "3h" }
         );
 
+        let actorId: number;
+        if (user.role === ERole.Teacher) {
+            actorId = (await this.teacherService.receiveByUserId(user.id)).id;
+        } else if (user.role === ERole.Student) {
+            actorId = (await this.studentService.receiveByUserId(user.id)).id;
+        }
+
         return {
             user: new ReturnUserDTO(user),
-            token
+            token,
+            actorId
         };
     }
 
@@ -203,8 +211,8 @@ export class AuthService {
         return await this.recoverService.getEmailFromRecoverLink(link);
     }
 
-    async updatePassword(body: UpdatePasswordDTO): Promise<boolean> {
-        const user = await this.receiveUser(body.login);
+    async updatePassword(body: UpdatePasswordDTO, login: string): Promise<boolean> {
+        const user = await this.receiveUser(login);
         user.password = await bcrypt.hash(body.password, 12);
         await this.userRepository.save(user);
         return true;

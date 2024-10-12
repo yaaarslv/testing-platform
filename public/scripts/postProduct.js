@@ -66,7 +66,7 @@ document.getElementById('addProductForm').addEventListener('submit', function (e
     formData.append("imagefile", imagefile);
     formData.append("token", token);
 
-    fetch('https://petshop-backend-yaaarslv.vercel.app/addProduct', {
+    fetch('https://petshop-backend-yaaarslv.vercel.app/addProduct', { //todo че за хуйня?
         method: 'POST',
         body: formData
     })

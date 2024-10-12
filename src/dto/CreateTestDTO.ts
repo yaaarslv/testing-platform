@@ -11,10 +11,6 @@ export class CreateTestDTO {
 
     @IsNumber()
     @IsNotEmpty()
-    teacherId: number;
-
-    @IsNumber()
-    @IsNotEmpty()
     questionCount: number;
 
     @IsNumber()
