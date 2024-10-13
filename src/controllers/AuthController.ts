@@ -1,6 +1,7 @@
-import { Body, Controller, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthService } from "../services/AuthService";
 import { ReturnUserDTO } from "../dto/ReturnUserDTO";
+import { Response } from 'express';
 import { LoginDTO } from "../dto/LoginDTO";
 import { RegisterDTO } from "../dto/RegisterDTO";
 import { GetInviteLinkDTO } from "../dto/GetInviteLinkDTO";
@@ -22,8 +23,15 @@ export class AuthController {
     }
 
     @Post("login")
-    async login(@Body() body: LoginDTO): Promise<{ user: ReturnUserDTO, token: string, actorId: number }> {
-        return await this.authService.login(body);
+    async login(@Body() body: LoginDTO, @Res() res: Response) {
+        const result = await this.authService.login(body, res);
+        res.json(result);
+    }
+
+    @Get("logout")
+    async logout(@Res() res: Response) {
+        res.cookie('auth-token', '', { expires: new Date(0), httpOnly: true });
+        res.json("success logout");
     }
 
     @Post("register")

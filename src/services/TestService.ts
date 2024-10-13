@@ -55,12 +55,20 @@ export class TestService {
             return await this.receiveByTeacherId(teacher.id);
         } else if (user.role === ERole.Student) {
             const student = await this.studentService.receiveByUserId(user.id);
-            return await this.testRepository.findBy({ group: student.group });
+            return await this.testRepository.find({
+                order: { id: "ASC" },
+                where: { group: student.group },
+                relations: ["teacher", "topic"]
+            });
         }
     }
 
     async receiveByTestId(testId: number): Promise<Test> {
-        const test = await this.testRepository.findOne({ where: { id: testId }, relations: ["teacher", "topic"] });
+        const test = await this.testRepository.findOne({
+            order: { id: "ASC" },
+            where: { id: testId },
+            relations: ["teacher", "topic"]
+        });
 
         if (test === null) {
             throw new NotFoundException("Теста с таким id не существует.");

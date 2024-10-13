@@ -1,10 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
     const signOutButton = document.querySelector('.sign-out-button');
     if (signOutButton) {
-        signOutButton.addEventListener('click', function (event) {
+        signOutButton.addEventListener('click', async function(event) {
             event.preventDefault();
             localStorage.clear();
-            window.location.href = 'index';
+            await fetch("http://localhost:3000/api/auth/logout")
+            window.location.href = 'auth';
         });
     }
 });

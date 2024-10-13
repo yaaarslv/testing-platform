@@ -35,6 +35,8 @@ import { RecoverService } from "./services/RecoverService";
 import { AuthMiddleware } from "./middlewares/AuthMiddleware";
 import { APP_GUARD } from "@nestjs/core";
 import { RolesGuard } from "./models/RolesGuard";
+import { AuthViewMiddleware } from "./middlewares/AuthViewMiddleware";
+import { TeacherRoleMiddleware } from "./middlewares/TeacherRoleMiddleware";
 
 @Module({
     imports: [
@@ -112,12 +114,25 @@ export class AppModule {
             .apply(AuthMiddleware)
             .exclude({ path: "/", method: RequestMethod.ALL },
                 { path: "/api/auth/login", method: RequestMethod.ALL },
+                { path: "/api/auth/logout", method: RequestMethod.ALL },
                 { path: "/api/auth/register", method: RequestMethod.ALL },
                 { path: "/api/auth/check_invite_link", method: RequestMethod.ALL },
                 { path: "/api/auth/recover_password", method: RequestMethod.ALL },
                 { path: "/api/auth/check_recover_link", method: RequestMethod.ALL },
                 { path: "/api/auth/update_password_after_recover", method: RequestMethod.ALL }
             )
-            .forRoutes({ path: '/api/*', method: RequestMethod.ALL });
+            .forRoutes({ path: "/api/*", method: RequestMethod.ALL });
+
+        consumer
+            .apply(AuthViewMiddleware)
+            .forRoutes({ path: "/changePassword", method: RequestMethod.ALL },
+                { path: "/profile", method: RequestMethod.ALL },
+                { path: "/active_tests", method: RequestMethod.ALL },
+                { path: "/test", method: RequestMethod.ALL },
+                { path: "/test_stats", method: RequestMethod.ALL });
+
+        consumer
+            .apply(TeacherRoleMiddleware)
+            .forRoutes({ path: "/test_stats", method: RequestMethod.ALL });
     }
 }

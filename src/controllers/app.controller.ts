@@ -1,4 +1,4 @@
-import { Controller, Get, NotFoundException, Param, Redirect, Res, UseFilters } from "@nestjs/common";
+import { Controller, Get, Param, Redirect, Res } from "@nestjs/common";
 import { Response } from "express";
 
 @Controller()

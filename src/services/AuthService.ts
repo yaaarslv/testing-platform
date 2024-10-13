@@ -23,6 +23,7 @@ import { Email } from "../models/Email";
 import { v4 as uuidv4 } from "uuid";
 import { RecoverService } from "./RecoverService";
 import * as jwt from "jsonwebtoken";
+import { Response } from "express";
 
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
@@ -41,7 +42,7 @@ export class AuthService {
         this.emailSender = new Email();
     }
 
-    async login(data: LoginDTO): Promise<{ user: ReturnUserDTO, token: string, actorId: number }> {
+    async login(data: LoginDTO, res: Response): Promise<{ user: ReturnUserDTO, token: string, actorId: number }> {
         const hashedLogin = crypto
             .createHash("sha256")
             .update(data.login)
@@ -66,6 +67,7 @@ export class AuthService {
             actorId = (await this.studentService.receiveByUserId(user.id)).id;
         }
 
+        res.cookie('auth-token', token, { httpOnly: true, secure: false, maxAge: 10800000 });
         return {
             user: new ReturnUserDTO(user),
             token,
@@ -164,14 +166,14 @@ export class AuthService {
 
     async recoverPassword(body: RecoverPasswordDTO): Promise<boolean> {
         const uuid = uuidv4();
-        const url = `${process.env.URL}/recover/${uuid}`;
+        const url = `${process.env.URL}/recover?link=${uuid}`;
         const text = "Уважаемый пользователь Testing Platform!\n" +
             "\n" +
             `Мы получили запрос на восстановление пароля к Вашему аккаунту Testing Platform: ${body.email}. Ваша ссылка подтверждения:\n` +
             "\n" +
             `${url}\n` +
             "\n" +
-            `Если Вы не запрашивали эту ссылку, возможно, кто-то пытается получить доступ к Вашему аккаунту ${body.email}. Никому не сообщайте этот код.\n` +
+            `Если Вы не запрашивали эту ссылку, возможно, кто-то пытается получить доступ к Вашему аккаунту ${body.email}. Никому не передавайте эту ссылку.\n` +
             "\n" +
             "С уважением,\n" +
             "\n" +
