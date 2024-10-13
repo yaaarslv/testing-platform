@@ -3,7 +3,6 @@ import { Repository } from "typeorm";
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { Test } from "../entities/Test";
 import { CreateTestDTO } from "../dto/CreateTestDTO";
-import { ReceiveTestDTO } from "../dto/ReceiveTestDTO";
 import { AuthService } from "./AuthService";
 import { ERole } from "../models/ERole";
 import { TeacherService } from "./TeacherService";
