@@ -17,6 +17,11 @@ export class OrganizationController {
         return await this.organizationService.receiveAll();
     }
 
+    @Get('receive_with_all/:name')
+    async receiveWithAll(@Param("name") name: string) {
+        return await this.organizationService.getOrganizationWithEntities(name);
+    }
+
     @Get("receive/:name")
     async receive(@Param("name") name: string): Promise<Organization> {
         return await this.organizationService.receiveByName(name);

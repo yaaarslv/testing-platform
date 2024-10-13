@@ -17,7 +17,7 @@ async function loadUserData() {
 
     try {
         loader.style.display = "block";
-        const response = await fetch(`http://localhost:3000/api/organization/receive/${name}`, {
+        const response = await fetch(`http://localhost:3000/api/organization/receive_with_all/${name}`, {
             method: "GET",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -52,7 +52,7 @@ async function loadUserData() {
                     <td class="responsiblePerson-cell">${org_responsiblePerson}</td>
                 `;
         userTableBody.appendChild(row);
-
+//доделать заполнение таблиц данными (посмотреть формат в браузере)
 
     } catch (error) {
         console.error(error);

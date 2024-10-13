@@ -1,5 +1,5 @@
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { Organization } from "../entities/Organization";
 import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { CreateOrganizationDTO } from "../dto/CreateOrganizationDTO";
@@ -15,8 +15,10 @@ import { ValidationService } from "./ValidationService";
 @Injectable()
 export class OrganizationService {
     constructor(
-        @InjectRepository(Organization)
-        private organizationRepository: Repository<Organization>
+        @InjectRepository(Organization) private organizationRepository: Repository<Organization>,
+        @InjectRepository(Teacher) private readonly teacherRepository: Repository<Teacher>,
+        @InjectRepository(Student) private readonly studentRepository: Repository<Student>,
+        @InjectRepository(Topic) private readonly topicRepository: Repository<Topic>
     ) {
     }
 
@@ -67,6 +69,21 @@ export class OrganizationService {
         }
 
         return organization;
+    }
+
+    async getOrganizationWithEntities(name: string) {
+        const organization = await this.receiveByName(name);
+
+        const teachers = await this.teacherRepository.findBy({ id: In(organization.teacherIds) });
+        const students = await this.studentRepository.findBy({ id: In(organization.studentIds) });
+        const topics = await this.topicRepository.findBy({ id: In(organization.topicIds) });
+
+        return {
+            ...organization,
+            teachers,
+            students,
+            topics,
+        };
     }
 
     async addStudent(organization: Organization, student: Student): Promise<boolean> {
