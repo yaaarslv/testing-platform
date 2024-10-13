@@ -358,8 +358,7 @@ async function loadUserData() {
     }
 
     const role = localStorage.getItem("role");
-    const isBanned = localStorage.getItem("isBanned");
-    if (role === "User" || role === "Admin" || isBanned === "true") {
+    if (role !== "2") {
         window.location.href = "403";
     }
 
