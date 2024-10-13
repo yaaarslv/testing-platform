@@ -55,6 +55,9 @@ export class TestService {
             return await this.receiveByTeacherId(teacher.id);
         } else if (user.role === ERole.Student) {
             const student = await this.studentService.receiveByUserId(user.id);
+            //todo добавить в возвращаемое значение количество затраченных попыток для каждого теста (receiveUsedAttemptsByStudentIdAndTestId),
+            // для преподавателя всегда 0
+
             return await this.testRepository.find({
                 order: { id: "ASC" },
                 where: { group: student.group },
