@@ -12,9 +12,19 @@ export class OrganizationController {
     constructor(private readonly organizationService: OrganizationService) {
     }
 
+    @Get("receive_all")
+    async receiveAll(): Promise<Organization[]> {
+        return await this.organizationService.receiveAll();
+    }
+
     @Get("receive/:name")
     async receive(@Param("name") name: string): Promise<Organization> {
         return await this.organizationService.receiveByName(name);
+    }
+
+    @Get("receive_by_id/:id")
+    async receiveById(@Param("id") id: number): Promise<Organization> {
+        return await this.organizationService.receiveById(id);
     }
 
     @Post("create")

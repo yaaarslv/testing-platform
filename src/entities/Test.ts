@@ -35,16 +35,4 @@ export class Test {
 
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date;
-
-    constructor(
-        testName: string,
-        topicId: number,
-        teacherId: number,
-        createdAt: Date
-    ) {
-        this.testName = testName;
-        this.topic = topicId;
-        this.teacher = teacherId;
-        this.createdAt = createdAt;
-    }
 }

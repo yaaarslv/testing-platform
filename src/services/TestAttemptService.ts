@@ -44,7 +44,7 @@ export class TestAttemptService {
     }
 
     async receiveUsedAttemptsByStudentIdAndTestId(studentId: number, testId: number): Promise<number> {
-        return await this.testAttemptRepository.countBy({ studentId: studentId, test: testId });
+        return await this.testAttemptRepository.countBy({ studentId: studentId, testId: testId });
     }
 
     async receiveBestStudentAttempt(studentId: number, testId: number): Promise<BestStudentAttemptDTO> {

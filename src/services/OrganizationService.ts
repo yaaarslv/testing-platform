@@ -144,4 +144,8 @@ export class OrganizationService {
 
         return organization;
     }
+
+    async receiveAll() {
+        return await this.organizationRepository.find();
+    }
 }

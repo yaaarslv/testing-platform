@@ -4,13 +4,17 @@
     <meta charset="UTF-8">
     <meta name="keywords"
           content="платформа для тестирования студентов">
-    <title>Testing platform - управление товарами</title>
+    <title>Testing platform - товар</title>
     <link rel="icon" href="/images/logo2.jpg">
     {{> styles}}
     <script src="scripts/checkCookie.js"></script>
     <script src="scripts/signOut.js"></script>
     <script src="scripts/nav.js"></script>
     <script src="scripts/checkAuth.js"></script>
+
+    <script src="scripts/printOrganization.js"></script>
+
+
     <!--        <link rel="stylesheet" href="/styles/outlines.css">-->
 </head>
 <body>
@@ -23,27 +27,6 @@
     </div>
 </header>
 <main>
-    <h1>Управление товарами</h1>
-
-    <table class="productsTable">
-        <thead>
-        <tr>
-            <!--            <th>ProductId</th>-->
-            <th>Название</th>
-            <th>Цена</th>
-            <th>Категория</th>
-            <th>Бренд</th>
-            <th>Изображение</th>
-            <th>Кол-во</th>
-            <th>Автор</th>
-            <th>Действия</th>
-        </tr>
-        </thead>
-        <tbody id="productsTableBody">
-        </tbody>
-
-    </table>
-
     <div class="loader" style="display: none;">
         <div class="running-cat-container">
             <img class="running-cat" src="images/running-cat.gif" alt="Running Cat">
@@ -51,8 +34,10 @@
         <div class="loading-text">Загрузка</div>
     </div>
 
-    <script src="scripts/loading.js"></script>
-    <script src="scripts/load-products.js"></script>
+    <div class="product-container">
+        <div class="error-message" style="display: none;">⚠ Что-то пошло не так</div>
+        <script src="scripts/loading.js"></script>
+    </div>
 </main>
 <footer>
 

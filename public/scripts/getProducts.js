@@ -62,11 +62,20 @@ async function fetchAndDisplayProducts() {
             availabilityDiv.className = "product-availability";
             availabilityDiv.textContent = `Количество попыток: ${test.attempts}`;
 
+            const usedAttemptsDiv = document.createElement("div");
+            usedAttemptsDiv.className = "product-usedAttempts";
+            usedAttemptsDiv.textContent = `Использовано попыток: ${test.usedAttempts}`;
+
+            if (test.attempts <= test.usedAttempts) {
+                productDiv.classList.add('disabled');
+            }
+
             productDiv.appendChild(nameDiv);
             productDiv.appendChild(topicDiv);
             productDiv.appendChild(categoryDiv);
             productDiv.appendChild(brandDiv);
             productDiv.appendChild(availabilityDiv);
+            productDiv.appendChild(usedAttemptsDiv);
 
             productList.appendChild(productDiv);
 

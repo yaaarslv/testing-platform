@@ -67,7 +67,7 @@ export class AuthService {
             actorId = (await this.studentService.receiveByUserId(user.id)).id;
         }
 
-        res.cookie('auth-token', token, { httpOnly: true, secure: false, maxAge: 10800000 });
+        res.cookie('auth-token', token, { httpOnly: false, secure: false, maxAge: 10800000 });
         return {
             user: new ReturnUserDTO(user),
             token,
@@ -81,7 +81,7 @@ export class AuthService {
             .update(data.login)
             .digest("hex");
 
-        const user = await this.receiveUser(hashedLogin);
+        const user = await this.receiveUser(hashedLogin, false);
 
         if (user !== null) {
             throw new ConflictException(

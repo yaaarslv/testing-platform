@@ -19,6 +19,7 @@ import { ReceiveByStudentIdAndTestIdWithStudentDTO } from "../dto/ReceiveByStude
 import { DeleteTestDTO } from "../dto/DeleteTestDTO";
 import { UpdateTestDTO } from "../dto/UpdateTestDTO";
 import { ValidationService } from "./ValidationService";
+import { TestWithUsedAttempts } from "../dto/ReturnTestsDTO";
 
 @Injectable()
 export class TestService {
@@ -46,22 +47,34 @@ export class TestService {
         });
     }
 
-    async receiveAll(login: string): Promise<Test[]> {
+    async receiveAll(login: string): Promise<TestWithUsedAttempts[]> {
         const user = await this.authService.receiveUser(login);
 
         if (user.role === ERole.Teacher) {
             const teacher = await this.teacherService.receiveByUserId(user.id);
-            return await this.receiveByTeacherId(teacher.id);
+            const tests = await this.receiveByTeacherId(teacher.id);
+
+            const result: TestWithUsedAttempts[] = [];
+            for (const test of tests) {
+                result.push(new TestWithUsedAttempts(test, 0));
+            }
+
+            return result;
         } else if (user.role === ERole.Student) {
             const student = await this.studentService.receiveByUserId(user.id);
-            //todo добавить в возвращаемое значение количество затраченных попыток для каждого теста (receiveUsedAttemptsByStudentIdAndTestId),
-            // для преподавателя всегда 0
-
-            return await this.testRepository.find({
+            const tests = await this.testRepository.find({
                 order: { id: "ASC" },
                 where: { group: student.group },
                 relations: ["teacher", "topic"]
             });
+
+            const result: TestWithUsedAttempts[] = [];
+            for (const test of tests) {
+                const usedAttempts = await this.testAttemptService.receiveUsedAttemptsByStudentIdAndTestId(student.id, test.id);
+                result.push(new TestWithUsedAttempts(test, usedAttempts));
+            }
+
+            return result;
         }
     }
 

@@ -84,7 +84,7 @@ getRoleFromServer().then(_ => {
                 manageRolesButton.textContent = "Управление пользователями";
                 manageRoles.appendChild(manageRolesButton);
             }
-        } else if (window.location.href.includes('manage-users')) {
+        } else if (window.location.href.includes('manage-organization')) {
             if (role === "User" || role === "Admin" || isBanned === "true") {
                 window.location.href = '403';
             }
