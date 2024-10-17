@@ -411,7 +411,7 @@ async function loadUserData() {
             });
 
             row.addEventListener("click", () => {
-                window.open(`organization?name=${org_name}`);
+                window.location.href = `organization?name=${org_name}`;
             });
             userTableBody.appendChild(row);
         });

@@ -24,6 +24,7 @@ import { v4 as uuidv4 } from "uuid";
 import { RecoverService } from "./RecoverService";
 import * as jwt from "jsonwebtoken";
 import { Response } from "express";
+import * as process from "node:process";
 
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
@@ -120,12 +121,15 @@ export class AuthService {
     }
 
     async getInviteLink(body: GetInviteLinkDTO): Promise<string> {
-        return await CodeLinkService.generateInviteLink(
+        const url = process.env.URL + "/invite?link=";
+        const link = await CodeLinkService.generateInviteLink(
             body.role,
             body.actorId,
             body.orgName,
             body.isActive
         );
+
+        return url + link;
     }
 
     async checkInviteLink(body: CheckInviteLinkDTO): Promise<ReturnCheckInviteLinkDTO> {

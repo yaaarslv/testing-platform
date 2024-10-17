@@ -76,13 +76,11 @@ export class OrganizationService {
 
         const teachers = await this.teacherRepository.findBy({ id: In(organization.teacherIds) });
         const students = await this.studentRepository.findBy({ id: In(organization.studentIds) });
-        const topics = await this.topicRepository.findBy({ id: In(organization.topicIds) });
 
         return {
             ...organization,
             teachers,
             students,
-            topics,
         };
     }
 

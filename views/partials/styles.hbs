@@ -11,6 +11,15 @@
         font-family: FreeMono, monospace;
     }
 
+	h2 {
+		color: #6dadf1;
+	}
+
+	h1 {
+		color: white;
+		padding-bottom: 20px;
+	}
+
     ul, ol {
         font-style: italic;
     }
@@ -282,14 +291,14 @@
     .topicTable tbody tr:nth-child(even),
     .teacherTable tbody tr:nth-child(even),
 	.studentTable tbody tr:nth-child(even), .productsTable tbody tr:nth-child(even), .newsTable tbody tr:nth-child(even), .user-table tbody tr:nth-child(even) {
-        background-color: #d7d7d7;
+        background-color: white;
     }
 
     .teacherTable tbody tr:nth-child(odd),
     .userTable tbody tr:nth-child(odd),
     .topicTable tbody tr:nth-child(odd),
 	.studentTable tbody tr:nth-child(odd), .productsTable tbody tr:nth-child(odd), .newsTable tbody tr:nth-child(odd), .user-table tbody tr:nth-child(odd) {
-        background-color: #8f8f8f;
+        background-color: wheat;
     }
 
     .addUserButton {
@@ -652,6 +661,15 @@
         font-style: italic;
         color: #8e05ff;
     }
+
+	.student-edit-button, .teacher-edit-button {
+		padding: 5px 5px;
+		margin: 5px;
+		background-color: initial;
+		border: none;
+		border-radius: 15px;
+		cursor: pointer;
+	}
 
     @media (max-width: 1000px) {
         .logo-image, .logo-image2 {
