@@ -129,6 +129,8 @@ export class AppModule {
                 { path: "/profile", method: RequestMethod.ALL },
                 { path: "/active_tests", method: RequestMethod.ALL },
                 { path: "/test", method: RequestMethod.ALL },
+                { path: "/organization", method: RequestMethod.ALL },
+                { path: "/manage-organization", method: RequestMethod.ALL },
                 { path: "/test_stats", method: RequestMethod.ALL });
 
         consumer

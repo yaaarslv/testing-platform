@@ -80,7 +80,7 @@ export class OrganizationService {
         return {
             ...organization,
             teachers,
-            students,
+            students
         };
     }
 
@@ -161,6 +161,6 @@ export class OrganizationService {
     }
 
     async receiveAll() {
-        return await this.organizationRepository.find();
+        return await this.organizationRepository.find({ order: { id: "ASC" } });
     }
 }
