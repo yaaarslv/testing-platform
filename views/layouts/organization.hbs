@@ -1,34 +1,33 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="keywords"
-          content="платформа для тестирования студентов">
-    <title>Testing platform - товар</title>
-    <link rel="icon" href="/images/logo2.jpg">
-    {{> styles}}
-    <script src="scripts/checkCookie.js"></script>
-    <script src="scripts/signOut.js"></script>
-    <script src="scripts/nav.js"></script>
-    <script src="scripts/checkAuth.js"></script>
+	<meta charset="UTF-8">
+	<meta name="keywords"
+		  content="платформа для тестирования студентов">
+	<title>Testing platform - товар</title>
+	<link rel="icon" href="/images/logo2.jpg">
+	{{> styles}}
+	<script src="scripts/checkCookie.js"></script>
+	<script src="scripts/signOut.js"></script>
+	<script src="scripts/nav.js"></script>
+	<script src="scripts/checkAuth.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script src="scripts/printOrganization.js"></script>
+	<script src="scripts/printOrganization.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
 
 
 	<!--        <link rel="stylesheet" href="/styles/outlines.css">-->
 </head>
 <body>
 <header>
-    {{>header_content}}
-    <div class="head-bar">
+	{{>header_content}}
+	<div class="head-bar">
 
-        {{>sign_in}}
-        {{>head_nav_bar}}
-    </div>
+		{{>sign_in}}
+		{{>head_nav_bar}}
+	</div>
 </header>
 <main>
 	<span id="textWidthCalculator" style="visibility:hidden; position:absolute; white-space:pre;"></span>
@@ -95,51 +94,53 @@
 		<div class="loading-text">Загрузка</div>
 	</div>
 
-	<button onclick="addStudent()" class="addStudentButton">Добавить студента</button>
-	<div class="add-student-form" style="display: none">
-		<h2>Добавление студента</h2>
-		<form id="addStudentForm">
-			<div class="form-group">
-				<b><label for="student-name">ФИО:</label></b>
-				<input class="name-input" type="text" id="student-name" name="student-name" maxlength="255"
-					   placeholder="Введите ФИО" required>
-			</div>
+	<div class="adding-buttons">
+		<button onclick="addStudent()" class="addStudentButton">Добавить студента</button>
+		<div class="add-student-form" style="display: none">
+			<h2>Добавление студента</h2>
+			<form id="addStudentForm">
+				<div class="form-group">
+					<b><label for="student-name">ФИО:</label></b>
+					<input class="name-input" type="text" id="student-name" name="student-name" maxlength="255"
+						   placeholder="Введите ФИО" required>
+				</div>
 
-			<div class="form-group">
-				<b><label for="student-group">Группа:</label></b>
-				<input class="responsiblePerson-input" type="text" id="student-group" name="student-group"
-					   maxlength="10"
-					   placeholder="Введите группу" required>
-			</div>
+				<div class="form-group">
+					<b><label for="student-group">Группа:</label></b>
+					<input class="responsiblePerson-input" type="text" id="student-group" name="student-group"
+						   maxlength="10"
+						   placeholder="Введите группу" required>
+				</div>
 
-			<button class="add-student-button" type="submit">Добавить студента</button>
-		</form>
-		<p>
-			<button onclick="cancelAddStudent()" class="cancel-add-student-button">Отмена</button>
-		</p>
-	</div>
+				<button class="add-student-button" type="submit">Добавить студента</button>
+			</form>
+			<p>
+				<button onclick="cancelAddStudent()" class="cancel-add-student-button">Отмена</button>
+			</p>
+		</div>
 
-	<button onclick="addTeacher()" class="addTeacherButton">Добавить преподавателя</button>
-	<div class="add-teacher-form" style="display: none">
-		<h2>Добавление преподавателя</h2>
-		<form id="addTeacherForm">
-			<div class="form-group">
-				<b><label for="teacher-name">ФИО:</label></b>
-				<input class="name-input" type="text" id="teacher-name" name="teacher-name" maxlength="255"
-					   placeholder="Введите ФИО" required>
-			</div>
+		<button onclick="addTeacher()" class="addTeacherButton">Добавить преподавателя</button>
+		<div class="add-teacher-form" style="display: none">
+			<h2>Добавление преподавателя</h2>
+			<form id="addTeacherForm">
+				<div class="form-group">
+					<b><label for="teacher-name">ФИО:</label></b>
+					<input class="name-input" type="text" id="teacher-name" name="teacher-name" maxlength="255"
+						   placeholder="Введите ФИО" required>
+				</div>
 
-			<button class="add-teacher-button" type="submit">Добавить преподавателя</button>
-		</form>
-		<p>
-			<button onclick="cancelAddTeacher()" class="cancel-add-teacher-button">Отмена</button>
-		</p>
+				<button class="add-teacher-button" type="submit">Добавить преподавателя</button>
+			</form>
+			<p>
+				<button onclick="cancelAddTeacher()" class="cancel-add-teacher-button">Отмена</button>
+			</p>
+		</div>
 	</div>
 
 </main>
 <footer>
 
-<!--    {{>footer_bar}}-->
+	<!--    {{>footer_bar}}-->
 
 </footer>
 </body>

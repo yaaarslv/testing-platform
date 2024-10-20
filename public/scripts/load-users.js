@@ -400,20 +400,25 @@ async function loadUserData() {
                     <td class="email-cell">${org_email}</td>
                     <td class="responsiblePerson-cell">${org_responsiblePerson}</td>
                 `;
+            userTableBody.appendChild(row);
+
+            const bc = row.style.backgroundColor;
+
             row.addEventListener("mouseover", () => {
                 row.style.transition = "color 0.3s";
                 row.style.cursor = "pointer";
-                row.style.color = "blue";
+                row.style.color = "white";
+                row.style.backgroundColor = "grey";
             });
 
             row.addEventListener("mouseout", () => {
                 row.style.color = "initial";
+                row.style.backgroundColor = bc;
             });
 
             row.addEventListener("click", () => {
                 window.location.href = `organization?name=${org_name}`;
             });
-            userTableBody.appendChild(row);
         });
 
     } catch (error) {

@@ -1,15 +1,14 @@
-function setInputWidth(inputElement) {
-    // Получаем скрытый элемент для измерения текста
-    const calculator = document.getElementById('textWidthCalculator');
+function setInputWidth(inputElement, additional = 0, length = null) {
+    const calculator = document.getElementById("textWidthCalculator");
+    if (length == null) {
+        calculator.textContent = inputElement.value;
 
-    // Устанавливаем текст в скрытый элемент
-    calculator.textContent = inputElement.value;
+        const textWidth = calculator.offsetWidth + additional;
 
-    // Получаем ширину текста
-    const textWidth = calculator.offsetWidth;
-
-    // Задаем ширину полю ввода с небольшим запасом
-    inputElement.style.width = `${textWidth}px`;
+        inputElement.style.width = `${textWidth}px`;
+    } else {
+        inputElement.style.width = `${length}px`;
+    }
 }
 
 
@@ -24,7 +23,7 @@ function add_student() {
         const data = {
             name: studentName,
             group: studentGroup,
-            organizationId,
+            organizationId
         };
 
         const addStudentForm = document.getElementById("addStudentForm");
@@ -40,9 +39,9 @@ function add_student() {
         });
 
         if (!response.ok) {
-            addStudentForm.classList.remove('disabled');
+            addStudentForm.classList.remove("disabled");
             const json = await response.json();
-            alert(json.message)
+            alert(json.message);
             throw new Error(json.message);
         }
 
@@ -76,18 +75,20 @@ function add_student() {
                 `;
 
         if (!studentIsActive) {
-            row.style.backgroundColor = "grey";
+            row.style.backgroundColor = "darkslategrey";
             row.querySelector(".student-edit-button").style.backgroundColor = "green";
         }
 
         studentTableBody.appendChild(row);
-        cancelAddStudent()
+        cancelAddStudent();
     });
 }
 
 function addStudent() {
     const addStudentButton = document.querySelector(".addStudentButton");
+    const addTeacherButton = document.querySelector(".addTeacherButton");
     addStudentButton.style.display = "none";
+    addTeacherButton.style.display = "none";
 
     const addStudentForm = document.querySelector(".add-student-form");
     addStudentForm.style.display = "block";
@@ -99,7 +100,9 @@ function cancelAddStudent() {
     addStudentForm.style.display = "none";
 
     const addStudentButton = document.querySelector(".addStudentButton");
-    addStudentButton.style.display = "revert";
+    const addTeacherButton = document.querySelector(".addTeacherButton");
+    addStudentButton.style.removeProperty("display");
+    addTeacherButton.style.removeProperty("display");
 }
 
 function add_teacher() {
@@ -111,7 +114,7 @@ function add_teacher() {
 
         const data = {
             name: teacherName,
-            organizationId,
+            organizationId
         };
 
         const addTeacherForm = document.getElementById("addTeacherForm");
@@ -127,9 +130,9 @@ function add_teacher() {
         });
 
         if (!response.ok) {
-            addTeacherForm.classList.remove('disabled');
+            addTeacherForm.classList.remove("disabled");
             const json = await response.json();
-            alert(json.message)
+            alert(json.message);
             throw new Error(json.message);
         }
 
@@ -161,18 +164,20 @@ function add_teacher() {
                 `;
 
         if (!teacherIsActive) {
-            row.style.backgroundColor = "grey";
+            row.style.backgroundColor = "darkslategrey";
             row.querySelector(".teacher-edit-button").style.backgroundColor = "green";
         }
 
         teacherTableBody.appendChild(row);
-        cancelAddTeacher()
+        cancelAddTeacher();
     });
 }
 
 function addTeacher() {
     const addTeacherButton = document.querySelector(".addTeacherButton");
+    const addStudentButton = document.querySelector(".addStudentButton");
     addTeacherButton.style.display = "none";
+    addStudentButton.style.display = "none";
 
     const addTeacherForm = document.querySelector(".add-teacher-form");
     addTeacherForm.style.display = "block";
@@ -184,7 +189,9 @@ function cancelAddTeacher() {
     addTeacherForm.style.display = "none";
 
     const addTeacherButton = document.querySelector(".addTeacherButton");
-    addTeacherButton.style.display = "revert";
+    const addStudentButton = document.querySelector(".addStudentButton");
+    addTeacherButton.style.removeProperty("display");
+    addStudentButton.style.removeProperty("display");
 }
 
 async function getInviteLink(role, actorId, orgName, isActive) {
@@ -206,7 +213,7 @@ async function getInviteLink(role, actorId, orgName, isActive) {
 
     if (!response.ok) {
         const res_data = await response.json();
-        alert(`Ошибка: ${res_data.message}`)
+        alert(`Ошибка: ${res_data.message}`);
         throw new Error(res_data.message);
     }
 
@@ -233,48 +240,314 @@ function editRow(rowId, subject) {
         let responsiblePersonCell = row.querySelector(`.responsiblePerson-cell`);
         let actionsCell = row.querySelector(`.actions`);
 
+        // Сохраняем оригинальные значения перед редактированием
+        nameCell.setAttribute("data-original-value", nameCell.textContent);
+        addressCell.setAttribute("data-original-value", addressCell.textContent);
+        phoneCell.setAttribute("data-original-value", phoneCell.textContent);
+        emailCell.setAttribute("data-original-value", emailCell.textContent);
+        responsiblePersonCell.setAttribute("data-original-value", responsiblePersonCell.textContent);
+
+        // Заменяем текст на поля ввода
         nameCell.innerHTML = `<input type="text" id="edit-name-${rowId}" value="${nameCell.textContent}" />`;
         addressCell.innerHTML = `<input type="text" id="edit-address-${rowId}" value="${addressCell.textContent}" />`;
-        phoneCell.innerHTML = `<input type="text" id="edit-phone-${rowId}" value="${phoneCell.textContent}" />`;
+        phoneCell.innerHTML = `<input maxlength="12" type="tel" id="edit-phone-${rowId}" value="${phoneCell.textContent}" />`;
         emailCell.innerHTML = `<input type="email" id="edit-email-${rowId}" value="${emailCell.textContent}" />`;
         responsiblePersonCell.innerHTML = `<input type="text" id="edit-responsiblePerson-${rowId}" value="${responsiblePersonCell.textContent}" />`;
 
+        // Устанавливаем ширину полей ввода на основе содержимого
         setInputWidth(document.getElementById(`edit-name-${rowId}`));
         setInputWidth(document.getElementById(`edit-address-${rowId}`));
         setInputWidth(document.getElementById(`edit-phone-${rowId}`));
         setInputWidth(document.getElementById(`edit-email-${rowId}`));
         setInputWidth(document.getElementById(`edit-responsiblePerson-${rowId}`));
 
+        // Скрываем иконку редактирования и показываем иконки сохранения/отмены
         const pencil = actionsCell.querySelector(".fa-pencil-alt");
         const check = actionsCell.querySelector(".fa-check");
         const times = actionsCell.querySelector(".fa-times");
 
         pencil.style.display = "none";
-        check.style.display = "revert";
-        times.style.display = "revert";
+        check.style.removeProperty("display");
+        times.style.removeProperty("display");
+
+        phoneCell.addEventListener("input", function(e) {
+            const input = e.target;
+            const value = input.value;
+
+            const cleanValue = value.replace(/[^0-9+]/g, "");
+
+            if (cleanValue.startsWith("+7")) {
+                input.maxLength = 12;
+            } else {
+                input.maxLength = 11;
+            }
+
+            input.value = cleanValue;
+        });
+    } else if (subject === "student") {
+        const row = document.getElementById(`student-${rowId}`);
+
+        let userIdCell = row.querySelector(`.student-userId-cell`);
+        let nameCell = row.querySelector(`.student-name-cell`);
+        let groupCell = row.querySelector(`.student-group-cell`);
+        let emailCell = row.querySelector(`.student-email-cell`);
+        let actionsCell = row.querySelector(`.student-actions`);
+
+        // Сохраняем оригинальные значения перед редактированием
+        userIdCell.setAttribute("data-original-value", userIdCell.textContent);
+        nameCell.setAttribute("data-original-value", nameCell.textContent);
+        groupCell.setAttribute("data-original-value", groupCell.textContent);
+        emailCell.setAttribute("data-original-value", emailCell.textContent);
+
+
+        // Заменяем текст на поля ввода
+        userIdCell.innerHTML = `<input type="text" id="edit-student-userId-${rowId}" value="${userIdCell.textContent}" />`;
+        nameCell.innerHTML = `<input type="text" id="edit-student-name-${rowId}" value="${nameCell.textContent}" />`;
+        groupCell.innerHTML = `<input type="text" id="edit-student-group-${rowId}" value="${groupCell.textContent}" />`;
+        emailCell.innerHTML = `<input type="email" id="edit-student-email-${rowId}" value="${emailCell.textContent}" />`;
+
+        // Устанавливаем ширину полей ввода на основе содержимого
+        setInputWidth(document.getElementById(`edit-student-userId-${rowId}`), 10);
+        setInputWidth(document.getElementById(`edit-student-name-${rowId}`), 60);
+        setInputWidth(document.getElementById(`edit-student-group-${rowId}`), 0, 70);
+        setInputWidth(document.getElementById(`edit-student-email-${rowId}`), 10);
+
+        // Скрываем иконку редактирования и показываем иконки сохранения/отмены
+        const pencil = actionsCell.querySelector(".fa-pencil-alt");
+        const check = actionsCell.querySelector(".fa-check");
+        const times = actionsCell.querySelector(".fa-times");
+
+        pencil.style.display = "none";
+        check.style.removeProperty("display");
+        times.style.removeProperty("display");
     }
-    // row.id = `org-${id}`;
-    // <td class="id-cell">${id}</td>
-    // <td class="name-cell">${org_name}</td>
-    // <td class="address-cell">${org_address}</td>
-    // <td class="phone-cell">${org_phone}</td>
-    // <td class="email-cell">${org_email}</td>
-    // <td class="responsiblePerson-cell">${org_responsiblePerson}</td>
-    // <td class="actions">
-    //     <i class="fas fa-pencil-alt" onclick="editRow('${id}', 'org')"></i>
-    //     <i class="fas fa-check" style="display: none" onclick="saveRow('${id}', 'org')"></i>
-    //     <i class="fas fa-times" style="display: none" onclick="cancelEdit('${id}', 'org')"></i>
-    // </td>
-    //     `;
 }
 
-function saveRow(id, subject) {
-
+function isValidEmail(email) {
+    if (email === "" || email === "null") {
+        return true;
+    }
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
 }
 
-function cancelEdit(id, subject) {
+async function saveRow(rowId, subject) {
+    if (subject === "org") {
+        const row = document.getElementById(`org-${rowId}`);
+        const emailInput = document.getElementById(`edit-email-${rowId}`);
+        if (!isValidEmail(emailInput.value)) {
+            toastr.options = {
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "3000"
+            };
 
+            toastr.error("Неверный формат почты");
+            return;
+        }
+
+        let nameCell = row.querySelector(`.name-cell`);
+        let addressCell = row.querySelector(`.address-cell`);
+        let phoneCell = row.querySelector(`.phone-cell`);
+        let emailCell = row.querySelector(`.email-cell`);
+        let responsiblePersonCell = row.querySelector(`.responsiblePerson-cell`);
+        let actionsCell = row.querySelector(`.actions`);
+
+        const name = document.getElementById(`edit-name-${rowId}`).value;
+        const address = document.getElementById(`edit-address-${rowId}`).value;
+        const phone = document.getElementById(`edit-phone-${rowId}`).value;
+        const email = document.getElementById(`edit-email-${rowId}`).value;
+        const responsiblePerson = document.getElementById(`edit-responsiblePerson-${rowId}`).value;
+
+        const data = {
+            name: name === "" || name === "null" ? null : name,
+            address: address === "" || address === "null" ? null : address,
+            phone: phone === "" || phone === "null" ? null : phone,
+            email: email === "" || email === "null" ? null : email,
+            responsiblePerson: responsiblePerson === "" || responsiblePerson === "null" ? null : responsiblePerson
+        };
+
+        const response = await fetch(`http://localhost:3000/api/organization/update/${rowId}`, {
+            method: "PUT",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const org = await response.json();
+
+        if (!response.ok) {
+            toastr.options = {
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
+            toastr.error(`Ошибка: ${org.message}`);
+            throw new Error(org.message);
+        }
+
+        toastr.options = {
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "3000"
+        };
+
+        toastr.success(`Данные организации успешно обновлены`);
+
+        // Получаем значения из input и заменяем их на текстовое содержимое
+        nameCell.textContent = org.name + "";
+        addressCell.textContent = org.address + "";
+        phoneCell.textContent = org.phone + "";
+        emailCell.textContent = org.email + "";
+        responsiblePersonCell.textContent = org.responsiblePerson + "";
+
+        // Скрываем иконки сохранения/отмены и показываем иконку редактирования
+        const pencil = actionsCell.querySelector(".fa-pencil-alt");
+        const check = actionsCell.querySelector(".fa-check");
+        const times = actionsCell.querySelector(".fa-times");
+
+        pencil.style.removeProperty("display");
+        check.style.display = "none";
+        times.style.display = "none";
+    } else if (subject === "student") {
+        const row = document.getElementById(`student-${rowId}`);
+        const emailInput = document.getElementById(`edit-student-email-${rowId}`);
+        if (!isValidEmail(emailInput.value)) {
+            toastr.options = {
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "3000"
+            };
+
+            toastr.error("Неверный формат почты");
+            return;
+        }
+
+        let userIdCell = row.querySelector(`.student-userId-cell`);
+        let nameCell = row.querySelector(`.student-name-cell`);
+        let groupCell = row.querySelector(`.student-group-cell`);
+        let isActiveCell = row.querySelector(`.student-isActive-cell`);
+        let emailCell = row.querySelector(`.student-email-cell`);
+        let actionsCell = row.querySelector(`.student-actions`);
+
+        const userId = document.getElementById(`edit-student-userId-${rowId}`).value;
+        const name = document.getElementById(`edit-student-name-${rowId}`).value;
+        const group = document.getElementById(`edit-student-group-${rowId}`).value;
+        const email = document.getElementById(`edit-student-email-${rowId}`).value;
+
+        const data = {
+            userID: userId === "" || userId === "null" ? null : parseInt(userId),
+            name: name === "" || name === "null" ? null : name,
+            group: group === "" || group === "null" ? null : group,
+            // isActive: isActive === "" || isActive === "null" ? null : (isActive !== "true" && isActive !== "false" ? null : (isActive === "true")),
+            email: email === "" || email === "null" ? null : email
+        };
+
+        const response = await fetch(`http://localhost:3000/api/student/update/${rowId}`, {
+            method: "PUT",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const student = await response.json();
+
+        if (!response.ok) {
+            toastr.options = {
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
+            toastr.error(`Ошибка: ${student.message}`);
+            throw new Error(student.message);
+        }
+
+        toastr.success(`Данные студента успешно обновлены`);
+
+        // Получаем значения из input и заменяем их на текстовое содержимое
+        userIdCell.textContent = student.userID + "";
+        nameCell.textContent = student.name + "";
+        groupCell.textContent = student.group + "";
+        isActiveCell.textContent = student.isActive + "";
+        emailCell.textContent = student.email + "";
+
+        if (!student.isActive) {
+            row.style.backgroundColor = "darkslategrey";
+            row.querySelector(".student-edit-button").style.backgroundColor = "green";
+        } else {
+            row.style.removeProperty("background-color");
+            row.querySelector(".student-edit-button").style.removeProperty("background-color");
+        }
+
+        // Скрываем иконки сохранения/отмены и показываем иконку редактирования
+        const pencil = actionsCell.querySelector(".fa-pencil-alt");
+        const check = actionsCell.querySelector(".fa-check");
+        const times = actionsCell.querySelector(".fa-times");
+
+        pencil.style.removeProperty("display");
+        check.style.display = "none";
+        times.style.display = "none";
+    }
 }
+
+function cancelEdit(rowId, subject) {
+    if (subject === "org") {
+        const row = document.getElementById(`org-${rowId}`);
+
+        let nameCell = row.querySelector(`.name-cell`);
+        let addressCell = row.querySelector(`.address-cell`);
+        let phoneCell = row.querySelector(`.phone-cell`);
+        let emailCell = row.querySelector(`.email-cell`);
+        let responsiblePersonCell = row.querySelector(`.responsiblePerson-cell`);
+        let actionsCell = row.querySelector(`.actions`);
+
+        // Восстанавливаем оригинальные значения из data-атрибутов
+        nameCell.textContent = nameCell.getAttribute("data-original-value");
+        addressCell.textContent = addressCell.getAttribute("data-original-value");
+        phoneCell.textContent = phoneCell.getAttribute("data-original-value");
+        emailCell.textContent = emailCell.getAttribute("data-original-value");
+        responsiblePersonCell.textContent = responsiblePersonCell.getAttribute("data-original-value");
+
+        // Скрываем иконки сохранения/отмены и показываем иконку редактирования
+        const pencil = actionsCell.querySelector(".fa-pencil-alt");
+        const check = actionsCell.querySelector(".fa-check");
+        const times = actionsCell.querySelector(".fa-times");
+
+        pencil.style.removeProperty("display");
+        check.style.display = "none";
+        times.style.display = "none";
+    } else if (subject === "student") {
+        const row = document.getElementById(`student-${rowId}`);
+
+        let userIdCell = row.querySelector(`.student-userId-cell`);
+        let nameCell = row.querySelector(`.student-name-cell`);
+        let groupCell = row.querySelector(`.student-group-cell`);
+        let emailCell = row.querySelector(`.student-email-cell`);
+        let actionsCell = row.querySelector(`.student-actions`);
+
+        // Восстанавливаем оригинальные значения из data-атрибутов
+        userIdCell.textContent = userIdCell.getAttribute("data-original-value");
+        nameCell.textContent = nameCell.getAttribute("data-original-value");
+        groupCell.textContent = groupCell.getAttribute("data-original-value");
+        emailCell.textContent = emailCell.getAttribute("data-original-value");
+
+        // Скрываем иконки сохранения/отмены и показываем иконку редактирования
+        const pencil = actionsCell.querySelector(".fa-pencil-alt");
+        const check = actionsCell.querySelector(".fa-check");
+        const times = actionsCell.querySelector(".fa-times");
+
+        pencil.style.removeProperty("display");
+        check.style.display = "none";
+        times.style.display = "none";
+    }
+}
+
 
 async function loadUserData() {
     const token = localStorage.getItem("token");
@@ -370,7 +643,7 @@ async function loadUserData() {
                 `;
 
             if (!studentIsActive) {
-                row.style.backgroundColor = "grey";
+                row.style.backgroundColor = "darkslategrey";
                 row.querySelector(".student-edit-button").style.backgroundColor = "green";
             }
 
@@ -405,7 +678,7 @@ async function loadUserData() {
                 `;
 
             if (!teacherIsActive) {
-                row.style.backgroundColor = "grey";
+                row.style.backgroundColor = "darkslategrey";
                 row.querySelector(".teacher-edit-button").style.backgroundColor = "green";
             }
 

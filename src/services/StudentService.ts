@@ -93,10 +93,6 @@ export class StudentService {
             student.userID = updateStudentDTO.userID;
         }
 
-        if (!ValidationService.isNothing(updateStudentDTO.isActive)) {
-            student.isActive = updateStudentDTO.isActive;
-        }
-
         if (!ValidationService.isNothing(updateStudentDTO.email)) {
             student.email = updateStudentDTO.email;
         }

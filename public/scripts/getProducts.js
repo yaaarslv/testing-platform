@@ -15,11 +15,13 @@ async function fetchAndDisplayProducts() {
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json"
-            },
+            }
         });
 
         if (response.status === 401) {
-           window.location.href = "auth";
+            window.location.href = "auth";
+        } else if (response.status === 403) {
+            errorMessageBox.textContent = "Данный блок вам недоступен!"
         }
 
         const data = await response.json();
@@ -67,7 +69,7 @@ async function fetchAndDisplayProducts() {
             usedAttemptsDiv.textContent = `Использовано попыток: ${test.usedAttempts}`;
 
             if (test.attempts <= test.usedAttempts) {
-                productDiv.classList.add('disabled');
+                productDiv.classList.add("disabled");
             }
 
             productDiv.appendChild(nameDiv);

@@ -8,7 +8,7 @@
 		margin-bottom: 10px;
 		margin-right: 10px;
 		margin-left: 10px;
-		font-family: FreeMono, monospace;
+		font-family: Bradley Hand, cursive;
 	}
 
 	h2 {
@@ -96,7 +96,7 @@
 	.nav-item {
 		flex: auto;
 		text-align: center;
-		background: #f30707;
+		background: grey;
 		border-radius: 25px;
 	}
 
@@ -288,7 +288,7 @@
 	.topicTable thead tr,
 	.teacherTable thead tr,
 	.productsTable thead tr, .newsTable thead tr, .user-table thead tr, .studentTable thead tr {
-		background-color: #ff0000;
+		background-color: lightgrey;
 	}
 
 	.userTable tbody tr:nth-child(even),
@@ -677,13 +677,22 @@
 		color: #8e05ff;
 	}
 
-	.student-edit-button, .teacher-edit-button {
+	.student-edit-button,
+	.fa-times,
+	.fa-check,
+	.fa-pencil-alt,
+	.teacher-edit-button {
 		padding: 5px 5px;
 		margin: 5px;
 		background-color: initial;
 		border: none;
 		border-radius: 15px;
 		cursor: pointer;
+	}
+
+	.adding-buttons {
+		display: flex;
+		justify-content: center;
 	}
 
 	@media (max-width: 1000px) {
