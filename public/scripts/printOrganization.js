@@ -320,6 +320,38 @@ function editRow(rowId, subject) {
         pencil.style.display = "none";
         check.style.removeProperty("display");
         times.style.removeProperty("display");
+    } else if (subject === "teacher") {
+        const row = document.getElementById(`teacher-${rowId}`);
+
+        let userIdCell = row.querySelector(`.teacher-userId-cell`);
+        let nameCell = row.querySelector(`.teacher-name-cell`);
+        let emailCell = row.querySelector(`.teacher-email-cell`);
+        let actionsCell = row.querySelector(`.teacher-actions`);
+
+        // Сохраняем оригинальные значения перед редактированием
+        userIdCell.setAttribute("data-original-value", userIdCell.textContent);
+        nameCell.setAttribute("data-original-value", nameCell.textContent);
+        emailCell.setAttribute("data-original-value", emailCell.textContent);
+
+
+        // Заменяем текст на поля ввода
+        userIdCell.innerHTML = `<input type="text" id="edit-teacher-userId-${rowId}" value="${userIdCell.textContent}" />`;
+        nameCell.innerHTML = `<input type="text" id="edit-teacher-name-${rowId}" value="${nameCell.textContent}" />`;
+        emailCell.innerHTML = `<input type="email" id="edit-teacher-email-${rowId}" value="${emailCell.textContent}" />`;
+
+        // Устанавливаем ширину полей ввода на основе содержимого
+        setInputWidth(document.getElementById(`edit-teacher-userId-${rowId}`), 10);
+        setInputWidth(document.getElementById(`edit-teacher-name-${rowId}`), 60);
+        setInputWidth(document.getElementById(`edit-teacher-email-${rowId}`), 10);
+
+        // Скрываем иконку редактирования и показываем иконки сохранения/отмены
+        const pencil = actionsCell.querySelector(".fa-pencil-alt");
+        const check = actionsCell.querySelector(".fa-check");
+        const times = actionsCell.querySelector(".fa-times");
+
+        pencil.style.display = "none";
+        check.style.removeProperty("display");
+        times.style.removeProperty("display");
     }
 }
 
@@ -493,6 +525,83 @@ async function saveRow(rowId, subject) {
         pencil.style.removeProperty("display");
         check.style.display = "none";
         times.style.display = "none";
+    } else if (subject === "teacher") {
+        const row = document.getElementById(`teacher-${rowId}`);
+        const emailInput = document.getElementById(`edit-teacher-email-${rowId}`);
+        if (!isValidEmail(emailInput.value)) {
+            toastr.options = {
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "3000"
+            };
+
+            toastr.error("Неверный формат почты");
+            return;
+        }
+
+        let userIdCell = row.querySelector(`.teacher-userId-cell`);
+        let nameCell = row.querySelector(`.teacher-name-cell`);
+        let isActiveCell = row.querySelector(`.teacher-isActive-cell`);
+        let emailCell = row.querySelector(`.teacher-email-cell`);
+        let actionsCell = row.querySelector(`.teacher-actions`);
+
+        const userId = document.getElementById(`edit-teacher-userId-${rowId}`).value;
+        const name = document.getElementById(`edit-teacher-name-${rowId}`).value;
+        const email = document.getElementById(`edit-teacher-email-${rowId}`).value;
+
+        const data = {
+            userID: userId === "" || userId === "null" ? null : parseInt(userId),
+            name: name === "" || name === "null" ? null : name,
+            // isActive: isActive === "" || isActive === "null" ? null : (isActive !== "true" && isActive !== "false" ? null : (isActive === "true")),
+            email: email === "" || email === "null" ? null : email
+        };
+
+        const response = await fetch(`http://localhost:3000/api/teacher/update/${rowId}`, {
+            method: "PUT",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const teacher = await response.json();
+
+        if (!response.ok) {
+            toastr.options = {
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
+            toastr.error(`Ошибка: ${teacher.message}`);
+            throw new Error(teacher.message);
+        }
+
+        toastr.success(`Данные преподавателя успешно обновлены`);
+
+        // Получаем значения из input и заменяем их на текстовое содержимое
+        userIdCell.textContent = teacher.userID + "";
+        nameCell.textContent = teacher.name + "";
+        isActiveCell.textContent = teacher.isActive + "";
+        emailCell.textContent = teacher.email + "";
+
+        if (!teacher.isActive) {
+            row.style.backgroundColor = "darkslategrey";
+            row.querySelector(".teacher-edit-button").style.backgroundColor = "green";
+        } else {
+            row.style.removeProperty("background-color");
+            row.querySelector(".teacher-edit-button").style.removeProperty("background-color");
+        }
+
+        // Скрываем иконки сохранения/отмены и показываем иконку редактирования
+        const pencil = actionsCell.querySelector(".fa-pencil-alt");
+        const check = actionsCell.querySelector(".fa-check");
+        const times = actionsCell.querySelector(".fa-times");
+
+        pencil.style.removeProperty("display");
+        check.style.display = "none";
+        times.style.display = "none";
     }
 }
 
@@ -535,6 +644,27 @@ function cancelEdit(rowId, subject) {
         userIdCell.textContent = userIdCell.getAttribute("data-original-value");
         nameCell.textContent = nameCell.getAttribute("data-original-value");
         groupCell.textContent = groupCell.getAttribute("data-original-value");
+        emailCell.textContent = emailCell.getAttribute("data-original-value");
+
+        // Скрываем иконки сохранения/отмены и показываем иконку редактирования
+        const pencil = actionsCell.querySelector(".fa-pencil-alt");
+        const check = actionsCell.querySelector(".fa-check");
+        const times = actionsCell.querySelector(".fa-times");
+
+        pencil.style.removeProperty("display");
+        check.style.display = "none";
+        times.style.display = "none";
+    } else if (subject === "teacher") {
+        const row = document.getElementById(`teacher-${rowId}`);
+
+        let userIdCell = row.querySelector(`.teacher-userId-cell`);
+        let nameCell = row.querySelector(`.teacher-name-cell`);
+        let emailCell = row.querySelector(`.teacher-email-cell`);
+        let actionsCell = row.querySelector(`.teacher-actions`);
+
+        // Восстанавливаем оригинальные значения из data-атрибутов
+        userIdCell.textContent = userIdCell.getAttribute("data-original-value");
+        nameCell.textContent = nameCell.getAttribute("data-original-value");
         emailCell.textContent = emailCell.getAttribute("data-original-value");
 
         // Скрываем иконки сохранения/отмены и показываем иконку редактирования
@@ -692,8 +822,31 @@ async function loadUserData() {
     }
 }
 
+function changeStudentTableVisibility() {
+    changeTableVisibility(".studentTableTitle", ".studentTable");
+}
+
+function changeTeacherTableVisibility() {
+    changeTableVisibility(".teacherTableTitle", ".teacherTable");
+}
+
+function changeTableVisibility(titleClassName, tableClassName) {
+    const title = document.querySelector(titleClassName);
+    const table = document.querySelector(tableClassName);
+
+    title.addEventListener("click", function() {
+        const styleIsNone = table.style.display === "none";
+
+        if (styleIsNone) {
+            table.style.display = "table";
+        } else {
+            table.style.display = "none";
+        }
+    });
+}
+
 window.addEventListener("DOMContentLoaded", loadUserData);
 window.addEventListener("DOMContentLoaded", add_student);
 window.addEventListener("DOMContentLoaded", add_teacher);
-
-//todo сделать форму для обновления организации, преподавателя и студента
+window.addEventListener("DOMContentLoaded", changeStudentTableVisibility);
+window.addEventListener("DOMContentLoaded", changeTeacherTableVisibility);

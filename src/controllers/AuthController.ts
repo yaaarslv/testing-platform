@@ -15,6 +15,7 @@ import {
 import { CheckInviteLinkDTO } from "../dto/CheckInviteLinkDTO";
 import { Roles, RolesGuard } from "../models/RolesGuard";
 import { ERole } from "../models/ERole";
+import { ActivateActorDTO } from "../dto/ActivateActorDTO";
 
 @Controller("api/auth")
 @UseGuards(RolesGuard)
@@ -34,9 +35,15 @@ export class AuthController {
         res.json("success logout");
     }
 
+    @Post("activate")
+    async activate(@Body() activateStudentDTO: ActivateActorDTO): Promise<boolean> {
+        return await this.authService.loginAndActivate(activateStudentDTO);
+    }
+
     @Post("register")
-    async register(@Body() body: RegisterDTO): Promise<ReturnUserDTO> {
-        return await this.authService.register(body);
+    async register(@Body() body: RegisterDTO, @Res() res: Response) {
+        const result = await this.authService.register(body, res);
+        res.json(result);
     }
 
     @Post("get_invite_link")

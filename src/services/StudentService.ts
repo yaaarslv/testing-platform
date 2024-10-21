@@ -7,6 +7,7 @@ import { OrganizationService } from "./OrganizationService";
 import { ValidationService } from "./ValidationService";
 import { UpdateStudentDTO } from "../dto/UpdateStudentDTO";
 import { RemoveStudentIdDTO } from "../dto/RemoveStudentIdDTO";
+import { ActivateActorDTO } from "../dto/ActivateActorDTO";
 
 @Injectable()
 export class StudentService {

@@ -25,6 +25,7 @@ import { RecoverService } from "./RecoverService";
 import * as jwt from "jsonwebtoken";
 import { Response } from "express";
 import * as process from "node:process";
+import { ActivateActorDTO } from "../dto/ActivateActorDTO";
 
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
@@ -43,7 +44,7 @@ export class AuthService {
         this.emailSender = new Email();
     }
 
-    async login(data: LoginDTO, res: Response): Promise<{ user: ReturnUserDTO, token: string, actorId: number }> {
+    async login(data: LoginDTO, res: Response): Promise<{ user: ReturnUserDTO, token: string }> {
         const hashedLogin = crypto
             .createHash("sha256")
             .update(data.login)
@@ -61,22 +62,42 @@ export class AuthService {
             { expiresIn: "3h" }
         );
 
-        let actorId: number;
-        if (user.role === ERole.Teacher) {
-            actorId = (await this.teacherService.receiveByUserId(user.id)).id;
-        } else if (user.role === ERole.Student) {
-            actorId = (await this.studentService.receiveByUserId(user.id)).id;
-        }
+        // let actorId: number;
+        // if (user.role === ERole.Teacher) {
+        //     actorId = (await this.teacherService.receiveByUserId(user.id)).id;
+        // } else if (user.role === ERole.Student) {
+        //     actorId = (await this.studentService.receiveByUserId(user.id)).id;
+        // }
 
-        res.cookie('auth-token', token, { httpOnly: false, secure: false, maxAge: 10800000 });
+        res.cookie("auth-token", token, { httpOnly: false, secure: false, maxAge: 10800000 });
         return {
             user: new ReturnUserDTO(user),
-            token,
-            actorId
+            token
+            // actorId
         };
     }
 
-    async register(data: RegisterDTO): Promise<any> {
+    async loginAndActivate(activateStudentDTO: ActivateActorDTO) {
+        const actorId = activateStudentDTO.actorId;
+        const login = activateStudentDTO.login;
+        const password = activateStudentDTO.password;
+
+        const user = await this.receiveUser(login, false);
+
+        if (user === null || !bcrypt.compareSync(password, user.password)) {
+            throw new NotFoundException("Пользователя с таким логином или паролем не существует.");
+        }
+
+        if (user.role === ERole.Teacher) {
+            await this.teacherService.activate(actorId, user.id, login);
+        } else if (user.role === ERole.Student) {
+            await this.studentService.activate(actorId, user.id, login);
+        }
+
+        return true;
+    }
+
+    async register(data: RegisterDTO, res: Response): Promise<any> {
         const hashedLogin = crypto
             .createHash("sha256")
             .update(data.login)
@@ -113,7 +134,19 @@ export class AuthService {
                 );
             }
 
-            return new ReturnUserDTO(newUser);
+            const token = jwt.sign(
+                { id: newUser.id, role: newUser.role, login: hashedLogin },
+                process.env.JWT_SECRET,
+                { expiresIn: "3h" }
+            );
+
+            res.cookie("auth-token", token, { httpOnly: false, secure: false, maxAge: 10800000 });
+            return {
+                user: new ReturnUserDTO(user),
+                token
+                // actorId
+            };
+
         } catch (e) {
             await this.userRepository.delete(newUser.id);
             throw e;
@@ -140,7 +173,7 @@ export class AuthService {
             )) as GetInviteLinkDTO;
 
             if (data.role !== ERole.Teacher && data.role !== ERole.Student) {
-                return new ReturnCheckInviteLinkDTO(false, null);
+                return new ReturnCheckInviteLinkDTO(false, null, "Попытка добавления неопознанного пользователя");
             }
 
             data.role === ERole.Teacher
@@ -148,9 +181,9 @@ export class AuthService {
                 : await this.studentService.receive(data.actorId);
 
             await this.organizationRepository.receiveByName(data.orgName);
-            return new ReturnCheckInviteLinkDTO(true, data);
+            return new ReturnCheckInviteLinkDTO(true, data, null);
         } catch (e) {
-            return new ReturnCheckInviteLinkDTO(false, null);
+            return new ReturnCheckInviteLinkDTO(false, null, e.message);
         }
     }
 

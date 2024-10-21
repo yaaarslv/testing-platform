@@ -26,7 +26,6 @@ function auth() {
             .then(data => {
                 if (!data.error) {
                     localStorage.setItem('token', data.token);
-                    localStorage.setItem('actorId', data.actorId);
                     localStorage.setItem('role', data.user.role);
 
                     if (redirect) {

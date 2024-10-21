@@ -116,6 +116,7 @@ export class AppModule {
                 { path: "/api/auth/login", method: RequestMethod.ALL },
                 { path: "/api/auth/logout", method: RequestMethod.ALL },
                 { path: "/api/auth/register", method: RequestMethod.ALL },
+                { path: "/api/auth/activate", method: RequestMethod.ALL },
                 { path: "/api/auth/check_invite_link", method: RequestMethod.ALL },
                 { path: "/api/auth/recover_password", method: RequestMethod.ALL },
                 { path: "/api/auth/check_recover_link", method: RequestMethod.ALL },
