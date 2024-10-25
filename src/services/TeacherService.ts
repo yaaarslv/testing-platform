@@ -1,6 +1,6 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { Teacher } from "../entities/Teacher";
 import { CreateTeacherDTO } from "../dto/CreateTeacherDTO";
 import { AddGroupsDTO, ReceiveTeacherGroups } from "../dto/AddStudentDTO";
@@ -67,6 +67,10 @@ export class TeacherService {
 
         if (teacher === null) {
             throw new NotFoundException("Преподавателя с таким id не существует.");
+        }
+
+        if (!ValidationService.isNothing(teacher.userID) && !ValidationService.isNothing(teacher.isActive) && !ValidationService.isNothing(teacher.userID)) {
+            throw new ConflictException("Данный преподаватель уже активирован и добавлен в организацию")
         }
 
         teacher.isActive = true;

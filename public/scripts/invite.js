@@ -1,44 +1,14 @@
-// document.getElementById('sendCodeButton').addEventListener('click', function () {
-//     const email = document.getElementById('email').value;
-//
-//     if (email) {
-//         const data = {
-//             recipient: email
-//         };
-//
-//         const code_button = document.getElementById("sendCodeButton")
-//         code_button.disabled = true;
-//
-//         fetch('http://localhost:3000/app/send_code', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify(data)
-//         })
-//             .then(response => response.json())
-//             .then(data => {
-//                 if (data.success) {
-//                     alert('Код подтверждения успешно отправлен на указанный адрес почты');
-//                 } else {
-//                     alert('Ошибка при отправке кода подтверждения: ' + data.error);
-//                     code_button.disabled = false;
-//                 }
-//             })
-//             .catch(error => {
-//                 console.error('Ошибка: ' + error);
-//             });
-//     } else {
-//         alert('Введите почту, чтобы отправить код подтверждения');
-//     }
-// });
-
 let _userData = null;
 
 async function checkInviteLink() {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const link = urlParams.get("link");
+
+    if (!link) {
+        window.location.href = "403"
+        return;
+    }
 
     try {
         const response = await fetch(`http://localhost:3000/api/auth/check_invite_link`, {
@@ -76,7 +46,7 @@ async function checkInviteLink() {
 }
 
 function registerAndShowInvitation() {
-    document.getElementById("registerForm").addEventListener("submit", function(e) {
+    document.getElementById("registerForm").addEventListener("submit", async function(e) {
         e.preventDefault();
         if (_userData === undefined) {
             throw new Error();
@@ -85,20 +55,52 @@ function registerAndShowInvitation() {
         const role = _userData.role;
         const actorId = _userData.actorId;
         const orgName = _userData.orgName
-        const isActive = _userData.isActive;
 
-        //todo сделать регистрацию и потом показ окна "добро пожаловать"
+        const email = document.getElementById("register-email").value;
+        const password = document.getElementById("register-password").value;
+
+        const data = {
+            login: email,
+            password,
+            role,
+            actorId
+        }
+
+        const response = await fetch("http://localhost:3000/api/auth/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            toastr.options = {
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
+            toastr.error(`Ошибка: ${result.message}`);
+            throw new Error(result.message);
+        }
+
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('role', result.user.role);
+
+        document.querySelector(".register-form").style.display = "none";
+
+        const invitationDiv = document.querySelector(".invitation");
+        const invitationText = document.querySelector(".invitation-text");
+        invitationText.textContent = `Добро пожаловать в организацию "${orgName}"`;
+        invitationDiv.style.removeProperty("display");
     });
-
-    // if (isActive) {
-    //     const invitationDiv = document.querySelector(".invitation");
-    //     const invitationText = document.querySelector(".invitation-text");
-    //     invitationText.textContent = `Добро пожаловать в организацию "${orgName}"`;
-    // }
 }
 
 function loginAndShowInvitation() {
-    document.getElementById("loginForm").addEventListener("submit", function(e) {
+    document.getElementById("loginForm").addEventListener("submit", async function(e) {
         e.preventDefault();
         if (_userData === undefined) {
             throw new Error();
@@ -107,16 +109,46 @@ function loginAndShowInvitation() {
         const role = _userData.role;
         const actorId = _userData.actorId;
         const orgName = _userData.orgName
-        const isActive = _userData.isActive;
 
-        //todo сделать забор данных и отправку на активацию и потом показ окна "добро пожаловать"
+
+        const email = document.getElementById("login-email").value;
+        const password = document.getElementById("login-password").value;
+
+        const data = {
+            login: email,
+            password,
+            role,
+            actorId
+        }
+
+        const response = await fetch("http://localhost:3000/api/auth/activate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            toastr.options = {
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
+            toastr.error(`Ошибка: ${result.message}`);
+            throw new Error(result.message);
+        }
+
+        document.querySelector(".login-form").style.display = "none";
+
+        const invitationDiv = document.querySelector(".invitation");
+        const invitationText = document.querySelector(".invitation-text");
+        invitationText.textContent = `Добро пожаловать в организацию "${orgName}"`;
+        invitationDiv.style.removeProperty("display");
     });
-
-    // if (isActive) {
-    //     const invitationDiv = document.querySelector(".invitation");
-    //     const invitationText = document.querySelector(".invitation-text");
-    //     invitationText.textContent = `Добро пожаловать в организацию "${orgName}"`;
-    // }
 }
 
 function hide() {
@@ -136,7 +168,7 @@ function hide() {
     });
 }
 
-
+checkInviteLink();
 window.addEventListener("DOMContentLoaded", registerAndShowInvitation);
 window.addEventListener("DOMContentLoaded", loginAndShowInvitation);
 window.addEventListener("DOMContentLoaded", hide);

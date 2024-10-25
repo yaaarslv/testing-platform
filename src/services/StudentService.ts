@@ -1,13 +1,12 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { Student } from "../entities/Student";
 import { CreateStudentDTO } from "../dto/CreateStudentDTO";
 import { OrganizationService } from "./OrganizationService";
 import { ValidationService } from "./ValidationService";
 import { UpdateStudentDTO } from "../dto/UpdateStudentDTO";
 import { RemoveStudentIdDTO } from "../dto/RemoveStudentIdDTO";
-import { ActivateActorDTO } from "../dto/ActivateActorDTO";
 
 @Injectable()
 export class StudentService {
@@ -60,6 +59,10 @@ export class StudentService {
 
         if (student === null) {
             throw new NotFoundException("Студента с таким id не существует.");
+        }
+
+        if (!ValidationService.isNothing(student.userID) && !ValidationService.isNothing(student.isActive) && !ValidationService.isNothing(student.userID)) {
+            throw new ConflictException("Данный студент уже активирован и добавлен в организацию")
         }
 
         student.isActive = true;

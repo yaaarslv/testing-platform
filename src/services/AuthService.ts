@@ -82,7 +82,12 @@ export class AuthService {
         const login = activateStudentDTO.login;
         const password = activateStudentDTO.password;
 
-        const user = await this.receiveUser(login, false);
+        const hashedLogin = crypto
+            .createHash("sha256")
+            .update(login)
+            .digest("hex");
+
+        const user = await this.receiveUser(hashedLogin, false);
 
         if (user === null || !bcrypt.compareSync(password, user.password)) {
             throw new NotFoundException("Пользователя с таким логином или паролем не существует.");
@@ -142,7 +147,7 @@ export class AuthService {
 
             res.cookie("auth-token", token, { httpOnly: false, secure: false, maxAge: 10800000 });
             return {
-                user: new ReturnUserDTO(user),
+                user: new ReturnUserDTO(newUser),
                 token
                 // actorId
             };
