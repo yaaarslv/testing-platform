@@ -129,13 +129,15 @@ export class AuthService {
                 await this.teacherService.activate(
                     data.actorId,
                     newUser.id,
-                    data.login
+                    data.login,
+                    false
                 );
             } else if (data.role === ERole.Student) {
                 await this.studentService.activate(
                     data.actorId,
                     newUser.id,
-                    data.login
+                    data.login,
+                    false
                 );
             }
 

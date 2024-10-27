@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { CreateTopicDTO } from "../dto/CreateTopicDTO";
 import { TopicService } from "../services/TopicService";
 import { QuestionsDTO } from "../dto/QuestionsDTO";
@@ -17,8 +17,8 @@ export class TopicController {
 
     @Post("create")
     @Roles(ERole.Teacher)
-    async create(@Body() createTopicDTO: CreateTopicDTO): Promise<Topic> {
-        return await this.topicService.create(createTopicDTO);
+    async create(@Req() req: any, @Body() createTopicDTO: CreateTopicDTO): Promise<Topic> {
+        return await this.topicService.create(createTopicDTO, req.user.login);
     }
 
     @Post("remove_question")
@@ -49,5 +49,11 @@ export class TopicController {
     @Roles(ERole.Teacher)
     async receiveTopic(@Param("topic_id") topicId: number) {
         return await this.topicService.receive(topicId);
+    }
+
+    @Get("receive_all")
+    @Roles(ERole.Teacher)
+    async receiveAll(@Req() req: any): Promise<Topic[]> {
+        return await this.topicService.receiveAll(req.user.login);
     }
 }

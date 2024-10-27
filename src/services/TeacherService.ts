@@ -35,17 +35,19 @@ export class TeacherService {
         const teacher = await this.teacherRepository.findOneBy({ id: teacherId });
 
         if (teacher === null) {
-            throw new NotFoundException("Преподавателя с таким id не существует.");
+            throw new NotFoundException("Данного преподавателя не существует.");
         }
 
         return teacher;
     }
 
-    async receiveByUserId(userId: number): Promise<Teacher> {
+    async receiveByUserId(userId: number, throwError = true): Promise<Teacher> {
         const teacher = await this.teacherRepository.findOneBy({ userID: userId });
 
         if (teacher === null) {
-            throw new NotFoundException("Преподавателя с таким id не существует.");
+            if (throwError) {
+                throw new NotFoundException("Данного преподавателя не существует.");
+            }
         }
 
         return teacher;
@@ -61,16 +63,24 @@ export class TeacherService {
     async activate(
         teacherId: number,
         userId: number,
-        email: string
+        email: string,
+        fromLogin = true
     ): Promise<void> {
         const teacher = await this.teacherRepository.findOneBy({ id: teacherId });
 
         if (teacher === null) {
-            throw new NotFoundException("Преподавателя с таким id не существует.");
+            throw new NotFoundException("Данного преподавателя не существует.");
         }
 
-        if (!ValidationService.isNothing(teacher.userID) && !ValidationService.isNothing(teacher.isActive) && !ValidationService.isNothing(teacher.userID)) {
+        if (!ValidationService.isNothing(teacher.userID) && teacher.isActive) {
             throw new ConflictException("Данный преподаватель уже активирован и добавлен в организацию")
+        }
+
+        if (fromLogin) {
+            const existingTeacher = await this.receiveByUserId(userId, false);
+            if (!ValidationService.isNothing(existingTeacher)) {
+                throw new ConflictException("Преподаватель для данного аккаунта уже существует. Для добавления в организацию создайте новый аккаунт.")
+            }
         }
 
         teacher.isActive = true;

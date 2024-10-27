@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const test_stats_nav = document.getElementById("test_stats");
     const organization_nav = document.getElementById("manage-organization");
     const active_tests_nav = document.getElementById("active_tests");
+    const topics_nav = document.getElementById("manage-topics");
 
     if (token) {
         const authButton = document.querySelector(".auth-button");
@@ -14,12 +15,9 @@ document.addEventListener("DOMContentLoaded", function() {
             authForm.action = "profile";
         }
 
-        const test_stats_nav = document.getElementById("test_stats");
-        const organization_nav = document.getElementById("manage-organization");
-        const active_tests_nav = document.getElementById("active_tests");
-
         if (role !== "0") {
             test_stats_nav.style.display = "none";
+            topics_nav.style.display = "none";
         }
 
         if (role !== "2") {
@@ -27,12 +25,14 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
             test_stats_nav.style.display = "none";
             active_tests_nav.style.display = "none";
+            topics_nav.style.display = "none";
         }
 
     } else {
         test_stats_nav.style.display = "none";
         active_tests_nav.style.display = "none";
         organization_nav.style.display = "none";
+        topics_nav.style.display = "none";
     }
     // else {
     //     if (window.location.href.includes('reviews')){

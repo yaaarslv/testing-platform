@@ -10,22 +10,28 @@ import { ValidationService } from "./ValidationService";
 import { UpdateTopicDTO } from "../dto/UpdateTopicDTO";
 import { RemoveQuestionIdDTO } from "../dto/RemoveQuestionIdDTO";
 import { RemoveTopicIdDTO } from "../dto/RemoveTopicIdDTO";
+import { AuthService } from "./AuthService";
+import { TeacherService } from "./TeacherService";
 
 @Injectable()
 export class TopicService {
     constructor(
         @InjectRepository(Topic) private topicRepository: Repository<Topic>,
         private readonly questionService: QuestionService,
+        private readonly authService: AuthService,
+        private readonly teacherService: TeacherService,
         private readonly organizationService: OrganizationService
     ) {
     }
 
-    async create(createTopicDTO: CreateTopicDTO): Promise<Topic> {
-        const organization = await this.organizationService.receiveById(createTopicDTO.organizationId);
+    async create(createTopicDTO: CreateTopicDTO, login: string): Promise<Topic> {
+        const user = await this.authService.receiveUser(login);
+        const teacher = await this.teacherService.receiveByUserId(user.id);
+        const organization = await this.organizationService.receiveById(teacher.organizationId);
 
         const topic = await this.topicRepository.findOneBy({
             name: createTopicDTO.name,
-            organizationId: createTopicDTO.organizationId
+            organizationId: teacher.organizationId
         });
 
         if (topic !== null) {
@@ -33,7 +39,7 @@ export class TopicService {
         }
 
         const newTopic = await this.topicRepository.save({
-            organizationId: createTopicDTO.organizationId,
+            organizationId: teacher.organizationId,
             name: createTopicDTO.name
         });
 
@@ -50,6 +56,13 @@ export class TopicService {
         }
 
         return topic;
+    }
+
+    async receiveAll(login: string): Promise<Topic[]> {
+        const user = await this.authService.receiveUser(login);
+        const teacher = await this.teacherService.receiveByUserId(user.id);
+
+        return await this.topicRepository.findBy({organizationId: teacher.organizationId});
     }
 
     async addQuestions(addQuestionsDTO: QuestionsDTO): Promise<Topic> {

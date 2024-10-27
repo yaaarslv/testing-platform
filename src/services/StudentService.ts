@@ -40,11 +40,13 @@ export class StudentService {
         return student;
     }
 
-    async receiveByUserId(userId: number): Promise<Student> {
+    async receiveByUserId(userId: number, throwError = true): Promise<Student> {
         const student = await this.studentRepository.findOneBy({ userID: userId });
 
         if (student === null) {
-            throw new NotFoundException("Студента с таким id не существует.");
+            if (throwError) {
+                throw new NotFoundException("Студента с таким id не существует.");
+            }
         }
 
         return student;
@@ -53,7 +55,8 @@ export class StudentService {
     async activate(
         studentId: number,
         userId: number,
-        email: string
+        email: string,
+        fromLogin = true
     ): Promise<void> {
         const student = await this.studentRepository.findOneBy({ id: studentId });
 
@@ -61,8 +64,15 @@ export class StudentService {
             throw new NotFoundException("Студента с таким id не существует.");
         }
 
-        if (!ValidationService.isNothing(student.userID) && !ValidationService.isNothing(student.isActive) && !ValidationService.isNothing(student.userID)) {
+        if (!ValidationService.isNothing(student.userID) && student.isActive) {
             throw new ConflictException("Данный студент уже активирован и добавлен в организацию")
+        }
+
+        if (fromLogin) {
+            const existingStudent = await this.receiveByUserId(userId, false);
+            if (!ValidationService.isNothing(existingStudent)) {
+                throw new ConflictException("Студент для данного аккаунта уже существует. Для добавления в организацию создайте новый аккаунт.")
+            }
         }
 
         student.isActive = true;
