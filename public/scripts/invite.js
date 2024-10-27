@@ -94,7 +94,8 @@ function registerAndShowInvitation() {
 
         const invitationDiv = document.querySelector(".invitation");
         const invitationText = document.querySelector(".invitation-text");
-        invitationText.textContent = `Добро пожаловать в организацию "${orgName}"`;
+        const roleText = role === 0 ? "преподавателя." : "студента."
+        invitationText.textContent = `Добро пожаловать в организацию "${orgName}" в качестве ${roleText}`;
         invitationDiv.style.removeProperty("display");
     });
 }
@@ -146,7 +147,8 @@ function loginAndShowInvitation() {
 
         const invitationDiv = document.querySelector(".invitation");
         const invitationText = document.querySelector(".invitation-text");
-        invitationText.textContent = `Добро пожаловать в организацию "${orgName}"`;
+        const roleText = role === 0 ? "преподавателя." : "студента."
+        invitationText.textContent = `Добро пожаловать в организацию "${orgName}" в качестве ${roleText}`;
         invitationDiv.style.removeProperty("display");
     });
 }
