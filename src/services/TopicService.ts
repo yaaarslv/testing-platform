@@ -48,21 +48,32 @@ export class TopicService {
         return newTopic;
     }
 
-    async receive(topicId: number): Promise<Topic> {
+    async receive(topicId: number, full = false) {
         const topic = await this.topicRepository.findOneBy({ id: topicId });
 
         if (topic === null) {
             throw new NotFoundException("Темы с таким id не существует.");
         }
 
-        return topic;
+        if (full) {
+            const questions = await this.questionService.receiveByIds(topic.questionIds);
+            return {
+                ...topic,
+                questions
+            };
+        } else {
+            return topic;
+        }
     }
 
     async receiveAll(login: string): Promise<Topic[]> {
         const user = await this.authService.receiveUser(login);
         const teacher = await this.teacherService.receiveByUserId(user.id);
 
-        return await this.topicRepository.findBy({organizationId: teacher.organizationId});
+        return await this.topicRepository.find({
+            where: { organizationId: teacher.organizationId },
+            order: { id: "ASC" }
+        });
     }
 
     async addQuestions(addQuestionsDTO: QuestionsDTO): Promise<Topic> {

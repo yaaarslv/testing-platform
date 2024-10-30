@@ -48,7 +48,13 @@ export class TopicController {
     @Get("receive/:topic_id")
     @Roles(ERole.Teacher)
     async receiveTopic(@Param("topic_id") topicId: number) {
-        return await this.topicService.receive(topicId);
+        return await this.topicService.receive(topicId, false);
+    }
+
+    @Get("receive_full/:topic_id")
+    @Roles(ERole.Teacher)
+    async receiveFullTopic(@Param("topic_id") topicId: number) {
+        return await this.topicService.receive(topicId, true);
     }
 
     @Get("receive_all")

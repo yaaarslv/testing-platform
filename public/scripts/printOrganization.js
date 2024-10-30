@@ -436,6 +436,8 @@ async function saveRow(rowId, subject) {
         emailCell.textContent = org.email + "";
         responsiblePersonCell.textContent = org.responsiblePerson + "";
 
+        document.getElementById("h1OrgName").textContent = org.name;
+
         // Скрываем иконки сохранения/отмены и показываем иконку редактирования
         const pencil = actionsCell.querySelector(".fa-pencil-alt");
         const check = actionsCell.querySelector(".fa-check");

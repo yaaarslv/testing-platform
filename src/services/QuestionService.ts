@@ -1,5 +1,5 @@
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { AnswerDTO, QuestionDTO, ReturnQuestionDTO } from "../dto/QuestionsDTO";
 import { Question } from "../entities/Question";
 import { AnswerService } from "./AnswerService";
@@ -57,6 +57,10 @@ export class QuestionService {
         }
 
         return new ReturnQuestionDTO(question, answerTexts);
+    }
+
+    async receiveByIds(questionIds: number[]): Promise<Question[]> {
+        return await this.questionRepository.findBy({ id: In(questionIds) });
     }
 
     async addAnswers(answerDTOS: AnswerDTO[], questionId: number): Promise<Question> {
