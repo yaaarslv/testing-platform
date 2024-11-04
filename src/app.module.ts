@@ -135,6 +135,7 @@ export class AppModule {
                 { path: "/topic", method: RequestMethod.ALL },
                 { path: "/manage-topics", method: RequestMethod.ALL },
                 { path: "/question", method: RequestMethod.ALL },
+                { path: "/create_test", method: RequestMethod.ALL },
                 { path: "/test_stats", method: RequestMethod.ALL });
 
         consumer
@@ -142,6 +143,7 @@ export class AppModule {
             .forRoutes({ path: "/test_stats", method: RequestMethod.ALL },
                 { path: "/topic", method: RequestMethod.ALL },
                 { path: "/question", method: RequestMethod.ALL },
+                { path: "/create_test", method: RequestMethod.ALL },
                 { path: "/manage-topics", method: RequestMethod.ALL }
             );
     }

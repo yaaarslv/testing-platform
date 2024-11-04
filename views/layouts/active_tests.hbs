@@ -12,7 +12,7 @@
     <script src="scripts/nav.js"></script>
     <script src="scripts/checkAuth.js"></script>
 
-    <script src="scripts/getProducts.js"></script>
+    <script src="scripts/getTests.js"></script>
 </head>
 <body>
 <header>
@@ -24,14 +24,11 @@
     </div>
 </header>
 <main>
+	<div id="temp"></div>
     <div class="product-filter">
         <div class="products">
             <div class="products-head">
                 <h2>Активные тесты:</h2>
-                <form class="addProduct" action="add-product">
-                </form>
-                <form class="manageProductsForm" action="manage-products">
-                </form>
             </div>
             <div class="loader" style="display: none;">
                 <div class="running-cat-container">
@@ -44,8 +41,12 @@
                 <div class="error-message" style="display: none;">⚠ Что-то пошло не так</div>
             </div>
         </div>
-
     </div>
+	<script>
+		if (localStorage.getItem("role") === "0") {
+            document.getElementById("temp").innerHTML = '<button id="createTestButton" onclick="document.location.href=`create_test`">Создать тест</button>'
+		}
+	</script>
 </main>
 <footer>
 
