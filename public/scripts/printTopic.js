@@ -11,73 +11,225 @@ function setInputWidth(inputElement, additional = 0, length = null) {
     }
 }
 
-function add_question() {
+
+let answerCount = 2; // Изначально доступно 2 ответа
+
+function addAnswerField() {
+    answerCount++;
+    const answersContainer = document.getElementById("answers-container");
+
+    const answerGroup = document.createElement("div");
+    answerGroup.classList.add("form-group");
+    answerGroup.id = `answer-group-${answerCount}`;
+    answerGroup.innerHTML = `
+            <label for="answer-${answerCount}">Ответ ${answerCount}:</label>
+            <input type="text" class="answer-input" name="answer-${answerCount}" placeholder="Введите формулировку ответа" required>
+            <input type="checkbox" class="is-correct-checkbox" name="is-correct-${answerCount}"> Правильный
+        `;
+    answersContainer.appendChild(answerGroup);
+
+    // Активируем кнопку удаления, если добавлено более 2 ответов
+    document.getElementById("remove-answer-btn").disabled = answerCount <= 2;
+}
+
+function removeLastAnswerField() {
+    if (answerCount > 2) {
+        const lastAnswerGroup = document.getElementById(`answer-group-${answerCount}`);
+        if (lastAnswerGroup) {
+            lastAnswerGroup.remove();
+            answerCount--;
+
+            // Деактивируем кнопку удаления, если осталось только 2 ответа
+            document.getElementById("remove-answer-btn").disabled = answerCount <= 2;
+        }
+    }
+}
+
+function submitQuestionForm() {
     document.getElementById("addQuestionForm").addEventListener("submit", async function(e) {
-        e.preventDefault();
+        e.preventDefault(); // Предотвращаем обновление страницы
 
-        const teacherName = document.getElementById("teacher-name").value === "" ? null : document.getElementById("teacher-name").value;
-        const organizationId = parseInt(document.querySelector(".id-cell").textContent);
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const topicId = urlParams.get("id");
 
-        const data = {
-            name: teacherName,
-            organizationId
+        const questionText = document.getElementById("question-text").value;
+        const answerInputs = document.querySelectorAll(".answer-input");
+        const correctCheckboxes = document.querySelectorAll(".is-correct-checkbox");
+
+        const answers = [];
+        answerInputs.forEach((input, index) => {
+            answers.push({
+                answerText: input.value,
+                isCorrect: correctCheckboxes[index].checked
+            });
+        });
+
+        const questionDTO = {
+            questionText: questionText,
+            answers: answers
         };
 
-        const addTeacherForm = document.getElementById("addTeacherForm");
-        addTeacherForm.classList.add("disabled");
-
-        const response = await fetch("http://localhost:3000/api/teacher/create", {
+        const addQuestionForm = document.getElementById("addQuestionForm");
+        addQuestionForm.classList.add("disabled");
+        const response = await fetch(`http://localhost:3000/api/question/create/${topicId}`, {
             method: "POST",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(questionDTO)
         });
 
+        const newQuestion = await response.json();
+
         if (!response.ok) {
-            addTeacherForm.classList.remove("disabled");
-            const json = await response.json();
-            alert(json.message);
-            throw new Error(json.message);
-        }
+            toastr.options = {
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
 
-        const teacher = await response.json();
-        const teacherId = teacher.id;
-        const userID = teacher.userID;
-        const name = teacher.name;
-        const teacherIsActive = teacher.isActive;
-        const email = teacher.email;
-        const createdAt = teacher.createdAt;
-        const orgName = document.getElementById("h1OrgName").textContent;
+            toastr.error(`Ошибка: ${newQuestion.message}`);
+            addQuestionForm.classList.remove("disabled");
+        } else {
+            toastr.options = {
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "3000"
+            };
 
-        const teacherTableBody = document.getElementById("teacherTableBody");
-        const row = document.createElement("tr");
-        row.id = `teacher-${teacherId}`;
-        row.innerHTML = `
-                    <td class="teacher-id-cell">${teacherId}</td>
-                    <td class="teacher-userId-cell">${userID}</td>
-                    <td class="teacher-name-cell">${name}</td>
-                    <td class="teacher-isActive-cell">${teacherIsActive}</td>
-                    <td class="teacher-email-cell">${email}</td>
-                    <td class="teacher-createDate-cell">${createdAt}</td>
-                     <td class="teacher-actions">
-                        <i class="fas fa-pencil-alt" onclick="editRow('${teacherId}', 'teacher')"></i>
-                        <i class="fas fa-check" style="display: none" onclick="saveRow('${teacherId}', 'teacher')"></i>
-                        <i class="fas fa-times" style="display: none" onclick="cancelEdit('${teacherId}', 'teacher')"></i>
-                        <button class="teacher-edit-button" onclick="getInviteLink(0, '${teacherId}', '${orgName}', '${teacherIsActive}')">🔗</button>
-                    </td>
+            toastr.success(`Вопрос успешно добавлен`);
+
+            const studentTableBody = document.getElementById("studentTableBody");
+            const row = document.createElement("tr");
+
+            const newQuestionId = newQuestion.id;
+            const newQuestionText = newQuestion.questionText;
+            row.id = `question-${newQuestionId}`;
+            row.innerHTML = `
+                    <td class="question-id-cell">${newQuestionId}</td>
+                    <td class="question-questionText-cell">${newQuestionText}</td>
                 `;
 
-        if (!teacherIsActive) {
-            row.style.backgroundColor = "darkslategrey";
-            row.querySelector(".teacher-edit-button").style.backgroundColor = "green";
-        }
+            studentTableBody.appendChild(row);
 
-        teacherTableBody.appendChild(row);
-        cancelAddTeacher();
+            const bc = row.style.backgroundColor;
+
+            row.addEventListener("mouseover", () => {
+                row.style.transition = "color 0.3s";
+                row.style.cursor = "pointer";
+                row.style.color = "white";
+                row.style.backgroundColor = "grey";
+            });
+
+            row.addEventListener("mouseout", () => {
+                row.style.color = "initial";
+                row.style.backgroundColor = bc;
+            });
+
+            row.addEventListener("click", () => {
+                window.location.href = `question?id=${newQuestionId}`;
+            });
+
+            addQuestionForm.classList.remove("disabled");
+            answerCount = 2;
+            addQuestionForm.innerHTML = `
+                <div class="form-group">
+                    <b><label for="question-text">Формулировка:</label></b>
+                    <input class="question-input" type="text" id="question-text" name="question-text" maxlength="255"
+                           placeholder="Введите формулировку вопроса" required>
+                </div>
+
+            <div id="answers-container">
+                <h3>Ответы</h3>
+                <div class="form-group">
+                    <label for="answer-1">Ответ 1:</label>
+                    <input type="text" class="answer-input" name="answer-1" placeholder="Введите формулировку ответа" required>
+                        <input type="checkbox" class="is-correct-checkbox" name="is-correct-1"> Правильный
+                </div>
+                <div class="form-group">
+                    <label for="answer-2">Ответ 2:</label>
+                    <input type="text" class="answer-input" name="answer-2" placeholder="Введите формулировку ответа" required>
+                        <input type="checkbox" class="is-correct-checkbox" name="is-correct-2"> Правильный
+                </div>
+            </div>
+
+            <button type="button" onclick="addAnswerField()">Добавить ответ</button>
+            <button type="button" onclick="removeLastAnswerField()" id="remove-answer-btn" disabled>Удалить последний ответ</button>
+
+            <button class="add-question-button" type="submit">Добавить вопрос</button>`
+        }
     });
 }
+
+// function add_question() {
+//     document.getElementById("addQuestionForm").addEventListener("submit", async function(e) {
+//         e.preventDefault();
+//
+//         const teacherName = document.getElementById("teacher-name").value === "" ? null : document.getElementById("teacher-name").value;
+//         const organizationId = parseInt(document.querySelector(".id-cell").textContent);
+//
+//         const data = {
+//             name: teacherName,
+//             organizationId
+//         };
+//
+//         const addTeacherForm = document.getElementById("addTeacherForm");
+//         addTeacherForm.classList.add("disabled");
+//
+//         const response = await fetch("http://localhost:3000/api/teacher/create", {
+//             method: "POST",
+//             headers: {
+//                 "authorization": `Bearer ${localStorage.getItem("token")}`,
+//                 "Content-Type": "application/json"
+//             },
+//             body: JSON.stringify(data)
+//         });
+//
+//         if (!response.ok) {
+//             addTeacherForm.classList.remove("disabled");
+//             const json = await response.json();
+//             alert(json.message);
+//             throw new Error(json.message);
+//         }
+//
+//         const teacher = await response.json();
+//         const teacherId = teacher.id;
+//         const userID = teacher.userID;
+//         const name = teacher.name;
+//         const teacherIsActive = teacher.isActive;
+//         const email = teacher.email;
+//         const createdAt = teacher.createdAt;
+//         const orgName = document.getElementById("h1OrgName").textContent;
+//
+//         const teacherTableBody = document.getElementById("teacherTableBody");
+//         const row = document.createElement("tr");
+//         row.id = `teacher-${teacherId}`;
+//         row.innerHTML = `
+//                     <td class="teacher-id-cell">${teacherId}</td>
+//                     <td class="teacher-userId-cell">${userID}</td>
+//                     <td class="teacher-name-cell">${name}</td>
+//                     <td class="teacher-isActive-cell">${teacherIsActive}</td>
+//                     <td class="teacher-email-cell">${email}</td>
+//                     <td class="teacher-createDate-cell">${createdAt}</td>
+//                      <td class="teacher-actions">
+//                         <i class="fas fa-pencil-alt" onclick="editRow('${teacherId}', 'teacher')"></i>
+//                         <i class="fas fa-check" style="display: none" onclick="saveRow('${teacherId}', 'teacher')"></i>
+//                         <i class="fas fa-times" style="display: none" onclick="cancelEdit('${teacherId}', 'teacher')"></i>
+//                         <button class="teacher-edit-button" onclick="getInviteLink(0, '${teacherId}', '${orgName}', '${teacherIsActive}')">🔗</button>
+//                     </td>
+//                 `;
+//
+//         if (!teacherIsActive) {
+//             row.style.backgroundColor = "darkslategrey";
+//             row.querySelector(".teacher-edit-button").style.backgroundColor = "green";
+//         }
+//
+//         teacherTableBody.appendChild(row);
+//         cancelAddTeacher();
+//     });
+// }
 
 function addQuestion() {
     const addQuestionButton = document.querySelector(".addQuestionButton");
@@ -333,5 +485,5 @@ function changeTableVisibility(titleClassName, tableClassName) {
 }
 
 window.addEventListener("DOMContentLoaded", loadUserData);
-window.addEventListener("DOMContentLoaded", add_question);
+window.addEventListener("DOMContentLoaded", submitQuestionForm);
 window.addEventListener("DOMContentLoaded", changeQuestionTableVisibility);

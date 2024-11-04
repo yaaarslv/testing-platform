@@ -73,17 +73,27 @@
 			<h2>Добавление вопроса</h2>
 			<form id="addQuestionForm">
 				<div class="form-group">
-					<b><label for="question-name">ФИО:</label></b>
-					<input class="name-input" type="text" id="question-name" name="question-name" maxlength="255"
-						   placeholder="Введите ФИО" required>
+					<b><label for="question-text">Формулировка:</label></b>
+					<input class="question-input" type="text" id="question-text" name="question-text" maxlength="255"
+						   placeholder="Введите формулировку вопроса" required>
 				</div>
 
-				<div class="form-group">
-					<b><label for="question-group">Группа:</label></b>
-					<input class="responsiblePerson-input" type="text" id="question-group" name="question-group"
-						   maxlength="10"
-						   placeholder="Введите группу" required>
+				<div id="answers-container">
+					<h3>Ответы</h3>
+					<div class="form-group">
+						<label for="answer-1">Ответ 1:</label>
+						<input type="text" class="answer-input" name="answer-1" placeholder="Введите формулировку ответа" required>
+						<input type="checkbox" class="is-correct-checkbox" name="is-correct-1"> Правильный
+					</div>
+					<div class="form-group">
+						<label for="answer-2">Ответ 2:</label>
+						<input type="text" class="answer-input" name="answer-2" placeholder="Введите формулировку ответа" required>
+						<input type="checkbox" class="is-correct-checkbox" name="is-correct-2"> Правильный
+					</div>
 				</div>
+
+				<button type="button" onclick="addAnswerField()">Добавить ответ</button>
+				<button type="button" onclick="removeLastAnswerField()" id="remove-answer-btn" disabled>Удалить последний ответ</button>
 
 				<button class="add-question-button" type="submit">Добавить вопрос</button>
 			</form>

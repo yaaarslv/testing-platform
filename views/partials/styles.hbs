@@ -429,11 +429,21 @@
 
 	.login-form,
 	.add-student-form,
-	.add-question-form,
 	.add-teacher-form,
 	.add-topic-form,
 	.register-form, .add-review-form, .subscription-form, .add-news-form, .unsubscription-form, .recover-form, .add-user-form, .lab5-form {
 		max-width: 400px;
+		margin: 0 auto;
+		padding: 30px;
+		background-color: #fff;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+		text-align: center;
+	}
+
+	.add-question-form {
+		max-width: 500px;
 		margin: 0 auto;
 		padding: 30px;
 		background-color: #fff;
@@ -484,6 +494,8 @@
 	.code-input[type="text"],
 	.subject-input[type="text"],
 	.name-input[type="text"],
+	.question-input[type="text"],
+	.answer-input[type="text"],
 	.address-input[type="text"],
 	.responsiblePerson-input[type="text"],
 	.phone-input[type="tel"],
@@ -536,11 +548,14 @@
 		cursor: pointer;
 	}
 
-	.disabled {
+	.disabled, :disabled {
 		pointer-events: none;
 		opacity: 0.4;
 	}
 
+	#answers-container .form-group {
+		padding-bottom: 40px;
+	}
 
 	.login-button:hover,
 	.add-student-button:hover,
