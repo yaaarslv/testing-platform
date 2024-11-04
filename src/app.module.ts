@@ -134,12 +134,14 @@ export class AppModule {
                 { path: "/manage-organization", method: RequestMethod.ALL },
                 { path: "/topic", method: RequestMethod.ALL },
                 { path: "/manage-topics", method: RequestMethod.ALL },
+                { path: "/question", method: RequestMethod.ALL },
                 { path: "/test_stats", method: RequestMethod.ALL });
 
         consumer
             .apply(TeacherRoleMiddleware)
             .forRoutes({ path: "/test_stats", method: RequestMethod.ALL },
                 { path: "/topic", method: RequestMethod.ALL },
+                { path: "/question", method: RequestMethod.ALL },
                 { path: "/manage-topics", method: RequestMethod.ALL }
             );
     }

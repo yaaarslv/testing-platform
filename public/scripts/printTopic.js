@@ -47,7 +47,7 @@ function removeLastAnswerField() {
 
 function submitQuestionForm() {
     document.getElementById("addQuestionForm").addEventListener("submit", async function(e) {
-        e.preventDefault(); // Предотвращаем обновление страницы
+        e.preventDefault();
 
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
@@ -64,6 +64,18 @@ function submitQuestionForm() {
                 isCorrect: correctCheckboxes[index].checked
             });
         });
+
+        if (answers.every(ans => ans.isCorrect === false)) {
+            toastr.options = {
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
+            toastr.error(`Должен быть хотя бы один правильный ответ`);
+            questionForm.classList.remove("disabled");
+            return;
+        }
 
         const questionDTO = {
             questionText: questionText,
@@ -162,74 +174,6 @@ function submitQuestionForm() {
         }
     });
 }
-
-// function add_question() {
-//     document.getElementById("addQuestionForm").addEventListener("submit", async function(e) {
-//         e.preventDefault();
-//
-//         const teacherName = document.getElementById("teacher-name").value === "" ? null : document.getElementById("teacher-name").value;
-//         const organizationId = parseInt(document.querySelector(".id-cell").textContent);
-//
-//         const data = {
-//             name: teacherName,
-//             organizationId
-//         };
-//
-//         const addTeacherForm = document.getElementById("addTeacherForm");
-//         addTeacherForm.classList.add("disabled");
-//
-//         const response = await fetch("http://localhost:3000/api/teacher/create", {
-//             method: "POST",
-//             headers: {
-//                 "authorization": `Bearer ${localStorage.getItem("token")}`,
-//                 "Content-Type": "application/json"
-//             },
-//             body: JSON.stringify(data)
-//         });
-//
-//         if (!response.ok) {
-//             addTeacherForm.classList.remove("disabled");
-//             const json = await response.json();
-//             alert(json.message);
-//             throw new Error(json.message);
-//         }
-//
-//         const teacher = await response.json();
-//         const teacherId = teacher.id;
-//         const userID = teacher.userID;
-//         const name = teacher.name;
-//         const teacherIsActive = teacher.isActive;
-//         const email = teacher.email;
-//         const createdAt = teacher.createdAt;
-//         const orgName = document.getElementById("h1OrgName").textContent;
-//
-//         const teacherTableBody = document.getElementById("teacherTableBody");
-//         const row = document.createElement("tr");
-//         row.id = `teacher-${teacherId}`;
-//         row.innerHTML = `
-//                     <td class="teacher-id-cell">${teacherId}</td>
-//                     <td class="teacher-userId-cell">${userID}</td>
-//                     <td class="teacher-name-cell">${name}</td>
-//                     <td class="teacher-isActive-cell">${teacherIsActive}</td>
-//                     <td class="teacher-email-cell">${email}</td>
-//                     <td class="teacher-createDate-cell">${createdAt}</td>
-//                      <td class="teacher-actions">
-//                         <i class="fas fa-pencil-alt" onclick="editRow('${teacherId}', 'teacher')"></i>
-//                         <i class="fas fa-check" style="display: none" onclick="saveRow('${teacherId}', 'teacher')"></i>
-//                         <i class="fas fa-times" style="display: none" onclick="cancelEdit('${teacherId}', 'teacher')"></i>
-//                         <button class="teacher-edit-button" onclick="getInviteLink(0, '${teacherId}', '${orgName}', '${teacherIsActive}')">🔗</button>
-//                     </td>
-//                 `;
-//
-//         if (!teacherIsActive) {
-//             row.style.backgroundColor = "darkslategrey";
-//             row.querySelector(".teacher-edit-button").style.backgroundColor = "green";
-//         }
-//
-//         teacherTableBody.appendChild(row);
-//         cancelAddTeacher();
-//     });
-// }
 
 function addQuestion() {
     const addQuestionButton = document.querySelector(".addQuestionButton");

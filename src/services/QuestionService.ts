@@ -50,13 +50,17 @@ export class QuestionService {
 
     async receiveWithAnswerText(questionId: number): Promise<ReturnQuestionDTO> {
         const question = await this.receive(questionId);
-        let answerTexts = [];
+        let answers = [];
         for (const q of question.answerIds) {
-            const answerText = await this.answerService.receive(q);
-            answerTexts.push(answerText.answerText);
+            const answer = await this.answerService.receive(q);
+            answers.push({
+                answerId: answer.id,
+                answerText: answer.answerText,
+                isCorrect: answer.isCorrect
+            })
         }
 
-        return new ReturnQuestionDTO(question, answerTexts);
+        return new ReturnQuestionDTO(question, answers);
     }
 
     async receiveByIds(questionIds: number[]): Promise<Question[]> {
