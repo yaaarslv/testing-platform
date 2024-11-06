@@ -57,41 +57,43 @@ async function removeAnswer(index, answerId) {
     if (questionData.answers.length > 2) {
         questionData.answers.splice(index, 1);
 
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const questionId = urlParams.get("id");
+        if (answerId != null) {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const questionId = urlParams.get("id");
 
-        const data = {
-            questionId: parseInt(questionId),
-            answerId: parseInt(answerId)
-        }
+            const data = {
+                questionId: parseInt(questionId),
+                answerId: parseInt(answerId)
+            }
 
-        const res = await fetch(`http://localhost:3000/api/question/remove_answer`, {
-            method: "POST",
-            headers: {
-                "authorization": `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        });
+            const res = await fetch(`http://localhost:3000/api/question/remove_answer`, {
+                method: "POST",
+                headers: {
+                    "authorization": `Bearer ${localStorage.getItem("token")}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
 
-        if (!res.ok) {
-            toastr.options = {
-                "progressBar": true,
-                "positionClass": "toast-top-right",
-                "timeOut": "5000"
-            };
+            if (!res.ok) {
+                toastr.options = {
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "timeOut": "5000"
+                };
 
-            toastr.error(`Ошибка при удалении ответа`);
-            return;
-        } else {
-            toastr.options = {
-                "progressBar": true,
-                "positionClass": "toast-top-right",
-                "timeOut": "3000"
-            };
+                toastr.error(`Ошибка при удалении ответа`);
+                return;
+            } else {
+                toastr.options = {
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "timeOut": "3000"
+                };
 
-            toastr.success(`Ответ успешно удалён`);
+                toastr.success(`Ответ успешно удалён`);
+            }
         }
         renderAnswers();
     }

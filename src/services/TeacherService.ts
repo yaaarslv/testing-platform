@@ -1,21 +1,23 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, forwardRef, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { Teacher } from "../entities/Teacher";
 import { CreateTeacherDTO } from "../dto/CreateTeacherDTO";
-import { AddGroupsDTO, ReceiveTeacherGroups } from "../dto/AddStudentDTO";
+import { AddGroupsDTO } from "../dto/AddStudentDTO";
 import { OrganizationService } from "./OrganizationService";
 import { ValidationService } from "./ValidationService";
 import { UpdateTeacherDTO } from "../dto/UpdateTeacherDTO";
 import { RemoveGroupDTO } from "../dto/RemoveGroupDTO";
 import { RemoveTeacherIdDTO } from "../dto/RemoveTeacherIdDTO";
+import { AuthService } from "./AuthService";
+import { QuestionService } from "./QuestionService";
 
 @Injectable()
 export class TeacherService {
     constructor(
         @InjectRepository(Teacher) private teacherRepository: Repository<Teacher>,
-        private readonly organizationService: OrganizationService
-    ) {
+        private readonly organizationService: OrganizationService,
+        @Inject(forwardRef(() => AuthService)) private readonly authService: AuthService) {
     }
 
     async create(createTeacherDTO: CreateTeacherDTO): Promise<Teacher> {
@@ -113,8 +115,9 @@ export class TeacherService {
         return true;
     }
 
-    async receiveGroups(receiveTeacherGroups: ReceiveTeacherGroups): Promise<string[]> {
-        const teacher = await this.receive(receiveTeacherGroups.teacherId);
+    async receiveGroups(login: string): Promise<string[]> {
+        const user = await this.authService.receiveUser(login);
+        const teacher = await this.receiveByUserId(user.id);
         return teacher.groups;
     }
 

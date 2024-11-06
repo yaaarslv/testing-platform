@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { TeacherService } from "../services/TeacherService";
 import { CreateTeacherDTO } from "../dto/CreateTeacherDTO";
 import { AddGroupsDTO, ReceiveTeacherGroups } from "../dto/AddStudentDTO";
@@ -45,9 +45,9 @@ export class TeacherController {
         return await this.teacherService.removeGroup(removeGroupDTO);
     }
 
-    @Post("groups")
+    @Get("groups")
     @Roles(ERole.Teacher)
-    async receiveGroups(@Body() receiveTeacherGroups: ReceiveTeacherGroups): Promise<string[]> {
-        return await this.teacherService.receiveGroups(receiveTeacherGroups);
+    async receiveGroups(@Req() req: any): Promise<string[]> {
+        return await this.teacherService.receiveGroups(req.user.login);
     }
 }

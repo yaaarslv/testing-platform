@@ -10,10 +10,10 @@ export class Test {
     @Column({ nullable: false })
     testName: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     teacherId: number;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     topicId: number;
 
     @ManyToOne(() => Topic, { nullable: false })

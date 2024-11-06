@@ -38,12 +38,32 @@ export class TestService {
         const user = await this.authService.receiveUser(login);
         const teacher = await this.teacherService.receiveByUserId(user.id);
 
+        const topicQuestionsCount = await this.questionService.getTopicQuestionsCount(createTestDTO.topicId);
+
+        if (topicQuestionsCount < createTestDTO.questionCount) {
+            throw new ConflictException(`В банке вопросов этой темы недостаточно вопросов для создания теста с выбранным количеством вопросов. Вопросов в банке: ${topicQuestionsCount}`);
+        }
+
+        const existingTest = await this.testRepository.findOneBy({
+            topic: createTestDTO.topicId,
+            testName: createTestDTO.testName
+        });
+
+        if (!ValidationService.isNothing(existingTest)) {
+            throw new ConflictException("Тест с таким названием уже существует");
+        }
+
+        // todo сделать страницу теста (там будет генерация для студента и редактирование для препода)
+
         return await this.testRepository.save({
             testName: createTestDTO.testName,
             topic: createTestDTO.topicId,
+            topicId: createTestDTO.topicId,
             teacher: teacher.id,
+            teacherId: teacher.id,
             questionCount: createTestDTO.questionCount,
-            attempts: createTestDTO.attempts
+            attempts: createTestDTO.attempts,
+            group: createTestDTO.group
         });
     }
 
@@ -107,12 +127,6 @@ export class TestService {
         const usedAttempts = await this.testAttemptService.receiveUsedAttemptsByStudentIdAndTestId(student.id, testId);
         if (usedAttempts >= test.attempts) {
             throw new ForbiddenException("Использованы все попытки для данного теста");
-        }
-
-        const topicQuestionsCount = await this.questionService.getTopicQuestionsCount(test.topic);
-
-        if (topicQuestionsCount < test.questionCount) {
-            throw new ConflictException("В банке вопросов этой темы недостаточно вопросов для создания теста с выбранным количеством вопросов");
         }
 
         const randomQuestions = await this.questionService.getRandomQuestions(test.questionCount);

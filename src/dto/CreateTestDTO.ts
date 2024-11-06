@@ -16,4 +16,8 @@ export class CreateTestDTO {
     @IsNumber()
     @IsNotEmpty()
     attempts: number;
+
+    @IsString()
+    @IsNotEmpty()
+    group: string;
 }
