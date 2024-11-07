@@ -3,6 +3,8 @@ async function fetchAndDisplayProducts() {
     const errorMessageBox = document.querySelector(".error-message");
     const productList = document.querySelector(".product-list");
 
+    const role = localStorage.getItem("role");
+
     try {
         loaders.forEach(loader => {
             loader.style.display = "block";
@@ -84,9 +86,15 @@ async function fetchAndDisplayProducts() {
             const elements = [nameDiv];
 
             elements.forEach((element) => {
-                element.addEventListener("click", () => {
-                    window.open(`test?id=${test.id}`);
-                });
+                if (role === "1"){
+                    element.addEventListener("click", () => {
+                        window.location.href = `test?id=${test.id}`;
+                    });
+                } else {
+                    element.addEventListener("click", () => {
+                        window.location.href = `update_test?id=${test.id}`;
+                    });
+                }
             });
         });
 

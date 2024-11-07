@@ -54,6 +54,9 @@ async function createTest(event) {
         attempts: parseInt(attempts),
     };
 
+    const createTestForm = document.getElementById("createTestForm");
+    createTestForm.classList.add("disabled");
+
     // Отправляем запрос на создание теста
     const response = await fetch('http://localhost:3000/api/test/create', {
         method: 'POST',
@@ -81,6 +84,7 @@ async function createTest(event) {
         };
 
         toastr.error(`Ошибка: ${error.message}`);
+        createTestForm.classList.remove('disabled');
     }
 }
 

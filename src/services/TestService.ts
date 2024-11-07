@@ -53,8 +53,6 @@ export class TestService {
             throw new ConflictException("Тест с таким названием уже существует");
         }
 
-        // todo сделать страницу теста (там будет генерация для студента и редактирование для препода)
-
         return await this.testRepository.save({
             testName: createTestDTO.testName,
             topic: createTestDTO.topicId,
@@ -178,13 +176,15 @@ export class TestService {
 
     async update(testId: number, updateTestDTO: UpdateTestDTO) {
         const test = await this.receiveByTestId(testId);
+        updateTestDTO.id = test.id;
 
         if (!ValidationService.isNothing(updateTestDTO.testName)) {
             test.testName = updateTestDTO.testName;
         }
 
-        if (!ValidationService.isNothing(updateTestDTO.topic)) {
-            test.topic = updateTestDTO.topic;
+        if (!ValidationService.isNothing(updateTestDTO.topicId)) {
+            test.topic = updateTestDTO.topicId;
+            test.topicId = updateTestDTO.topicId;
         }
 
         if (!ValidationService.isNothing(updateTestDTO.attempts)) {
@@ -192,6 +192,12 @@ export class TestService {
         }
 
         if (!ValidationService.isNothing(updateTestDTO.questionCount)) {
+            const topicQuestionsCount = await this.questionService.getTopicQuestionsCount(updateTestDTO.topicId);
+
+            if (topicQuestionsCount < updateTestDTO.questionCount) {
+                throw new ConflictException(`В банке вопросов этой темы недостаточно вопросов для создания теста с выбранным количеством вопросов. Вопросов в банке: ${topicQuestionsCount}`);
+            }
+
             test.questionCount = updateTestDTO.questionCount;
         }
 
@@ -199,9 +205,7 @@ export class TestService {
             test.group = updateTestDTO.group;
         }
 
-        await this.testRepository.save(test);
-
-        return test;
+        return await this.testRepository.save(updateTestDTO);
     }
 
     async delete(deleteTestDTO: DeleteTestDTO, login: string) {
