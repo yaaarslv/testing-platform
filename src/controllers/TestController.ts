@@ -12,6 +12,7 @@ import { DeleteTestDTO } from "../dto/DeleteTestDTO";
 import { UpdateTestDTO } from "../dto/UpdateTestDTO";
 import { Roles, RolesGuard } from "../models/RolesGuard";
 import { ERole } from "../models/ERole";
+import { TestWithUsedAttempts } from "../dto/ReturnTestsDTO";
 
 @Controller("api/test")
 @UseGuards(RolesGuard)
@@ -27,13 +28,20 @@ export class TestController {
     }
 
     @Get("receive/:id")
+    @Roles(ERole.Teacher, ERole.Student)
     async receiveById(@Param("id") id: number): Promise<Test> {
         return await this.testService.receiveByTestId(id);
     }
 
+    @Get("receive_by_test_with_used_attempts/:id")
+    @Roles(ERole.Student)
+    async receiveByTestWithUsedAttempts(@Req() req: any, @Param("id") id: number): Promise<TestWithUsedAttempts> {
+        return await this.testService.receiveByTestWithUsedAttempts(id, req.user.login);
+    }
+
     @Get("receive_all")
     @Roles(ERole.Teacher, ERole.Student)
-    async receive(@Req() req: any): Promise<Test[]> {
+    async receive(@Req() req: any): Promise<TestWithUsedAttempts[]> {
         return await this.testService.receiveAll(req.user.login);
     }
 

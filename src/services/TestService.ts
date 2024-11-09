@@ -74,7 +74,7 @@ export class TestService {
 
             const result: TestWithUsedAttempts[] = [];
             for (const test of tests) {
-                result.push(new TestWithUsedAttempts(test, 0));
+                result.push(new TestWithUsedAttempts(test, "недоступно"));
             }
 
             return result;
@@ -94,6 +94,19 @@ export class TestService {
 
             return result;
         }
+    }
+
+    async receiveByTestWithUsedAttempts(testId: number, login: string): Promise<TestWithUsedAttempts> {
+        const user = await this.authService.receiveUser(login);
+
+        const student = await this.studentService.receiveByUserId(user.id);
+        const test = await this.testRepository.findOne({
+            where: { id: testId },
+            relations: ["teacher", "topic"]
+        });
+
+        const usedAttempts = await this.testAttemptService.receiveUsedAttemptsByStudentIdAndTestId(student.id, test.id);
+        return new TestWithUsedAttempts(test, usedAttempts);
     }
 
     async receiveByTestId(testId: number): Promise<Test> {

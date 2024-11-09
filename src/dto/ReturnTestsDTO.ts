@@ -3,9 +3,9 @@ import { Expose } from "class-transformer";
 
 export class TestWithUsedAttempts extends Test {
     @Expose()
-    usedAttempts: number;
+    usedAttempts: number | string;
 
-    constructor(test: Test, usedAttempts: number) {
+    constructor(test: Test, usedAttempts: number | string) {
         super();
         Object.assign(this, test);
         this.usedAttempts = usedAttempts;

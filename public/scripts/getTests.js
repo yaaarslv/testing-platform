@@ -79,7 +79,11 @@ async function fetchAndDisplayProducts() {
             productDiv.appendChild(categoryDiv);
             productDiv.appendChild(brandDiv);
             productDiv.appendChild(availabilityDiv);
-            productDiv.appendChild(usedAttemptsDiv);
+
+            if (test.usedAttempts !== "недоступно") {
+                productDiv.appendChild(usedAttemptsDiv);
+            }
+
 
             productList.appendChild(productDiv);
 

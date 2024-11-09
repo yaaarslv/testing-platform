@@ -37,6 +37,7 @@ import { APP_GUARD } from "@nestjs/core";
 import { RolesGuard } from "./models/RolesGuard";
 import { AuthViewMiddleware } from "./middlewares/AuthViewMiddleware";
 import { TeacherRoleMiddleware } from "./middlewares/TeacherRoleMiddleware";
+import { StudentRoleMiddleware } from "./middlewares/StudentRoleMiddleware";
 
 @Module({
     imports: [
@@ -147,6 +148,12 @@ export class AppModule {
                 { path: "/create_test", method: RequestMethod.ALL },
                 { path: "/update_test", method: RequestMethod.ALL },
                 { path: "/manage-topics", method: RequestMethod.ALL }
+            );
+
+        consumer
+            .apply(StudentRoleMiddleware)
+            .forRoutes({ path: "/test", method: RequestMethod.ALL },
+
             );
     }
 }
