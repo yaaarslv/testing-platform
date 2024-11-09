@@ -9,6 +9,10 @@ export class CheckTestDTO {
     @IsArray()
     @IsNotEmpty()
     answers: CheckQuestionDTO[];
+
+    @IsNumber()
+    @IsNotEmpty()
+    duration: number;
 }
 
 export class ReturnGeneratedTest {

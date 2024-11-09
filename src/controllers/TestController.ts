@@ -65,7 +65,7 @@ export class TestController {
 
     @Post("check")
     @Roles(ERole.Student)
-    async check(@Req() req: any, @Body() checkTestDTO: CheckTestDTO): Promise<boolean> {
+    async check(@Req() req: any, @Body() checkTestDTO: CheckTestDTO): Promise<{ score: number }> {
         return await this.testService.checkTest(checkTestDTO, req.user.login);
     }
 

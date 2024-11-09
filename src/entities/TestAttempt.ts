@@ -26,6 +26,9 @@ export class TestAttempt {
     score: number;
 
     @Column({ nullable: false })
+    questionCount: number;
+
+    @Column({ nullable: false })
     timeSpent: number;
 
     constructor(
@@ -34,13 +37,15 @@ export class TestAttempt {
         attemptDate: Date,
         score: number,
         testId: number,
-        timeSpent: number
+        timeSpent: number,
+        questionCount: number,
     ) {
         this.studentId = studentId;
         this.topicId = topicId;
         this.attemptDate = attemptDate;
         this.score = score;
         this.test = testId;
+        this.questionCount = questionCount;
         this.timeSpent = timeSpent;
     }
 }

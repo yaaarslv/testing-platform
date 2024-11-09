@@ -23,7 +23,7 @@ export class TopicController {
 
     @Post("remove_question")
     @Roles(ERole.Teacher)
-    async removeQuestionId(@Body() removeQuestionIdDTO: RemoveQuestionIdDTO): Promise<boolean> {
+    async removeQuestionId(@Body() removeQuestionIdDTO: RemoveQuestionIdDTO): Promise<{ ok: boolean }> {
         return await this.topicService.removeQuestionId(removeQuestionIdDTO);
     }
 

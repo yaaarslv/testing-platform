@@ -397,7 +397,7 @@ async function loadUserData() {
             });
 
             row.addEventListener("click", () => {
-                window.location.href = `question?id=${questionId}`;
+                window.location.href = `question?id=${questionId}&topic=${topicId}`;
             });
         });
 

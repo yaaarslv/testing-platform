@@ -98,12 +98,11 @@ export class TopicService {
         await this.topicRepository.save(topic);
     }
 
-    async removeQuestionId(removeQuestionIdDTO: RemoveQuestionIdDTO): Promise<boolean> {
+    async removeQuestionId(removeQuestionIdDTO: RemoveQuestionIdDTO): Promise<{ ok: boolean }> {
         const topic = await this.receive(removeQuestionIdDTO.topicId);
         topic.questionIds = topic.questionIds.filter(id => id !== removeQuestionIdDTO.questionId);
         await this.topicRepository.save(topic);
-        await this.questionService.delete(removeQuestionIdDTO.questionId);
-        return true;
+        return await this.questionService.delete(removeQuestionIdDTO.questionId);
     }
 
     async update(topicId: number, updateTopicDTO: UpdateTopicDTO): Promise<Topic> {

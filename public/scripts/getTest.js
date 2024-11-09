@@ -5,7 +5,13 @@ async function loadTestInfo() {
     const testId = urlParams.get("id");
 
     if (!testId) {
-        alert("ID теста не указан!");
+        toastr.options = {
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "5000"
+        };
+
+        toastr.error(`ID теста не указан`);
         return;
     }
 
@@ -24,7 +30,7 @@ async function loadTestInfo() {
 
         const testData = await response.json();
         displayTestInfo(testData);
-        document.querySelector(".test-container").removeAttribute("style");
+        document.querySelector(".test-container").style.removeProperty("display");
 
     } catch (error) {
         console.error('Ошибка:', error);
@@ -66,7 +72,7 @@ function displayTestInfo(data) {
         notEnoughAttempts.style.display = "revert";
     } else {
         generateButton.addEventListener("click", function() {
-            window.location.href = `generated_test?et=amnfkegnwgnkgnwgjrngnr&yj=rgorgokerpgergenrgeorngegope&id=${data.id}&ops=45565oihor`
+            window.location.href = `generated_test?et=amnfkegnwgnkgnwgjrngnr&yj=rgorgokerpgergenrgeorngegope&id=${data.id}&ops=45565oihor&hg=rgjrgirgrrg&name=${data.testName}&ty=regokeejoergrgjregiregjreoijgorggjergjregjernvkldfknkvlscvpenh`
         })
     }
 }

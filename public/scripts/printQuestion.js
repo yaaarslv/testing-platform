@@ -65,7 +65,7 @@ async function removeAnswer(index, answerId) {
             const data = {
                 questionId: parseInt(questionId),
                 answerId: parseInt(answerId)
-            }
+            };
 
             const res = await fetch(`http://localhost:3000/api/question/remove_answer`, {
                 method: "POST",
@@ -113,7 +113,7 @@ async function saveChanges() {
     // Обновляем вопрос
     const updatedQuestionText = document.getElementById("questionText").value;
 
-    if (updatedQuestionText === ""){
+    if (updatedQuestionText === "") {
         toastr.options = {
             "progressBar": true,
             "positionClass": "toast-top-right",
@@ -125,7 +125,7 @@ async function saveChanges() {
         return;
     }
 
-    if (questionData.answers.some(ans => ans.answerText === "")){
+    if (questionData.answers.some(ans => ans.answerText === "")) {
         toastr.options = {
             "progressBar": true,
             "positionClass": "toast-top-right",
@@ -233,6 +233,41 @@ async function saveChanges() {
         };
 
         toastr.success(`Данные успешно обновлены`);
+    }
+}
+
+async function deleteQuestion() {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const questionId = urlParams.get("id");
+    const topic = urlParams.get("topic");
+
+    const questionForm = document.querySelector(".question-answers-form");
+    questionForm.classList.add("disabled");
+
+    const response = await fetch(`http://localhost:3000/api/topic/remove_question`, {
+        method: "POST",
+        headers: {
+            "authorization": `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ questionId: parseInt(questionId), topicId: parseInt(topic) })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        toastr.options = {
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "5000"
+        };
+
+        toastr.error(`Ошибка при удалении вопроса: ${result.message}`);
+        questionForm.classList.remove("disabled");
+    } else {
+        alert("Вопрос успешно удалён");
+        window.location.href = `topic?id=${topic}`;
     }
 }
 

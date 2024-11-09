@@ -144,11 +144,13 @@ export class TestService {
         return new ReturnGeneratedTest(testId, randomQuestions);
     }
 
-    async checkTest(checkTestDTO: CheckTestDTO, login: string): Promise<boolean> {
+    async checkTest(checkTestDTO: CheckTestDTO, login: string): Promise<{ score: number }> {
         const user = await this.authService.receiveUser(login);
         const student = await this.studentService.receiveByUserId(user.id);
 
         const test = await this.receiveByTestId(checkTestDTO.testId);
+        const duration = checkTestDTO.duration;
+
         let correctAnswers = 0;
         const allAnswers = checkTestDTO.answers;
 
@@ -173,8 +175,8 @@ export class TestService {
             }
         }
 
-        await this.testAttemptService.create(student.id, test.topic, correctAnswers, test.id);
-        return true;
+        await this.testAttemptService.create(student.id, test.topicId, correctAnswers, test.id, duration, allAnswers.length);
+        return { score: correctAnswers };
     }
 
     async getStudentsResults(getStudentsResultsDTO: GetStudentsResultsDTO): Promise<BestStudentsAttempts> {
