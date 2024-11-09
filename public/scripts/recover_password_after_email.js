@@ -3,6 +3,10 @@ function check_recover_link() {
     const urlParams = new URLSearchParams(queryString);
     const link = urlParams.get("link");
 
+    if (!link) {
+        window.location.href = "auth";
+    }
+
     fetch("http://localhost:3000/api/auth/check_recover_link", {
         method: "POST",
         headers: {
