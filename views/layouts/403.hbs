@@ -28,8 +28,24 @@
         <div class="error403-text">
             Вы не имеете права находиться на этой странице!
         </div>
-        <p><a href="active_tests">На главную страницу</a></p>
+        <p><a class="to-main" href="active_tests">На главную страницу</a></p>
     </div>
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			const role = localStorage.getItem("role");
+			const toMain = document.querySelector(".to-main");
+
+			if (role === "0" || role === "1") {
+				toMain.setAttribute("href", "active_tests");
+			} else if (role === "2") {
+				toMain.setAttribute("href", "manage-organization");
+			} else if (role === undefined || role === null) {
+				toMain.setAttribute("href", "auth");
+			} else {
+				toMain.setAttribute("href", "auth");
+			}
+		})
+	</script>
 </main>
 <footer>
 <!--    {{>footer_bar}}-->
