@@ -139,12 +139,16 @@ export class AppModule {
                 { path: "/create_test", method: RequestMethod.ALL },
                 { path: "/generated_test", method: RequestMethod.ALL },
                 { path: "/update_test", method: RequestMethod.ALL },
+                { path: "/stat", method: RequestMethod.ALL },
+                { path: "/student_test_stat", method: RequestMethod.ALL },
                 { path: "/test_stats", method: RequestMethod.ALL });
 
         consumer
             .apply(TeacherRoleMiddleware)
             .forRoutes({ path: "/test_stats", method: RequestMethod.ALL },
                 { path: "/topic", method: RequestMethod.ALL },
+                { path: "/stat", method: RequestMethod.ALL },
+                { path: "/student_test_stat", method: RequestMethod.ALL },
                 { path: "/question", method: RequestMethod.ALL },
                 { path: "/create_test", method: RequestMethod.ALL },
                 { path: "/update_test", method: RequestMethod.ALL },

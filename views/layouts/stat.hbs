@@ -11,7 +11,7 @@
     <script src="scripts/signOut.js"></script>
     <script src="scripts/nav.js"></script>
     <script src="scripts/checkAuth.js"></script>
-	<script src="scripts/getTestsToStats.js"></script>
+	<script src="scripts/getTestStats.js"></script>
 
 
 
@@ -31,8 +31,13 @@
 	<div class="product-filter">
 		<div class="products">
 			<div class="products-head">
-				<h2>Ваши тесты:</h2>
+				<h2></h2>
 			</div>
+
+			<div id="avgScore"></div>
+
+			<div id="avgTime"></div>
+
 			<div class="loader" style="display: none;">
 				<div class="running-cat-container">
 					<img class="running-cat" src="images/running-cat.gif" alt="Running Cat">
