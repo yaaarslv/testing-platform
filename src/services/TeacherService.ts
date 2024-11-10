@@ -10,13 +10,14 @@ import { UpdateTeacherDTO } from "../dto/UpdateTeacherDTO";
 import { RemoveGroupDTO } from "../dto/RemoveGroupDTO";
 import { RemoveTeacherIdDTO } from "../dto/RemoveTeacherIdDTO";
 import { AuthService } from "./AuthService";
-import { QuestionService } from "./QuestionService";
+import { StudentService } from "./StudentService";
 
 @Injectable()
 export class TeacherService {
     constructor(
         @InjectRepository(Teacher) private teacherRepository: Repository<Teacher>,
         private readonly organizationService: OrganizationService,
+        private readonly studentService: StudentService,
         @Inject(forwardRef(() => AuthService)) private readonly authService: AuthService) {
     }
 
@@ -75,13 +76,13 @@ export class TeacherService {
         }
 
         if (!ValidationService.isNothing(teacher.userID) && teacher.isActive) {
-            throw new ConflictException("Данный преподаватель уже активирован и добавлен в организацию")
+            throw new ConflictException("Данный преподаватель уже активирован и добавлен в организацию");
         }
 
         if (fromLogin) {
             const existingTeacher = await this.receiveByUserId(userId, false);
             if (!ValidationService.isNothing(existingTeacher)) {
-                throw new ConflictException("Преподаватель для данного аккаунта уже существует. Для добавления в организацию создайте новый аккаунт.")
+                throw new ConflictException("Преподаватель для данного аккаунта уже существует. Для добавления в организацию создайте новый аккаунт.");
             }
         }
 
@@ -92,37 +93,38 @@ export class TeacherService {
         await this.teacherRepository.save(teacher);
     }
 
-    async addGroups(addGroupDTO: AddGroupsDTO): Promise<boolean> {
-        const teacher = await this.receive(addGroupDTO.teacherId);
+    async addGroups(addGroupDTO: AddGroupsDTO, login: string): Promise<{ ok: boolean }> {
+        const user = await this.authService.receiveUser(login);
+        const teacher = await this.receiveByUserId(user.id);
 
-        addGroupDTO.groups.forEach((group) => {
-            if (!teacher.groups.includes(group.toUpperCase())) {
-                teacher.groups.push(group.toUpperCase());
-            }
-        });
+        if (!teacher.groups.includes(addGroupDTO.group.toUpperCase())) {
+            teacher.groups.push(addGroupDTO.group.toUpperCase());
+        }
 
         await this.teacherRepository.save(teacher);
-        return true;
+        return { ok: true };
     }
 
-    async removeGroup(removeGroupDTO: RemoveGroupDTO): Promise<boolean> {
-        const teacher = await this.receive(removeGroupDTO.teacherId);
+    async removeGroup(removeGroupDTO: RemoveGroupDTO, login: string): Promise<{ ok: boolean }> {
+        const user = await this.authService.receiveUser(login);
+        const teacher = await this.receiveByUserId(user.id);
 
         const upperCaseGroup = removeGroupDTO.group.toUpperCase();
         teacher.groups = teacher.groups.filter(existingGroup => existingGroup !== upperCaseGroup);
 
         await this.teacherRepository.save(teacher);
-        return true;
+        return { ok: true };
     }
 
     async receiveGroups(login: string): Promise<string[]> {
         const user = await this.authService.receiveUser(login);
         const teacher = await this.receiveByUserId(user.id);
-        return teacher.groups;
+        return teacher.groups.map(group => group.toUpperCase());
     }
 
     async update(teacherId: number, updateTeacherDTO: UpdateTeacherDTO): Promise<Teacher> {
         const teacher = await this.receive(teacherId);
+        let changeEmail = false;
 
         if (!ValidationService.isNothing(updateTeacherDTO.name)) {
             teacher.name = updateTeacherDTO.name;
@@ -138,9 +140,14 @@ export class TeacherService {
 
         if (!ValidationService.isNothing(updateTeacherDTO.email)) {
             teacher.email = updateTeacherDTO.email;
+            changeEmail = true;
         }
 
         await this.teacherRepository.save(teacher);
+
+        if (changeEmail) {
+            await this.authService.changeEmail(teacher.userID, updateTeacherDTO.email);
+        }
 
         return teacher;
     }
@@ -154,5 +161,12 @@ export class TeacherService {
         await this.organizationService.removeTeacherId(removeTeacherIdDTO);
 
         return true;
+    }
+
+    async receiveAllOrgGroups(login: string): Promise<string[]> {
+        const user = await this.authService.receiveUser(login);
+        const teacher = await this.receiveByUserId(user.id);
+
+        return await this.studentService.receiveAllOrgGroups(teacher.organizationId);
     }
 }

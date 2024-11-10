@@ -141,6 +141,7 @@ export class AppModule {
                 { path: "/update_test", method: RequestMethod.ALL },
                 { path: "/stat", method: RequestMethod.ALL },
                 { path: "/student_test_stat", method: RequestMethod.ALL },
+                { path: "/groups", method: RequestMethod.ALL },
                 { path: "/test_stats", method: RequestMethod.ALL });
 
         consumer
@@ -152,6 +153,7 @@ export class AppModule {
                 { path: "/question", method: RequestMethod.ALL },
                 { path: "/create_test", method: RequestMethod.ALL },
                 { path: "/update_test", method: RequestMethod.ALL },
+                { path: "/groups", method: RequestMethod.ALL },
                 { path: "/manage-topics", method: RequestMethod.ALL }
             );
 

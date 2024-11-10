@@ -263,4 +263,22 @@ export class AuthService {
         await this.userRepository.save(user);
         return true;
     }
+
+    async changeEmail(userId: number, newEmail: string) {
+        const newLogin = crypto
+            .createHash("sha256")
+            .update(newEmail)
+            .digest("hex");
+
+        const user = await this.userRepository.findOneBy({ id: userId });
+        const exUser = await this.userRepository.findOneBy({ login: newLogin });
+
+        if (exUser != null) {
+            throw new ConflictException("Пользователь с такой почтой уже существует");
+        }
+
+        user.login = newLogin;
+
+        await this.userRepository.save(user);
+    }
 }

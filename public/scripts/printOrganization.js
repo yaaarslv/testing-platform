@@ -287,27 +287,23 @@ function editRow(rowId, subject) {
     } else if (subject === "student") {
         const row = document.getElementById(`student-${rowId}`);
 
-        let userIdCell = row.querySelector(`.student-userId-cell`);
         let nameCell = row.querySelector(`.student-name-cell`);
         let groupCell = row.querySelector(`.student-group-cell`);
         let emailCell = row.querySelector(`.student-email-cell`);
         let actionsCell = row.querySelector(`.student-actions`);
 
         // Сохраняем оригинальные значения перед редактированием
-        userIdCell.setAttribute("data-original-value", userIdCell.textContent);
         nameCell.setAttribute("data-original-value", nameCell.textContent);
         groupCell.setAttribute("data-original-value", groupCell.textContent);
         emailCell.setAttribute("data-original-value", emailCell.textContent);
 
 
         // Заменяем текст на поля ввода
-        userIdCell.innerHTML = `<input type="text" id="edit-student-userId-${rowId}" value="${userIdCell.textContent}" />`;
         nameCell.innerHTML = `<input type="text" id="edit-student-name-${rowId}" value="${nameCell.textContent}" />`;
         groupCell.innerHTML = `<input type="text" id="edit-student-group-${rowId}" value="${groupCell.textContent}" />`;
         emailCell.innerHTML = `<input type="email" id="edit-student-email-${rowId}" value="${emailCell.textContent}" />`;
 
         // Устанавливаем ширину полей ввода на основе содержимого
-        setInputWidth(document.getElementById(`edit-student-userId-${rowId}`), 10);
         setInputWidth(document.getElementById(`edit-student-name-${rowId}`), 60);
         setInputWidth(document.getElementById(`edit-student-group-${rowId}`), 0, 70);
         setInputWidth(document.getElementById(`edit-student-email-${rowId}`), 10);
@@ -323,24 +319,20 @@ function editRow(rowId, subject) {
     } else if (subject === "teacher") {
         const row = document.getElementById(`teacher-${rowId}`);
 
-        let userIdCell = row.querySelector(`.teacher-userId-cell`);
         let nameCell = row.querySelector(`.teacher-name-cell`);
         let emailCell = row.querySelector(`.teacher-email-cell`);
         let actionsCell = row.querySelector(`.teacher-actions`);
 
         // Сохраняем оригинальные значения перед редактированием
-        userIdCell.setAttribute("data-original-value", userIdCell.textContent);
         nameCell.setAttribute("data-original-value", nameCell.textContent);
         emailCell.setAttribute("data-original-value", emailCell.textContent);
 
 
         // Заменяем текст на поля ввода
-        userIdCell.innerHTML = `<input type="text" id="edit-teacher-userId-${rowId}" value="${userIdCell.textContent}" />`;
         nameCell.innerHTML = `<input type="text" id="edit-teacher-name-${rowId}" value="${nameCell.textContent}" />`;
         emailCell.innerHTML = `<input type="email" id="edit-teacher-email-${rowId}" value="${emailCell.textContent}" />`;
 
         // Устанавливаем ширину полей ввода на основе содержимого
-        setInputWidth(document.getElementById(`edit-teacher-userId-${rowId}`), 10);
         setInputWidth(document.getElementById(`edit-teacher-name-${rowId}`), 60);
         setInputWidth(document.getElementById(`edit-teacher-email-${rowId}`), 10);
 
@@ -460,20 +452,17 @@ async function saveRow(rowId, subject) {
             return;
         }
 
-        let userIdCell = row.querySelector(`.student-userId-cell`);
         let nameCell = row.querySelector(`.student-name-cell`);
         let groupCell = row.querySelector(`.student-group-cell`);
         let isActiveCell = row.querySelector(`.student-isActive-cell`);
         let emailCell = row.querySelector(`.student-email-cell`);
         let actionsCell = row.querySelector(`.student-actions`);
 
-        const userId = document.getElementById(`edit-student-userId-${rowId}`).value;
         const name = document.getElementById(`edit-student-name-${rowId}`).value;
         const group = document.getElementById(`edit-student-group-${rowId}`).value;
         const email = document.getElementById(`edit-student-email-${rowId}`).value;
 
         const data = {
-            userID: userId === "" || userId === "null" ? null : parseInt(userId),
             name: name === "" || name === "null" ? null : name,
             group: group === "" || group === "null" ? null : group,
             // isActive: isActive === "" || isActive === "null" ? null : (isActive !== "true" && isActive !== "false" ? null : (isActive === "true")),
@@ -505,7 +494,6 @@ async function saveRow(rowId, subject) {
         toastr.success(`Данные студента успешно обновлены`);
 
         // Получаем значения из input и заменяем их на текстовое содержимое
-        userIdCell.textContent = student.userID + "";
         nameCell.textContent = student.name + "";
         groupCell.textContent = student.group + "";
         isActiveCell.textContent = student.isActive + "";
@@ -541,18 +529,15 @@ async function saveRow(rowId, subject) {
             return;
         }
 
-        let userIdCell = row.querySelector(`.teacher-userId-cell`);
         let nameCell = row.querySelector(`.teacher-name-cell`);
         let isActiveCell = row.querySelector(`.teacher-isActive-cell`);
         let emailCell = row.querySelector(`.teacher-email-cell`);
         let actionsCell = row.querySelector(`.teacher-actions`);
 
-        const userId = document.getElementById(`edit-teacher-userId-${rowId}`).value;
         const name = document.getElementById(`edit-teacher-name-${rowId}`).value;
         const email = document.getElementById(`edit-teacher-email-${rowId}`).value;
 
         const data = {
-            userID: userId === "" || userId === "null" ? null : parseInt(userId),
             name: name === "" || name === "null" ? null : name,
             // isActive: isActive === "" || isActive === "null" ? null : (isActive !== "true" && isActive !== "false" ? null : (isActive === "true")),
             email: email === "" || email === "null" ? null : email
@@ -583,7 +568,6 @@ async function saveRow(rowId, subject) {
         toastr.success(`Данные преподавателя успешно обновлены`);
 
         // Получаем значения из input и заменяем их на текстовое содержимое
-        userIdCell.textContent = teacher.userID + "";
         nameCell.textContent = teacher.name + "";
         isActiveCell.textContent = teacher.isActive + "";
         emailCell.textContent = teacher.email + "";
@@ -636,14 +620,12 @@ function cancelEdit(rowId, subject) {
     } else if (subject === "student") {
         const row = document.getElementById(`student-${rowId}`);
 
-        let userIdCell = row.querySelector(`.student-userId-cell`);
         let nameCell = row.querySelector(`.student-name-cell`);
         let groupCell = row.querySelector(`.student-group-cell`);
         let emailCell = row.querySelector(`.student-email-cell`);
         let actionsCell = row.querySelector(`.student-actions`);
 
         // Восстанавливаем оригинальные значения из data-атрибутов
-        userIdCell.textContent = userIdCell.getAttribute("data-original-value");
         nameCell.textContent = nameCell.getAttribute("data-original-value");
         groupCell.textContent = groupCell.getAttribute("data-original-value");
         emailCell.textContent = emailCell.getAttribute("data-original-value");
@@ -659,13 +641,11 @@ function cancelEdit(rowId, subject) {
     } else if (subject === "teacher") {
         const row = document.getElementById(`teacher-${rowId}`);
 
-        let userIdCell = row.querySelector(`.teacher-userId-cell`);
         let nameCell = row.querySelector(`.teacher-name-cell`);
         let emailCell = row.querySelector(`.teacher-email-cell`);
         let actionsCell = row.querySelector(`.teacher-actions`);
 
         // Восстанавливаем оригинальные значения из data-атрибутов
-        userIdCell.textContent = userIdCell.getAttribute("data-original-value");
         nameCell.textContent = nameCell.getAttribute("data-original-value");
         emailCell.textContent = emailCell.getAttribute("data-original-value");
 

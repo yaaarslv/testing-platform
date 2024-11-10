@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { TeacherService } from "../services/TeacherService";
 import { CreateTeacherDTO } from "../dto/CreateTeacherDTO";
-import { AddGroupsDTO, ReceiveTeacherGroups } from "../dto/AddStudentDTO";
+import { AddGroupsDTO } from "../dto/AddStudentDTO";
 import { Teacher } from "../entities/Teacher";
 import { UpdateTeacherDTO } from "../dto/UpdateTeacherDTO";
 import { RemoveGroupDTO } from "../dto/RemoveGroupDTO";
@@ -33,21 +33,27 @@ export class TeacherController {
         return await this.teacherService.delete(removeTeacherIdDTO);
     }
 
-    @Post("add_groups")
+    @Post("add_group")
     @Roles(ERole.Teacher)
-    async addGroups(@Body() addStudentDto: AddGroupsDTO): Promise<boolean> {
-        return await this.teacherService.addGroups(addStudentDto);
+    async addGroups(@Req() req: any, @Body() addStudentDto: AddGroupsDTO): Promise<{ ok: boolean }> {
+        return await this.teacherService.addGroups(addStudentDto, req.user.login);
     }
 
     @Post("remove_group")
     @Roles(ERole.Teacher)
-    async removeGroup(@Body() removeGroupDTO: RemoveGroupDTO): Promise<boolean> {
-        return await this.teacherService.removeGroup(removeGroupDTO);
+    async removeGroup(@Req() req: any, @Body() removeGroupDTO: RemoveGroupDTO): Promise<{ ok: boolean }> {
+        return await this.teacherService.removeGroup(removeGroupDTO, req.user.login);
     }
 
     @Get("groups")
     @Roles(ERole.Teacher)
     async receiveGroups(@Req() req: any): Promise<string[]> {
         return await this.teacherService.receiveGroups(req.user.login);
+    }
+
+    @Get("receive/org/groups")
+    @Roles(ERole.Administrator, ERole.Teacher)
+    async receiveAllOrgGroups(@Req() req: any): Promise<string[]> {
+        return await this.teacherService.receiveAllOrgGroups(req.user.login);
     }
 }

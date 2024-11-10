@@ -1,6 +1,5 @@
-import { Body, Controller, Get, NotFoundException, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthService } from "../services/AuthService";
-import { ReturnUserDTO } from "../dto/ReturnUserDTO";
 import { Response } from 'express';
 import { LoginDTO } from "../dto/LoginDTO";
 import { RegisterDTO } from "../dto/RegisterDTO";
