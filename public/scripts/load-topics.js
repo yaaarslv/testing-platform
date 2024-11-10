@@ -10,7 +10,7 @@ function addTopicEvent() {
         const addTopicForm = document.getElementById("addTopicForm");
         addTopicForm.classList.add("disabled");
 
-        const response = await fetch("http://localhost:3000/api/topic/create", {
+        const response = await fetch("http://testing-platform.onrender.com/api/topic/create", {
             method: "POST",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -94,7 +94,7 @@ async function loadTopicData() {
 
     try {
         loader.style.display = "block";
-        const response = await fetch("http://localhost:3000/api/topic/receive_all", {
+        const response = await fetch("http://testing-platform.onrender.com/api/topic/receive_all", {
             method: "GET",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,

@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
         signOutButton.addEventListener('click', async function(event) {
             event.preventDefault();
             localStorage.clear();
-            await fetch("http://localhost:3000/api/auth/logout")
+            await fetch("http://testing-platform.onrender.com/api/auth/logout")
             window.location.href = 'auth';
         });
     }

@@ -16,7 +16,7 @@ async function fetchGroups() {
         errorMessageBox.style.display = "none";
 
         // Получаем группы преподавателя
-        const responseTeacherGroups = await fetch("http://localhost:3000/api/teacher/groups", {
+        const responseTeacherGroups = await fetch("http://testing-platform.onrender.com/api/teacher/groups", {
             method: "GET",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -27,7 +27,7 @@ async function fetchGroups() {
         teacherGroups = await responseTeacherGroups.json();
 
         // Получаем все группы в организации
-        const responseAllGroups = await fetch(`http://localhost:3000/api/teacher/receive/org/groups`, {
+        const responseAllGroups = await fetch(`http://testing-platform.onrender.com/api/teacher/receive/org/groups`, {
             method: "GET",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -67,7 +67,7 @@ async function fetchGroups() {
             deleteGroupButton.addEventListener("click", async function () {
                 productDiv.classList.add("disabled");
 
-                const response = await fetch("http://localhost:3000/api/teacher/remove_group", {
+                const response = await fetch("http://testing-platform.onrender.com/api/teacher/remove_group", {
                     method: "POST",
                     headers: {
                         "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -126,7 +126,7 @@ async function fetchGroups() {
 
             document.querySelector(".add-user-form").classList.add("disabled");
 
-            const response = await fetch("http://localhost:3000/api/teacher/add_group", {
+            const response = await fetch("http://testing-platform.onrender.com/api/teacher/add_group", {
                 method: "POST",
                 headers: {
                     "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -150,7 +150,7 @@ async function fetchGroups() {
                 newDeleteGroupButton.addEventListener("click", async function () {
                     newProductDiv.classList.add("disabled");
 
-                    const newResponse = await fetch("http://localhost:3000/api/teacher/remove_group", {
+                    const newResponse = await fetch("http://testing-platform.onrender.com/api/teacher/remove_group", {
                         method: "POST",
                         headers: {
                             "authorization": `Bearer ${localStorage.getItem("token")}`,

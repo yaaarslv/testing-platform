@@ -84,7 +84,7 @@ function submitQuestionForm() {
 
         const addQuestionForm = document.getElementById("addQuestionForm");
         addQuestionForm.classList.add("disabled");
-        const response = await fetch(`http://localhost:3000/api/question/create/${topicId}`, {
+        const response = await fetch(`http://testing-platform.onrender.com/api/question/create/${topicId}`, {
             method: "POST",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -238,7 +238,7 @@ async function saveRow(rowId, subject) {
             organizationId: organizationId === "" || organizationId === "null" ? null : parseInt(organizationId)
         };
 
-        const response = await fetch(`http://localhost:3000/api/topic/update/${rowId}`, {
+        const response = await fetch(`http://testing-platform.onrender.com/api/topic/update/${rowId}`, {
             method: "PUT",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -328,7 +328,7 @@ async function loadUserData() {
 
     try {
         loader.style.display = "block";
-        const response = await fetch(`http://localhost:3000/api/topic/receive_full/${topicId}`, {
+        const response = await fetch(`http://testing-platform.onrender.com/api/topic/receive_full/${topicId}`, {
             method: "GET",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,

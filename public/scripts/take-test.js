@@ -25,7 +25,7 @@ async function loadTest() {
     }
     window.history.replaceState({}, document.title, window.location.pathname);
     try {
-        const response = await fetch("http://localhost:3000/api/test/generate", {
+        const response = await fetch("http://testing-platform.onrender.com/api/test/generate", {
             method: "POST",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -151,7 +151,7 @@ async function submitTest() {
     };
 
     try {
-        const response = await fetch("http://localhost:3000/api/test/check", {
+        const response = await fetch("http://testing-platform.onrender.com/api/test/check", {
             method: "POST",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,

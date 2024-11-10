@@ -15,7 +15,7 @@ function auth() {
         const loginForm = document.getElementById('loginForm');
         loginForm.classList.add('disabled');
 
-        fetch('http://localhost:3000/api/auth/login', {
+        fetch('http://testing-platform.onrender.com/api/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

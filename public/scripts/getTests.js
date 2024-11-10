@@ -12,7 +12,7 @@ async function fetchAndDisplayProducts() {
 
         errorMessageBox.style.display = "none";
 
-        const response = await fetch("http://localhost:3000/api/test/receive_all", {
+        const response = await fetch("http://testing-platform.onrender.com/api/test/receive_all", {
             method: "GET",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,

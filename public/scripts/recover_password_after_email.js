@@ -7,7 +7,7 @@ function check_recover_link() {
         window.location.href = "auth";
     }
 
-    fetch("http://localhost:3000/api/auth/check_recover_link", {
+    fetch("http://testing-platform.onrender.com/api/auth/check_recover_link", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const changePasswordForm = document.getElementById("changePasswordForm");
             changePasswordForm.classList.add("disabled");
 
-            fetch("http://localhost:3000/api/auth/update_password_after_recover", {
+            fetch("http://testing-platform.onrender.com/api/auth/update_password_after_recover", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

@@ -16,7 +16,7 @@ async function loadTestInfo() {
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/api/test/receive_by_test_with_used_attempts/${testId}`, {
+        const response = await fetch(`http://testing-platform.onrender.com/api/test/receive_by_test_with_used_attempts/${testId}`, {
             method: 'GET',
             headers: {
                 'authorization': `Bearer ${localStorage.getItem("token")}`,

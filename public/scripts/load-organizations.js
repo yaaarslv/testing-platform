@@ -19,7 +19,7 @@ function addOrgEvent() {
         const addUserForm = document.getElementById("addUserForm");
         addUserForm.classList.add("disabled");
 
-        const response = await fetch("http://localhost:3000/api/organization/create", {
+        const response = await fetch("http://testing-platform.onrender.com/api/organization/create", {
             method: "POST",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -104,7 +104,7 @@ async function loadUserData() {
 
     try {
         loader.style.display = "block";
-        const response = await fetch("http://localhost:3000/api/organization/receive_all", {
+        const response = await fetch("http://testing-platform.onrender.com/api/organization/receive_all", {
             method: "GET",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
