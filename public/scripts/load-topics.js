@@ -19,6 +19,10 @@ function addTopicEvent() {
             body: JSON.stringify(data)
         });
 
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
+
         if (!response.ok) {
             addTopicForm.classList.remove('disabled');
             alert((await response.json()).message)
@@ -101,6 +105,10 @@ async function loadTopicData() {
                 "Content-Type": "application/json"
             }
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         if (!response.ok) {
             throw new Error("Ошибка при загрузке данных");

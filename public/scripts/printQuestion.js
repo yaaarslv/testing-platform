@@ -13,6 +13,11 @@ async function loadQuestion() {
             "Content-Type": "application/json"
         }
     });
+
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
+
     questionData = await response.json();
 
     document.getElementById("questionText").value = questionData.questionText;
@@ -75,6 +80,10 @@ async function removeAnswer(index, answerId) {
                 },
                 body: JSON.stringify(data)
             });
+
+            if (res.status === 403) {
+                window.location.href = "403";
+            }
 
             if (!res.ok) {
                 toastr.options = {
@@ -162,6 +171,10 @@ async function saveChanges() {
         body: JSON.stringify(updatedQuestionData)
     });
 
+    if (res.status === 403) {
+        window.location.href = "403";
+    }
+
     if (!res.ok) {
         success = false;
         questionForm.classList.remove("disabled");
@@ -191,6 +204,10 @@ async function saveChanges() {
                 body: JSON.stringify(updatedAnswerData)
             });
 
+            if (response.status === 403) {
+                window.location.href = "403";
+            }
+
             if (!response.ok) {
                 success = false;
                 questionForm.classList.remove("disabled");
@@ -209,6 +226,10 @@ async function saveChanges() {
                 },
                 body: JSON.stringify(createAnswerData)
             });
+
+            if (response.status === 403) {
+                window.location.href = "403";
+            }
 
             if (!response.ok) {
                 success = false;
@@ -253,6 +274,10 @@ async function deleteQuestion() {
         },
         body: JSON.stringify({ questionId: parseInt(questionId), topicId: parseInt(topic) })
     });
+
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
 
     const result = await response.json();
 

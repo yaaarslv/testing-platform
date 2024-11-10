@@ -93,6 +93,10 @@ function submitQuestionForm() {
             body: JSON.stringify(questionDTO)
         });
 
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
+
         const newQuestion = await response.json();
 
         if (!response.ok) {
@@ -247,6 +251,10 @@ async function saveRow(rowId, subject) {
             body: JSON.stringify(data)
         });
 
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
+
         const topic = await response.json();
 
         if (!response.ok) {
@@ -335,6 +343,10 @@ async function loadUserData() {
                 "Content-Type": "application/json"
             }
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         const topic = await response.json();
 

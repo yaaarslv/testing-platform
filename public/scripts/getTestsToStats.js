@@ -23,7 +23,7 @@ async function fetchAndDisplayProducts() {
         if (response.status === 401) {
             window.location.href = "auth";
         } else if (response.status === 403) {
-            errorMessageBox.textContent = "Данный блок вам недоступен!";
+            window.location.href = "403";
         }
 
         const data = await response.json();

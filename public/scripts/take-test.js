@@ -34,6 +34,10 @@ async function loadTest() {
             body: JSON.stringify({ testId: parseInt(testId) })
         });
 
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
+
         if (!response.ok) {
             throw new Error(`Ошибка загрузки теста: ${response.statusText}`);
         }
@@ -159,6 +163,10 @@ async function submitTest() {
             },
             body: JSON.stringify(checkTestDTO)
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         if (!response.ok) {
             throw new Error(`Ошибка проверки теста: ${response.statusText}`);

@@ -15,6 +15,10 @@ async function loadTestData() {
         }
     });
 
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
+
     if (!response.ok) {
         const error = await response.json();
         toastr.options = {
@@ -46,6 +50,10 @@ async function loadTopics(selectedTopicId) {
             "Content-Type": "application/json"
         }
     });
+
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
 
     if (!response.ok) {
         const error = await response.json();
@@ -81,6 +89,10 @@ async function loadGroups(selectedGroup) {
             "Content-Type": "application/json"
         }
     });
+
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
 
     if (!response.ok) {
         const error = await response.json();
@@ -137,6 +149,10 @@ async function saveChanges(event) {
         body: JSON.stringify(updatedTestData)
     });
 
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
+
     if (response.ok) {
         toastr.options = {
             "progressBar": true,
@@ -174,6 +190,10 @@ async function deleteTest() {
         },
         body: JSON.stringify({ testId: parseInt(testId) })
     });
+
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
 
     if (response.ok) {
         toastr.options = {

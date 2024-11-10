@@ -24,6 +24,10 @@ async function loadTestInfo() {
             }
         });
 
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
+
         if (!response.ok) {
             throw new Error(`Ошибка загрузки данных: ${response.statusText}`);
         }

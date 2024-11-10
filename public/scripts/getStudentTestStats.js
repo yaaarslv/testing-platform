@@ -64,6 +64,10 @@ async function fetchAndDisplayProducts() {
             })
         });
 
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
+
         if (response.status === 401) {
             window.location.href = "auth";
         } else if (response.status === 403) {

@@ -28,6 +28,10 @@ function addOrgEvent() {
             body: JSON.stringify(data)
         });
 
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
+
         if (!response.ok) {
             addUserForm.classList.remove('disabled');
             alert((await response.json()).message)
@@ -111,6 +115,10 @@ async function loadUserData() {
                 "Content-Type": "application/json"
             }
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         if (!response.ok) {
             throw new Error("Ошибка при загрузке данных");

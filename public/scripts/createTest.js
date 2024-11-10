@@ -8,6 +8,10 @@ async function loadData() {
         },
     });
 
+    if (responseTopics.status === 403) {
+        window.location.href = "403";
+    }
+
     const responseGroups = await fetch('https://testing-platform.onrender.com/api/teacher/groups', {
         method: 'GET',
         headers: {
@@ -15,6 +19,10 @@ async function loadData() {
             'Content-Type': 'application/json'
         },
     });
+
+    if (responseGroups.status === 403) {
+        window.location.href = "403";
+    }
 
     const topics = await responseTopics.json();
     const groups = await responseGroups.json();
@@ -66,6 +74,10 @@ async function createTest(event) {
         },
         body: JSON.stringify(testData)
     });
+
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
 
     if (response.ok) {
         toastr.options = {

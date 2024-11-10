@@ -38,6 +38,10 @@ function add_student() {
             body: JSON.stringify(data)
         });
 
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
+
         if (!response.ok) {
             addStudentForm.classList.remove("disabled");
             const json = await response.json();
@@ -129,6 +133,10 @@ function add_teacher() {
             body: JSON.stringify(data)
         });
 
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
+
         if (!response.ok) {
             addTeacherForm.classList.remove("disabled");
             const json = await response.json();
@@ -210,6 +218,10 @@ async function getInviteLink(role, actorId, orgName, isActive) {
         },
         body: JSON.stringify(data)
     });
+
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
 
     if (!response.ok) {
         const res_data = await response.json();
@@ -400,6 +412,10 @@ async function saveRow(rowId, subject) {
             body: JSON.stringify(data)
         });
 
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
+
         const org = await response.json();
 
         if (!response.ok) {
@@ -478,6 +494,10 @@ async function saveRow(rowId, subject) {
             body: JSON.stringify(data)
         });
 
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
+
         const student = await response.json();
 
         if (!response.ok) {
@@ -551,6 +571,10 @@ async function saveRow(rowId, subject) {
             },
             body: JSON.stringify(data)
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         const teacher = await response.json();
 
@@ -687,6 +711,10 @@ async function loadUserData() {
                 "Content-Type": "application/json"
             }
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         const org = await response.json();
 

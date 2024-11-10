@@ -24,6 +24,10 @@ async function fetchGroups() {
             }
         });
 
+        if (responseTeacherGroups.status === 403) {
+            window.location.href = "403";
+        }
+
         teacherGroups = await responseTeacherGroups.json();
 
         // Получаем все группы в организации
@@ -34,6 +38,10 @@ async function fetchGroups() {
                 "Content-Type": "application/json"
             }
         });
+
+        if (responseAllGroups.status === 403) {
+            window.location.href = "403";
+        }
 
         allGroups = await responseAllGroups.json();
 
@@ -75,6 +83,10 @@ async function fetchGroups() {
                     },
                     body: JSON.stringify({ group: group })
                 });
+
+                if (response.status === 403) {
+                    window.location.href = "403";
+                }
 
                 if (response.ok) {
                     toastr.options = {
@@ -135,6 +147,10 @@ async function fetchGroups() {
                 body: JSON.stringify({ group: selectedGroup })
             });
 
+            if (response.status === 403) {
+                window.location.href = "403";
+            }
+
             if (response.ok) {
                 toastr.success(`Группа "${selectedGroup}" успешно добавлена`);
 
@@ -158,6 +174,10 @@ async function fetchGroups() {
                         },
                         body: JSON.stringify({ group: selectedGroup })
                     });
+
+                    if (newResponse.status === 403) {
+                        window.location.href = "403";
+                    }
 
                     if (newResponse.ok) {
                         toastr.options = {

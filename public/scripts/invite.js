@@ -19,6 +19,10 @@ async function checkInviteLink() {
             body: JSON.stringify({ link: link })
         });
 
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
+
         const result = await response.json();
 
         if (!response.ok) {
@@ -73,6 +77,10 @@ function registerAndShowInvitation() {
             },
             body: JSON.stringify(data)
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         const result = await response.json();
 
@@ -129,6 +137,10 @@ function loginAndShowInvitation() {
             },
             body: JSON.stringify(data)
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         const result = await response.json();
 
