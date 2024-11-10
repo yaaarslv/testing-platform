@@ -42,7 +42,13 @@ function auth() {
                         }
                     }
                 } else {
-                    alert('Ошибка входа: ' + data.message);
+                    toastr.options = {
+                        "progressBar": true,
+                        "positionClass": "toast-top-right",
+                        "timeOut": "5000"
+                    };
+
+                    toastr.error(`Ошибка входа: ${data.message}`);
                     loginForm.classList.remove('disabled');
                 }
             })

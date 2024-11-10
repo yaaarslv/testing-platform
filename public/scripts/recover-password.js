@@ -20,9 +20,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then(response => response.json())
                 .then(data => {
                     if (data) {
-                        alert('Письмо успешно отправлено на указанный адрес почты');
+                        toastr.options = {
+                            "progressBar": true,
+                            "positionClass": "toast-top-right",
+                            "timeOut": "3000"
+                        };
+
+                        toastr.success(`Письмо успешно отправлено на указанный адрес почты`);
                     } else {
-                        alert('Ошибка при отправке письма: ' + data.error);
+                        toastr.options = {
+                            "progressBar": true,
+                            "positionClass": "toast-top-right",
+                            "timeOut": "5000"
+                        };
+
+                        toastr.error(`Ошибка при отправке письма: ${data.error}`);
                         code_button.disabled = false;
                     }
                 })
@@ -30,7 +42,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.error('Ошибка: ' + error);
                 });
         } else {
-            alert('Введите почту, чтобы восстановить пароль');
+            toastr.options = {
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
+            toastr.error(`Введите почту, чтобы восстановить пароль`);
         }
     });
 });

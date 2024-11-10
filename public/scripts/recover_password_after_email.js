@@ -58,7 +58,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         alert("Пароль обновлён. Войдите в аккаунт с новым паролем");
                         window.location.href = "auth";
                     } else {
-                        alert("Ошибка: " + data.error);
+                        toastr.options = {
+                            "progressBar": true,
+                            "positionClass": "toast-top-right",
+                            "timeOut": "5000"
+                        };
+
+                        toastr.error(`Ошибка: ${data.error}`);
                         changePasswordForm.classList.remove("disabled");
                     }
                 })
@@ -66,7 +72,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.error("Ошибка: " + error);
                 });
         } else {
-            alert("Пароли не совпадают!");
+            toastr.options = {
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
+            toastr.error(`Пароли не совпадают!`);
         }
     });
 });

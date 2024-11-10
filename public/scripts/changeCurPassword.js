@@ -23,9 +23,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then(response => response.json())
                 .then(data => {
                     if (data) {
-                        alert("Пароль обновлён");
+                        toastr.options = {
+                            "progressBar": true,
+                            "positionClass": "toast-top-right",
+                            "timeOut": "3000"
+                        };
+
+                        toastr.success(`Пароль обновлён`);
                     } else {
-                        alert("Ошибка: " + data.error);
+                        toastr.options = {
+                            "progressBar": true,
+                            "positionClass": "toast-top-right",
+                            "timeOut": "5000"
+                        };
+
+                        toastr.error(`Ошибка: ${data.error}`);
                         changePasswordForm.classList.remove("disabled");
                     }
                 })
@@ -33,7 +45,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.error("Ошибка: " + error);
                 });
         } else {
-            alert("Пароли не совпадают!");
+            toastr.options = {
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
+            toastr.error(`Пароли не совпадают!`);
         }
     });
 });
