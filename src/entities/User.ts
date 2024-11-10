@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { ERole } from '../models/ERole';
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { ERole } from "../models/ERole";
 
 @Entity()
 export class User {
@@ -12,12 +12,11 @@ export class User {
     @Column({ nullable: false })
     password: string;
 
-    @Column({ nullable: false, type: 'enum', enum: ERole, default: ERole.User })
+    @Column({ nullable: false, type: "enum", enum: ERole, default: ERole.User })
     role: ERole;
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date;
-
 
     constructor(login: string, password: string, role: ERole, createdAt: Date) {
         this.login = login;

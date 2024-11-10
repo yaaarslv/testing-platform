@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity()
 export class Teacher {
@@ -20,19 +20,25 @@ export class Teacher {
     @Column({ nullable: false, default: false })
     isActive: boolean;
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date;
 
-    @Column('int', { nullable: true, array: true, default: [] })
-    studentIds: number[];
+    @Column("varchar", { nullable: true, array: true, default: [] })
+    groups: string[];
 
-
-    constructor(userID: number, organizationId: number, name: string, email: string, createdAt: Date, studentIds: number[]) {
+    constructor(
+        userID: number,
+        organizationId: number,
+        name: string,
+        email: string,
+        createdAt: Date,
+        groups: string[]
+    ) {
         this.userID = userID;
         this.organizationId = organizationId;
         this.name = name;
         this.email = email;
         this.createdAt = createdAt;
-        this.studentIds = studentIds;
+        this.groups = groups;
     }
 }
