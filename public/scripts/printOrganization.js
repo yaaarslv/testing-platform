@@ -29,7 +29,7 @@ function add_student() {
         const addStudentForm = document.getElementById("addStudentForm");
         addStudentForm.classList.add("disabled");
 
-        const response = await fetch("http://testing-platform.onrender.com/api/student/create", {
+        const response = await fetch("https://testing-platform.onrender.com/api/student/create", {
             method: "POST",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -120,7 +120,7 @@ function add_teacher() {
         const addTeacherForm = document.getElementById("addTeacherForm");
         addTeacherForm.classList.add("disabled");
 
-        const response = await fetch("http://testing-platform.onrender.com/api/teacher/create", {
+        const response = await fetch("https://testing-platform.onrender.com/api/teacher/create", {
             method: "POST",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -202,7 +202,7 @@ async function getInviteLink(role, actorId, orgName, isActive) {
         isActive: isActive === "true"
     };
 
-    const response = await fetch(`http://testing-platform.onrender.com/api/auth/get_invite_link`, {
+    const response = await fetch(`https://testing-platform.onrender.com/api/auth/get_invite_link`, {
         method: "POST",
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -391,7 +391,7 @@ async function saveRow(rowId, subject) {
             responsiblePerson: responsiblePerson === "" || responsiblePerson === "null" ? null : responsiblePerson
         };
 
-        const response = await fetch(`http://testing-platform.onrender.com/api/organization/update/${rowId}`, {
+        const response = await fetch(`https://testing-platform.onrender.com/api/organization/update/${rowId}`, {
             method: "PUT",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -469,7 +469,7 @@ async function saveRow(rowId, subject) {
             email: email === "" || email === "null" ? null : email
         };
 
-        const response = await fetch(`http://testing-platform.onrender.com/api/student/update/${rowId}`, {
+        const response = await fetch(`https://testing-platform.onrender.com/api/student/update/${rowId}`, {
             method: "PUT",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -543,7 +543,7 @@ async function saveRow(rowId, subject) {
             email: email === "" || email === "null" ? null : email
         };
 
-        const response = await fetch(`http://testing-platform.onrender.com/api/teacher/update/${rowId}`, {
+        const response = await fetch(`https://testing-platform.onrender.com/api/teacher/update/${rowId}`, {
             method: "PUT",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -680,7 +680,7 @@ async function loadUserData() {
 
     try {
         loader.style.display = "block";
-        const response = await fetch(`http://testing-platform.onrender.com/api/organization/receive_with_all/${name}`, {
+        const response = await fetch(`https://testing-platform.onrender.com/api/organization/receive_with_all/${name}`, {
             method: "GET",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,

@@ -33,7 +33,7 @@ async function fetchAndDisplayProducts() {
 
         errorMessageBox.style.display = "none";
 
-        const response = await fetch("http://testing-platform.onrender.com/api/test/get_students_best_results", {
+        const response = await fetch("https://testing-platform.onrender.com/api/test/get_students_best_results", {
             method: "POST",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,

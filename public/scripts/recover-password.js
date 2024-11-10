@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const code_button = document.getElementById("sendRecoverLinkButton")
             code_button.disabled = true;
 
-            fetch('http://testing-platform.onrender.com/api/auth/recover_password', {
+            fetch('https://testing-platform.onrender.com/api/auth/recover_password', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

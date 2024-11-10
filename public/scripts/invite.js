@@ -11,7 +11,7 @@ async function checkInviteLink() {
     }
 
     try {
-        const response = await fetch(`http://testing-platform.onrender.com/api/auth/check_invite_link`, {
+        const response = await fetch(`https://testing-platform.onrender.com/api/auth/check_invite_link`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -66,7 +66,7 @@ function registerAndShowInvitation() {
             actorId
         }
 
-        const response = await fetch("http://testing-platform.onrender.com/api/auth/register", {
+        const response = await fetch("https://testing-platform.onrender.com/api/auth/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -122,7 +122,7 @@ function loginAndShowInvitation() {
             actorId
         }
 
-        const response = await fetch("http://testing-platform.onrender.com/api/auth/activate", {
+        const response = await fetch("https://testing-platform.onrender.com/api/auth/activate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

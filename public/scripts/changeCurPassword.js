@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const changePasswordForm = document.getElementById("changePasswordForm");
             changePasswordForm.classList.add("disabled");
 
-            fetch("http://testing-platform.onrender.com/api/auth/update_password", {
+            fetch("https://testing-platform.onrender.com/api/auth/update_password", {
                 method: "POST",
                 headers: {
                     "authorization": `Bearer ${localStorage.getItem("token")}`,

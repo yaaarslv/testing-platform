@@ -1,6 +1,6 @@
 // Функция для загрузки доступных тем
 async function loadData() {
-    const responseTopics = await fetch('http://testing-platform.onrender.com/api/topic/receive_all', {
+    const responseTopics = await fetch('https://testing-platform.onrender.com/api/topic/receive_all', {
         method: 'GET',
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -8,7 +8,7 @@ async function loadData() {
         },
     });
 
-    const responseGroups = await fetch('http://testing-platform.onrender.com/api/teacher/groups', {
+    const responseGroups = await fetch('https://testing-platform.onrender.com/api/teacher/groups', {
         method: 'GET',
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -58,7 +58,7 @@ async function createTest(event) {
     createTestForm.classList.add("disabled");
 
     // Отправляем запрос на создание теста
-    const response = await fetch('http://testing-platform.onrender.com/api/test/create', {
+    const response = await fetch('https://testing-platform.onrender.com/api/test/create', {
         method: 'POST',
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,

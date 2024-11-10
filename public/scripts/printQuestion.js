@@ -6,7 +6,7 @@ async function loadQuestion() {
     const urlParams = new URLSearchParams(queryString);
     const questionId = urlParams.get("id");
 
-    const response = await fetch(`http://testing-platform.onrender.com/api/question/receive/${questionId}`, {
+    const response = await fetch(`https://testing-platform.onrender.com/api/question/receive/${questionId}`, {
         method: "GET",
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -67,7 +67,7 @@ async function removeAnswer(index, answerId) {
                 answerId: parseInt(answerId)
             };
 
-            const res = await fetch(`http://testing-platform.onrender.com/api/question/remove_answer`, {
+            const res = await fetch(`https://testing-platform.onrender.com/api/question/remove_answer`, {
                 method: "POST",
                 headers: {
                     "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -153,7 +153,7 @@ async function saveChanges() {
         questionText: updatedQuestionText
     };
 
-    const res = await fetch(`http://testing-platform.onrender.com/api/question/update/${questionId}`, {
+    const res = await fetch(`https://testing-platform.onrender.com/api/question/update/${questionId}`, {
         method: "PUT",
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -182,7 +182,7 @@ async function saveChanges() {
                 isCorrect: answer.isCorrect
             };
 
-            const response = await fetch(`http://testing-platform.onrender.com/api/answer/update/${answer.answerId}`, {
+            const response = await fetch(`https://testing-platform.onrender.com/api/answer/update/${answer.answerId}`, {
                 method: "PUT",
                 headers: {
                     "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -201,7 +201,7 @@ async function saveChanges() {
                 isCorrect: answer.isCorrect
             };
 
-            const response = await fetch(`http://testing-platform.onrender.com/api/answer/create/${questionId}`, {
+            const response = await fetch(`https://testing-platform.onrender.com/api/answer/create/${questionId}`, {
                 method: "POST",
                 headers: {
                     "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -245,7 +245,7 @@ async function deleteQuestion() {
     const questionForm = document.querySelector(".question-answers-form");
     questionForm.classList.add("disabled");
 
-    const response = await fetch(`http://testing-platform.onrender.com/api/topic/remove_question`, {
+    const response = await fetch(`https://testing-platform.onrender.com/api/topic/remove_question`, {
         method: "POST",
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
