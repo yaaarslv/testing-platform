@@ -29,7 +29,7 @@ function add_student() {
         const addStudentForm = document.getElementById("addStudentForm");
         addStudentForm.classList.add("disabled");
 
-        const response = await fetch("http://localhost:3000/api/student/create", {
+        const response = await fetch("https://testing-platform.onrender.com/api/student/create", {
             method: "POST",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -37,6 +37,10 @@ function add_student() {
             },
             body: JSON.stringify(data)
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         if (!response.ok) {
             addStudentForm.classList.remove("disabled");
@@ -120,7 +124,7 @@ function add_teacher() {
         const addTeacherForm = document.getElementById("addTeacherForm");
         addTeacherForm.classList.add("disabled");
 
-        const response = await fetch("http://localhost:3000/api/teacher/create", {
+        const response = await fetch("https://testing-platform.onrender.com/api/teacher/create", {
             method: "POST",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -128,6 +132,10 @@ function add_teacher() {
             },
             body: JSON.stringify(data)
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         if (!response.ok) {
             addTeacherForm.classList.remove("disabled");
@@ -202,7 +210,7 @@ async function getInviteLink(role, actorId, orgName, isActive) {
         isActive: isActive === "true"
     };
 
-    const response = await fetch(`http://localhost:3000/api/auth/get_invite_link`, {
+    const response = await fetch(`https://testing-platform.onrender.com/api/auth/get_invite_link`, {
         method: "POST",
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -210,6 +218,10 @@ async function getInviteLink(role, actorId, orgName, isActive) {
         },
         body: JSON.stringify(data)
     });
+
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
 
     if (!response.ok) {
         const res_data = await response.json();
@@ -391,7 +403,7 @@ async function saveRow(rowId, subject) {
             responsiblePerson: responsiblePerson === "" || responsiblePerson === "null" ? null : responsiblePerson
         };
 
-        const response = await fetch(`http://localhost:3000/api/organization/update/${rowId}`, {
+        const response = await fetch(`https://testing-platform.onrender.com/api/organization/update/${rowId}`, {
             method: "PUT",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -399,6 +411,10 @@ async function saveRow(rowId, subject) {
             },
             body: JSON.stringify(data)
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         const org = await response.json();
 
@@ -469,7 +485,7 @@ async function saveRow(rowId, subject) {
             email: email === "" || email === "null" ? null : email
         };
 
-        const response = await fetch(`http://localhost:3000/api/student/update/${rowId}`, {
+        const response = await fetch(`https://testing-platform.onrender.com/api/student/update/${rowId}`, {
             method: "PUT",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -477,6 +493,10 @@ async function saveRow(rowId, subject) {
             },
             body: JSON.stringify(data)
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         const student = await response.json();
 
@@ -543,7 +563,7 @@ async function saveRow(rowId, subject) {
             email: email === "" || email === "null" ? null : email
         };
 
-        const response = await fetch(`http://localhost:3000/api/teacher/update/${rowId}`, {
+        const response = await fetch(`https://testing-platform.onrender.com/api/teacher/update/${rowId}`, {
             method: "PUT",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -551,6 +571,10 @@ async function saveRow(rowId, subject) {
             },
             body: JSON.stringify(data)
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         const teacher = await response.json();
 
@@ -680,13 +704,17 @@ async function loadUserData() {
 
     try {
         loader.style.display = "block";
-        const response = await fetch(`http://localhost:3000/api/organization/receive_with_all/${name}`, {
+        const response = await fetch(`https://testing-platform.onrender.com/api/organization/receive_with_all/${name}`, {
             method: "GET",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json"
             }
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         const org = await response.json();
 

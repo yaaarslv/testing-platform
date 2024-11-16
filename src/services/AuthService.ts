@@ -209,6 +209,17 @@ export class AuthService {
     }
 
     async recoverPassword(body: RecoverPasswordDTO): Promise<boolean> {
+        const hashedLogin = crypto
+            .createHash("sha256")
+            .update(body.email)
+            .digest("hex");
+
+        const user = await this.receiveUser(hashedLogin, false);
+
+        if (user == null) {
+            return true;
+        }
+
         const uuid = uuidv4();
         const url = `${process.env.URL}/recover?link=${uuid}`;
         const text = "Уважаемый пользователь Testing Platform!\n" +

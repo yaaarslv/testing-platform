@@ -6,13 +6,18 @@ async function loadQuestion() {
     const urlParams = new URLSearchParams(queryString);
     const questionId = urlParams.get("id");
 
-    const response = await fetch(`http://localhost:3000/api/question/receive/${questionId}`, {
+    const response = await fetch(`https://testing-platform.onrender.com/api/question/receive/${questionId}`, {
         method: "GET",
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json"
         }
     });
+
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
+
     questionData = await response.json();
 
     document.getElementById("questionText").value = questionData.questionText;
@@ -67,7 +72,7 @@ async function removeAnswer(index, answerId) {
                 answerId: parseInt(answerId)
             };
 
-            const res = await fetch(`http://localhost:3000/api/question/remove_answer`, {
+            const res = await fetch(`https://testing-platform.onrender.com/api/question/remove_answer`, {
                 method: "POST",
                 headers: {
                     "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -75,6 +80,10 @@ async function removeAnswer(index, answerId) {
                 },
                 body: JSON.stringify(data)
             });
+
+            if (res.status === 403) {
+                window.location.href = "403";
+            }
 
             if (!res.ok) {
                 toastr.options = {
@@ -153,7 +162,7 @@ async function saveChanges() {
         questionText: updatedQuestionText
     };
 
-    const res = await fetch(`http://localhost:3000/api/question/update/${questionId}`, {
+    const res = await fetch(`https://testing-platform.onrender.com/api/question/update/${questionId}`, {
         method: "PUT",
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -161,6 +170,10 @@ async function saveChanges() {
         },
         body: JSON.stringify(updatedQuestionData)
     });
+
+    if (res.status === 403) {
+        window.location.href = "403";
+    }
 
     if (!res.ok) {
         success = false;
@@ -182,7 +195,7 @@ async function saveChanges() {
                 isCorrect: answer.isCorrect
             };
 
-            const response = await fetch(`http://localhost:3000/api/answer/update/${answer.answerId}`, {
+            const response = await fetch(`https://testing-platform.onrender.com/api/answer/update/${answer.answerId}`, {
                 method: "PUT",
                 headers: {
                     "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -190,6 +203,10 @@ async function saveChanges() {
                 },
                 body: JSON.stringify(updatedAnswerData)
             });
+
+            if (response.status === 403) {
+                window.location.href = "403";
+            }
 
             if (!response.ok) {
                 success = false;
@@ -201,7 +218,7 @@ async function saveChanges() {
                 isCorrect: answer.isCorrect
             };
 
-            const response = await fetch(`http://localhost:3000/api/answer/create/${questionId}`, {
+            const response = await fetch(`https://testing-platform.onrender.com/api/answer/create/${questionId}`, {
                 method: "POST",
                 headers: {
                     "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -209,6 +226,10 @@ async function saveChanges() {
                 },
                 body: JSON.stringify(createAnswerData)
             });
+
+            if (response.status === 403) {
+                window.location.href = "403";
+            }
 
             if (!response.ok) {
                 success = false;
@@ -245,7 +266,7 @@ async function deleteQuestion() {
     const questionForm = document.querySelector(".question-answers-form");
     questionForm.classList.add("disabled");
 
-    const response = await fetch(`http://localhost:3000/api/topic/remove_question`, {
+    const response = await fetch(`https://testing-platform.onrender.com/api/topic/remove_question`, {
         method: "POST",
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -253,6 +274,10 @@ async function deleteQuestion() {
         },
         body: JSON.stringify({ questionId: parseInt(questionId), topicId: parseInt(topic) })
     });
+
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
 
     const result = await response.json();
 

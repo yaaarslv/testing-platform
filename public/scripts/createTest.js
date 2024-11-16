@@ -1,6 +1,6 @@
 // Функция для загрузки доступных тем
 async function loadData() {
-    const responseTopics = await fetch('http://localhost:3000/api/topic/receive_all', {
+    const responseTopics = await fetch('https://testing-platform.onrender.com/api/topic/receive_all', {
         method: 'GET',
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -8,13 +8,21 @@ async function loadData() {
         },
     });
 
-    const responseGroups = await fetch('http://localhost:3000/api/teacher/groups', {
+    if (responseTopics.status === 403) {
+        window.location.href = "403";
+    }
+
+    const responseGroups = await fetch('https://testing-platform.onrender.com/api/teacher/groups', {
         method: 'GET',
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
             'Content-Type': 'application/json'
         },
     });
+
+    if (responseGroups.status === 403) {
+        window.location.href = "403";
+    }
 
     const topics = await responseTopics.json();
     const groups = await responseGroups.json();
@@ -58,7 +66,7 @@ async function createTest(event) {
     createTestForm.classList.add("disabled");
 
     // Отправляем запрос на создание теста
-    const response = await fetch('http://localhost:3000/api/test/create', {
+    const response = await fetch('https://testing-platform.onrender.com/api/test/create', {
         method: 'POST',
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -66,6 +74,10 @@ async function createTest(event) {
         },
         body: JSON.stringify(testData)
     });
+
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
 
     if (response.ok) {
         toastr.options = {

@@ -16,24 +16,32 @@ async function fetchGroups() {
         errorMessageBox.style.display = "none";
 
         // Получаем группы преподавателя
-        const responseTeacherGroups = await fetch("http://localhost:3000/api/teacher/groups", {
+        const responseTeacherGroups = await fetch("https://testing-platform.onrender.com/api/teacher/groups", {
             method: "GET",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json"
             }
         });
+
+        if (responseTeacherGroups.status === 403) {
+            window.location.href = "403";
+        }
 
         teacherGroups = await responseTeacherGroups.json();
 
         // Получаем все группы в организации
-        const responseAllGroups = await fetch(`http://localhost:3000/api/teacher/receive/org/groups`, {
+        const responseAllGroups = await fetch(`https://testing-platform.onrender.com/api/teacher/receive/org/groups`, {
             method: "GET",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json"
             }
         });
+
+        if (responseAllGroups.status === 403) {
+            window.location.href = "403";
+        }
 
         allGroups = await responseAllGroups.json();
 
@@ -67,7 +75,7 @@ async function fetchGroups() {
             deleteGroupButton.addEventListener("click", async function () {
                 productDiv.classList.add("disabled");
 
-                const response = await fetch("http://localhost:3000/api/teacher/remove_group", {
+                const response = await fetch("https://testing-platform.onrender.com/api/teacher/remove_group", {
                     method: "POST",
                     headers: {
                         "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -75,6 +83,10 @@ async function fetchGroups() {
                     },
                     body: JSON.stringify({ group: group })
                 });
+
+                if (response.status === 403) {
+                    window.location.href = "403";
+                }
 
                 if (response.ok) {
                     toastr.options = {
@@ -126,7 +138,7 @@ async function fetchGroups() {
 
             document.querySelector(".add-user-form").classList.add("disabled");
 
-            const response = await fetch("http://localhost:3000/api/teacher/add_group", {
+            const response = await fetch("https://testing-platform.onrender.com/api/teacher/add_group", {
                 method: "POST",
                 headers: {
                     "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -134,6 +146,10 @@ async function fetchGroups() {
                 },
                 body: JSON.stringify({ group: selectedGroup })
             });
+
+            if (response.status === 403) {
+                window.location.href = "403";
+            }
 
             if (response.ok) {
                 toastr.success(`Группа "${selectedGroup}" успешно добавлена`);
@@ -150,7 +166,7 @@ async function fetchGroups() {
                 newDeleteGroupButton.addEventListener("click", async function () {
                     newProductDiv.classList.add("disabled");
 
-                    const newResponse = await fetch("http://localhost:3000/api/teacher/remove_group", {
+                    const newResponse = await fetch("https://testing-platform.onrender.com/api/teacher/remove_group", {
                         method: "POST",
                         headers: {
                             "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -158,6 +174,10 @@ async function fetchGroups() {
                         },
                         body: JSON.stringify({ group: selectedGroup })
                     });
+
+                    if (newResponse.status === 403) {
+                        window.location.href = "403";
+                    }
 
                     if (newResponse.ok) {
                         toastr.options = {

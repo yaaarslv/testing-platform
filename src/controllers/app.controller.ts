@@ -7,7 +7,7 @@ export class AppController {
     }
 
     @Get()
-    @Redirect("active_tests", 302)
+    @Redirect("auth", 302)
     root() {
     }
 

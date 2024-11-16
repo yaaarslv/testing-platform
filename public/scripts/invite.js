@@ -11,13 +11,17 @@ async function checkInviteLink() {
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/api/auth/check_invite_link`, {
+        const response = await fetch(`https://testing-platform.onrender.com/api/auth/check_invite_link`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({ link: link })
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         const result = await response.json();
 
@@ -66,13 +70,17 @@ function registerAndShowInvitation() {
             actorId
         }
 
-        const response = await fetch("http://localhost:3000/api/auth/register", {
+        const response = await fetch("https://testing-platform.onrender.com/api/auth/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(data)
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         const result = await response.json();
 
@@ -122,13 +130,17 @@ function loginAndShowInvitation() {
             actorId
         }
 
-        const response = await fetch("http://localhost:3000/api/auth/activate", {
+        const response = await fetch("https://testing-platform.onrender.com/api/auth/activate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(data)
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         const result = await response.json();
 

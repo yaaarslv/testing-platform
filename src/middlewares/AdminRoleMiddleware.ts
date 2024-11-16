@@ -7,7 +7,7 @@ export class AdminRoleMiddleware implements NestMiddleware {
         const user = req.user;
         const role = user.role;
         if (role != ERole.Administrator) {
-            return res.status(403).send({ message: "У вас нет прав для доступа к этому ресурсу" });
+            res.render("403")
         } else {
             next();
         }

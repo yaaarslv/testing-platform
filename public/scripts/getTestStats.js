@@ -33,7 +33,7 @@ async function fetchAndDisplayProducts() {
 
         errorMessageBox.style.display = "none";
 
-        const response = await fetch("http://localhost:3000/api/test/get_students_best_results", {
+        const response = await fetch("https://testing-platform.onrender.com/api/test/get_students_best_results", {
             method: "POST",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -45,7 +45,7 @@ async function fetchAndDisplayProducts() {
         if (response.status === 401) {
             window.location.href = "auth";
         } else if (response.status === 403) {
-            errorMessageBox.textContent = "Данный блок вам недоступен!";
+            window.location.href = "403";
         }
 
         const data = await response.json();

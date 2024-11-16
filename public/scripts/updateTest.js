@@ -7,13 +7,17 @@ async function loadTestData() {
     const testId = urlParams.get("id");
 
     // Запрашиваем данные теста по ID
-    const response = await fetch(`http://localhost:3000/api/test/receive/${testId}`, {
+    const response = await fetch(`https://testing-platform.onrender.com/api/test/receive/${testId}`, {
         method: "GET",
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json"
         }
     });
+
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
 
     if (!response.ok) {
         const error = await response.json();
@@ -39,13 +43,17 @@ async function loadTestData() {
 
 // Функция для загрузки доступных тем
 async function loadTopics(selectedTopicId) {
-    const response = await fetch("http://localhost:3000/api/topic/receive_all", {
+    const response = await fetch("https://testing-platform.onrender.com/api/topic/receive_all", {
         method: "GET",
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json"
         }
     });
+
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
 
     if (!response.ok) {
         const error = await response.json();
@@ -74,13 +82,17 @@ async function loadTopics(selectedTopicId) {
 }
 
 async function loadGroups(selectedGroup) {
-    const response = await fetch("http://localhost:3000/api/teacher/groups", {
+    const response = await fetch("https://testing-platform.onrender.com/api/teacher/groups", {
         method: "GET",
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json"
         }
     });
+
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
 
     if (!response.ok) {
         const error = await response.json();
@@ -128,7 +140,7 @@ async function saveChanges(event) {
     updateTestForm.classList.add("disabled");
 
     // Отправляем данные на сервер для обновления
-    const response = await fetch(`http://localhost:3000/api/test/update/${testId}`, {
+    const response = await fetch(`https://testing-platform.onrender.com/api/test/update/${testId}`, {
         method: "PUT",
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -136,6 +148,10 @@ async function saveChanges(event) {
         },
         body: JSON.stringify(updatedTestData)
     });
+
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
 
     if (response.ok) {
         toastr.options = {
@@ -166,7 +182,7 @@ async function deleteTest() {
     const updateTestForm = document.getElementById("updateTestForm");
     updateTestForm.classList.add("disabled");
 
-    const response = await fetch(`http://localhost:3000/api/test/delete`, {
+    const response = await fetch(`https://testing-platform.onrender.com/api/test/delete`, {
         method: "DELETE",
         headers: {
             "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -174,6 +190,10 @@ async function deleteTest() {
         },
         body: JSON.stringify({ testId: parseInt(testId) })
     });
+
+    if (response.status === 403) {
+        window.location.href = "403";
+    }
 
     if (response.ok) {
         toastr.options = {

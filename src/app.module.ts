@@ -38,6 +38,7 @@ import { RolesGuard } from "./models/RolesGuard";
 import { AuthViewMiddleware } from "./middlewares/AuthViewMiddleware";
 import { TeacherRoleMiddleware } from "./middlewares/TeacherRoleMiddleware";
 import { StudentRoleMiddleware } from "./middlewares/StudentRoleMiddleware";
+import { AdminRoleMiddleware } from "./middlewares/AdminRoleMiddleware";
 
 @Module({
     imports: [
@@ -142,6 +143,7 @@ export class AppModule {
                 { path: "/stat", method: RequestMethod.ALL },
                 { path: "/student_test_stat", method: RequestMethod.ALL },
                 { path: "/groups", method: RequestMethod.ALL },
+                { path: "/manage-groups", method: RequestMethod.ALL },
                 { path: "/test_stats", method: RequestMethod.ALL });
 
         consumer
@@ -162,6 +164,14 @@ export class AppModule {
             .forRoutes(
                 { path: "/test", method: RequestMethod.ALL },
                 { path: "/generated_test", method: RequestMethod.ALL },
+
+            );
+
+        consumer
+            .apply(AdminRoleMiddleware)
+            .forRoutes(
+                { path: "/organization", method: RequestMethod.ALL },
+                { path: "/manage-organization", method: RequestMethod.ALL },
 
             );
     }

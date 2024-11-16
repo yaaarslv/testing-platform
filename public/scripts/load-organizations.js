@@ -19,7 +19,7 @@ function addOrgEvent() {
         const addUserForm = document.getElementById("addUserForm");
         addUserForm.classList.add("disabled");
 
-        const response = await fetch("http://localhost:3000/api/organization/create", {
+        const response = await fetch("https://testing-platform.onrender.com/api/organization/create", {
             method: "POST",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -27,6 +27,10 @@ function addOrgEvent() {
             },
             body: JSON.stringify(data)
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         if (!response.ok) {
             addUserForm.classList.remove('disabled');
@@ -104,13 +108,17 @@ async function loadUserData() {
 
     try {
         loader.style.display = "block";
-        const response = await fetch("http://localhost:3000/api/organization/receive_all", {
+        const response = await fetch("https://testing-platform.onrender.com/api/organization/receive_all", {
             method: "GET",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json"
             }
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         if (!response.ok) {
             throw new Error("Ошибка при загрузке данных");

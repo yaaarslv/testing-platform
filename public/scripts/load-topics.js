@@ -10,7 +10,7 @@ function addTopicEvent() {
         const addTopicForm = document.getElementById("addTopicForm");
         addTopicForm.classList.add("disabled");
 
-        const response = await fetch("http://localhost:3000/api/topic/create", {
+        const response = await fetch("https://testing-platform.onrender.com/api/topic/create", {
             method: "POST",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -18,6 +18,10 @@ function addTopicEvent() {
             },
             body: JSON.stringify(data)
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         if (!response.ok) {
             addTopicForm.classList.remove('disabled');
@@ -94,13 +98,17 @@ async function loadTopicData() {
 
     try {
         loader.style.display = "block";
-        const response = await fetch("http://localhost:3000/api/topic/receive_all", {
+        const response = await fetch("https://testing-platform.onrender.com/api/topic/receive_all", {
             method: "GET",
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json"
             }
         });
+
+        if (response.status === 403) {
+            window.location.href = "403";
+        }
 
         if (!response.ok) {
             throw new Error("Ошибка при загрузке данных");
