@@ -217,7 +217,7 @@ export class AuthService {
         const user = await this.receiveUser(hashedLogin, false);
 
         if (user == null) {
-            return;
+            return true;
         }
 
         const uuid = uuidv4();
